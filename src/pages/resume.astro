@@ -10,20 +10,35 @@ const groups = [...new Set(experience.map((item) => item.group))];
 
 <BaseLayout title="Resume" description={`Resume of ${site.name} — design, web development and cybersecurity.`}>
   <div class="container page">
-    <header class="resume-header">
-      <div>
-        <p class="eyebrow">Resume</p>
-        <h1>{site.name}</h1>
-        <p class="tagline">Freelance designer · Computer Science student · {site.location}</p>
+    <header class="resume-header panel">
+      <div class="header-main">
+        <div class="monogram" aria-hidden="true">NP</div>
+        <div>
+          <p class="eyebrow">Resume · {new Date().getFullYear()}</p>
+          <h1>{site.name}</h1>
+          <p class="tagline">Freelance designer · Computer Science student · {site.location}</p>
+        </div>
       </div>
-      <a class="pdf-link" href="/niroj-pyakurel-resume.pdf" target="_blank" rel="noopener noreferrer">
-        View PDF resume ↗
-      </a>
+      <div class="header-actions">
+        <a class="pdf-link" href="/niroj-pyakurel-resume.pdf" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" />
+            <path d="M14 3v5h5" /><path d="M9 14h6" /><path d="m12 11 3 3-3 3" />
+          </svg>
+          View PDF resume
+        </a>
+        <a class="text-link" href="/contact/">Contact me →</a>
+      </div>
     </header>
 
+    <section class="summary panel" aria-label="Summary">
+      <p class="eyebrow">Summary</p>
+      <p>{site.about.lead} {site.about.closing}</p>
+    </section>
+
     <section class="block" aria-labelledby="resume-contact-title">
-      <SectionHeading eyebrow="Contact" title="Details" id="resume-contact-title" />
-      <ul class="contact-list">
+      <SectionHeading eyebrow="Contact" title="Details" id="resume-contact-title" index="01" />
+      <ul class="contact-list panel">
         {socials.map((social) => (
           <li>
             <span>{social.label}</span>
@@ -35,16 +50,19 @@ const groups = [...new Set(experience.map((item) => item.group))];
     </section>
 
     <section class="block" aria-labelledby="resume-experience-title">
-      <SectionHeading eyebrow="Experience" title="Where I've worked" id="resume-experience-title" />
+      <SectionHeading eyebrow="Experience" title="Where I've worked" id="resume-experience-title" index="02" />
       {groups.map((group) => (
         <div class="group">
           <h3>{group}</h3>
-          <ul class="timeline">
+          <ol class="timeline">
             {experience.filter((item) => item.group === group).map((item) => (
-              <li>
+              <li class="panel">
                 <div class="timeline-head">
-                  <strong>{item.role} · {item.organization}</strong>
-                  <span>{item.period}</span>
+                  <div>
+                    <strong>{item.role}</strong>
+                    <span class="org">{item.organization}</span>
+                  </div>
+                  <span class="period">{item.period}</span>
                 </div>
                 {item.highlights.length > 0 && (
                   <ul>
@@ -53,18 +71,24 @@ const groups = [...new Set(experience.map((item) => item.group))];
                 )}
               </li>
             ))}
-          </ul>
+          </ol>
         </div>
       ))}
     </section>
 
     <section class="block" aria-labelledby="resume-projects-title">
-      <SectionHeading eyebrow="Projects" title="Selected work" id="resume-projects-title" />
-      <ul class="details">
+      <SectionHeading eyebrow="Projects" title="Selected work" id="resume-projects-title" index="03" />
+      <ul class="project-list">
         {site.projects.map((project) => (
-          <li>
-            <strong>{project.title}</strong>
-            <span>{project.summary}</span>
+          <li class="panel">
+            <span class="project-mark" aria-hidden="true">↗</span>
+            <div>
+              <strong>{project.title}</strong>
+              <p>{project.summary}</p>
+              <ul class="chip-list">
+                {project.highlights.slice(0, 3).map((highlight) => <li class="chip">{highlight}</li>)}
+              </ul>
+            </div>
             <a href={`/projects/${project.slug}/`}>Read case study →</a>
           </li>
         ))}
@@ -72,21 +96,21 @@ const groups = [...new Set(experience.map((item) => item.group))];
     </section>
 
     <section class="block" aria-labelledby="resume-skills-title">
-      <SectionHeading eyebrow="Skills" title="Toolkit" id="resume-skills-title" />
+      <SectionHeading eyebrow="Skills" title="Toolkit" id="resume-skills-title" index="04" />
       <div class="skill-grid">
         {site.skills.map((group) => (
-          <div>
+          <article class="skill-group panel">
             <h3>{group.label}</h3>
             <p>{group.items.join(' · ')}</p>
-          </div>
+          </article>
         ))}
       </div>
     </section>
 
     <section class="block" aria-labelledby="resume-education-title">
-      <SectionHeading eyebrow="Education" title="Study & certifications" id="resume-education-title" />
+      <SectionHeading eyebrow="Education" title="Study & certifications" id="resume-education-title" index="05" />
       <div class="detail-grid">
-        <div>
+        <div class="detail-panel panel">
           <h3>Education</h3>
           <ul class="details">
             {site.education.map((item) => (
@@ -98,7 +122,7 @@ const groups = [...new Set(experience.map((item) => item.group))];
             ))}
           </ul>
         </div>
-        <div>
+        <div class="detail-panel panel">
           <h3>Certifications</h3>
           <ul class="details">
             {site.certifications.map((item) => (
@@ -122,32 +146,98 @@ const groups = [...new Set(experience.map((item) => item.group))];
 
   .resume-header {
     display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1.5rem;
     flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: clamp(1.75rem, 4vw, 2.5rem);
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 100% 0%, var(--color-accent-soft), transparent 50%),
+      var(--color-surface);
+  }
+
+  .header-main {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .monogram {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    flex: none;
+    border: 2px solid var(--color-accent);
+    border-radius: 14px;
+    background: var(--color-accent-soft);
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.08em;
   }
 
   .resume-header h1 {
-    margin-top: 0.75rem;
+    margin-top: 0.5rem;
+    font-size: clamp(2rem, 5vw, 3rem);
   }
 
   .tagline {
-    margin-top: 0.75rem;
+    margin-top: 0.5rem;
     color: var(--color-muted);
+    font-size: 0.9rem;
+  }
+
+  .header-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 
   .pdf-link {
     display: inline-flex;
-    padding: 0.65rem 1rem;
-    border: 1px solid var(--color-border);
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.1rem;
+    border: 1px solid var(--color-accent-line);
     border-radius: var(--radius);
+    background: var(--color-accent-soft);
+    color: var(--color-link);
     font-size: 0.9rem;
+    font-weight: 700;
     text-decoration: none;
   }
 
+  .pdf-link svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
   .pdf-link:hover {
-    border-color: var(--color-link);
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+
+  .text-link {
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+
+  .summary {
+    margin-top: 1rem;
+    padding: 1.5rem 1.75rem;
+    border-left: 3px solid var(--color-accent);
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    background: var(--color-surface);
+    box-shadow: none;
+  }
+
+  .summary p:last-child {
+    max-width: 78ch;
+    margin-top: 0.75rem;
+    color: var(--color-muted);
   }
 
   .block {
@@ -163,6 +253,9 @@ const groups = [...new Set(experience.map((item) => item.group))];
 
   .contact-list {
     margin-top: 1.5rem;
+    padding: 0.5rem 1.5rem;
+    background: var(--color-surface);
+    box-shadow: none;
   }
 
   .contact-list li {
@@ -170,34 +263,45 @@ const groups = [...new Set(experience.map((item) => item.group))];
     justify-content: space-between;
     gap: 1rem;
     flex-wrap: wrap;
-    padding: 0.6rem 0;
-    border-bottom: 1px solid var(--color-border);
+    padding: 0.85rem 0;
+  }
+
+  .contact-list li + li {
+    border-top: 1px solid var(--color-border);
   }
 
   .contact-list span:first-child {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--color-muted);
   }
 
   .group + .group {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
   }
 
-  .group h3 {
+  .group > h3 {
     margin-bottom: 1rem;
-    color: var(--color-muted);
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-link);
     font-family: var(--font-mono);
     font-size: 0.8rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
-  .timeline li {
-    padding: 1.25rem 0;
-    border-top: 1px solid var(--color-border);
+  .timeline {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .timeline > li {
+    padding: 1.5rem;
+    background: var(--color-surface);
+    box-shadow: none;
   }
 
   .timeline-head {
@@ -207,79 +311,177 @@ const groups = [...new Set(experience.map((item) => item.group))];
     flex-wrap: wrap;
   }
 
-  .timeline-head span,
-  .muted {
+  .timeline-head strong {
+    display: block;
+    font-size: 1.1rem;
+  }
+
+  .org {
     color: var(--color-muted);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+  }
+
+  .period {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-link);
   }
 
   .timeline ul {
-    margin-top: 0.75rem;
-    padding-left: 1.1rem;
+    margin-top: 1rem;
+    padding-left: 1.15rem;
     color: var(--color-muted);
-    font-size: 0.95rem;
-  }
-
-  .timeline ul li {
-    padding: 0;
-    border: 0;
+    font-size: 0.92rem;
   }
 
   .timeline ul li + li {
-    margin-top: 0.35rem;
+    margin-top: 0.4rem;
   }
 
-  .details {
-    margin-top: 1.5rem;
+  .project-list {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0 0;
   }
 
-  .details li {
+  .project-list li {
     display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-    padding: 0.9rem 0;
-    border-bottom: 1px solid var(--color-border);
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background: var(--color-surface);
+    box-shadow: none;
   }
 
-  .details span {
+  .project-mark {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    flex: none;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 10px;
+    background: var(--color-accent-soft);
+    color: var(--color-link);
+  }
+
+  .project-list li > div {
+    min-width: 0;
+  }
+
+  .project-list strong {
+    font-size: 1.1rem;
+  }
+
+  .project-list p {
+    max-width: 70ch;
+    margin-top: 0.4rem;
     color: var(--color-muted);
+    font-size: 0.92rem;
   }
 
-  .details a {
+  .project-list .chip-list {
+    margin-top: 1rem;
+  }
+
+  .project-list .chip {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .project-list a {
+    margin-left: auto;
+    flex: none;
     font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
   }
 
   .skill-grid,
   .detail-grid {
     display: grid;
-    gap: 1px;
+    gap: 1rem;
     margin-top: 1.5rem;
-    background: var(--color-border);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    overflow: hidden;
   }
 
-  .skill-grid > div,
-  .detail-grid > div {
-    padding: 1.25rem;
-    background: var(--color-bg);
+  .skill-group,
+  .detail-panel {
+    padding: 1.5rem;
+    background: var(--color-surface);
+    box-shadow: none;
   }
 
-  .skill-grid h3,
-  .detail-grid h3 {
-    margin-bottom: 0.75rem;
+  .skill-group h3,
+  .detail-panel h3 {
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-link);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
-  .skill-grid p {
+  .skill-group p {
     color: var(--color-muted);
     font-size: 0.9rem;
+  }
+
+  .details li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-block: 1rem;
+  }
+
+  .details li + li {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .details span {
+    color: var(--color-muted);
+    font-size: 0.9rem;
+  }
+
+  .muted {
+    font-family: var(--font-mono);
+    font-size: 0.72rem !important;
+    color: var(--color-link) !important;
+  }
+
+  @media (max-width: 560px) {
+    .project-list li {
+      flex-wrap: wrap;
+    }
+
+    .project-list a {
+      margin-left: 3.85rem;
+    }
   }
 
   @media (min-width: 720px) {
     .skill-grid,
     .detail-grid {
       grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media print {
+    .pdf-link,
+    .text-link {
+      display: none;
+    }
+
+    .resume-header,
+    .summary,
+    .contact-list,
+    .timeline > li,
+    .project-list li,
+    .skill-group,
+    .detail-panel {
+      box-shadow: none;
+      break-inside: avoid;
     }
   }
 </style>

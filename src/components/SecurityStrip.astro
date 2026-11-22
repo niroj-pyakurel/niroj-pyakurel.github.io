@@ -2,20 +2,37 @@
 import { site } from '../data/site.js';
 ---
 
-<aside class="security-strip" aria-labelledby="security-strip-title">
+<aside class="security-strip panel" aria-labelledby="security-strip-title">
   <div class="security-intro">
-    <p class="eyebrow">{site.security.label}</p>
-    <h2 id="security-strip-title">Security is part of the work</h2>
-    <p>{site.security.note}</p>
+    <div class="shield">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3 5 6v5c0 4.5 2.8 8.4 7 10 4.2-1.6 7-5.5 7-10V6l-7-3Z" />
+        <path d="m9 12 2 2 4-4" />
+      </svg>
+    </div>
+    <div>
+      <p class="eyebrow">{site.security.label}</p>
+      <h2 id="security-strip-title">Security is part of the work</h2>
+      <p class="security-note">{site.security.note}</p>
+    </div>
   </div>
+
   <dl>
     <div>
       <dt>Toolbox</dt>
-      <dd>{site.security.tools.join(' · ')}</dd>
+      <dd>
+        <ul class="chip-list">
+          {site.security.tools.map((tool) => <li class="chip chip-accent">{tool}</li>)}
+        </ul>
+      </dd>
     </div>
     <div>
       <dt>Certifications</dt>
-      <dd>{site.security.certifications.join(' · ')}</dd>
+      <dd>
+        <ul class="chip-list">
+          {site.security.certifications.map((cert) => <li class="chip">{cert}</li>)}
+        </ul>
+      </dd>
     </div>
   </dl>
 </aside>
@@ -24,11 +41,43 @@ import { site } from '../data/site.js';
   .security-strip {
     display: grid;
     gap: 2rem;
-    margin-top: 2rem;
-    padding: 1.75rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    background: var(--color-surface);
+    margin-top: 1rem;
+    padding: 2rem;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 100% 0%, var(--color-accent-soft), transparent 45%),
+      var(--color-surface);
+  }
+
+  .security-strip::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: var(--color-accent);
+  }
+
+  .security-intro {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+
+  .shield {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    flex: none;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 12px;
+    background: var(--color-accent-soft);
+    color: var(--color-link);
+  }
+
+  .shield svg {
+    width: 1.6rem;
+    height: 1.6rem;
   }
 
   .eyebrow {
@@ -37,10 +86,10 @@ import { site } from '../data/site.js';
 
   h2 {
     margin-top: 0.6rem;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
   }
 
-  .security-intro p:last-child {
+  .security-note {
     margin-top: 0.75rem;
     color: var(--color-muted);
     font-size: 0.95rem;
@@ -48,26 +97,26 @@ import { site } from '../data/site.js';
 
   dl {
     display: grid;
-    gap: 1rem;
+    gap: 1.25rem;
     margin: 0;
   }
 
   dt {
+    margin-bottom: 0.7rem;
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--color-muted);
   }
 
   dd {
-    margin: 0.35rem 0 0;
-    font-size: 0.95rem;
+    margin: 0;
   }
 
-  @media (min-width: 860px) {
+  @media (min-width: 960px) {
     .security-strip {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 0.9fr 1.1fr;
       gap: 3rem;
       align-items: center;
     }

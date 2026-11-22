@@ -1,0 +1,116 @@
+---
+---
+
+<div class="preview-frame" aria-hidden="true">
+  <div class="preview-bar">
+    <span></span><span></span><span></span>
+    <em>invoice-generator.py</em>
+  </div>
+  <div class="preview-body">
+    <div class="preview-title">
+      <strong>INVOICE</strong>
+      <span>#NP-001</span>
+    </div>
+    <div class="preview-rule"></div>
+    <div class="preview-row"><span>Subtotal</span><span>0.00</span></div>
+    <div class="preview-row"><span>Tax</span><span>0.00</span></div>
+    <div class="preview-row total"><span>Total</span><span>0.00</span></div>
+    <div class="preview-action">Generate .docx <span>→</span></div>
+  </div>
+</div>
+
+<style>
+  .preview-frame {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg);
+    box-shadow: var(--shadow-card);
+    font-family: var(--font-mono);
+  }
+
+  .preview-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .preview-bar span {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--color-border);
+  }
+
+  .preview-bar span:first-child {
+    background: var(--color-accent);
+  }
+
+  .preview-bar em {
+    margin-left: auto;
+    font-size: 0.65rem;
+    font-style: normal;
+    color: var(--color-muted);
+  }
+
+  .preview-body {
+    padding: 1.1rem;
+  }
+
+  .preview-title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .preview-title strong {
+    letter-spacing: 0.16em;
+  }
+
+  .preview-title span {
+    color: var(--color-muted);
+    font-size: 0.7rem;
+  }
+
+  .preview-rule {
+    height: 2px;
+    margin: 0.75rem 0;
+    background: linear-gradient(90deg, var(--color-accent), transparent);
+  }
+
+  .preview-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    font-size: 0.72rem;
+    color: var(--color-muted);
+  }
+
+  .preview-row.total {
+    margin-top: 0.4rem;
+    padding-top: 0.6rem;
+    border-top: 1px dashed var(--color-border);
+    color: var(--color-text);
+    font-weight: 700;
+  }
+
+  .preview-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 6px;
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+</style>

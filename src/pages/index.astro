@@ -5,7 +5,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import SecurityStrip from '../components/SecurityStrip.astro';
+import HeroVisual from '../components/HeroVisual.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import ProjectPreview from '../components/ProjectPreview.astro';
 import NoteCard from '../components/NoteCard.astro';
 import { site } from '../data/site.js';
 
@@ -17,27 +19,30 @@ const notes = (await getCollection('writing')).sort(byDate).slice(0, 1);
 
 <BaseLayout>
   <section class="hero container" aria-labelledby="hero-title">
-    <p class="eyebrow">{site.hero.eyebrow}</p>
-    <h1 id="hero-title">{site.hero.headline}</h1>
-    <p class="lede">{site.hero.lede}</p>
+    <div class="hero-copy">
+      <p class="eyebrow">{site.hero.eyebrow}</p>
+      <h1 id="hero-title">{site.hero.headline}</h1>
+      <p class="lede">{site.hero.lede}</p>
 
-    <p class="status">
-      <span class="status-dot" aria-hidden="true"></span>
-      {site.availability}
-    </p>
+      <p class="status">
+        <span class="status-dot" aria-hidden="true"></span>
+        {site.availability}
+      </p>
 
-    <div class="actions">
-      <a class="button button-primary" href={inquiryHref}>
-        Start a project <span aria-hidden="true">→</span>
-      </a>
-      <a class="button button-secondary" href="/projects/">
-        See my work <span aria-hidden="true">↓</span>
-      </a>
+      <div class="actions">
+        <a class="button button-primary" href={inquiryHref}>
+          Start a project <span aria-hidden="true">→</span>
+        </a>
+        <a class="button button-secondary" href="/projects/">
+          See my work <span aria-hidden="true">↓</span>
+        </a>
+      </div>
     </div>
+    <HeroVisual />
   </section>
 
   <section class="section container" id="services" aria-labelledby="services-title">
-    <SectionHeading eyebrow="What I do" title="Services" id="services-title" />
+    <SectionHeading eyebrow="What I do" title="Services" id="services-title" index="01" />
     <div class="service-grid">
       {site.services.map((service, index) => (
         <ServiceCard {...service} index={index + 1} />
@@ -47,7 +52,7 @@ const notes = (await getCollection('writing')).sort(byDate).slice(0, 1);
   </section>
 
   <section class="section container" id="work" aria-labelledby="work-title">
-    <SectionHeading eyebrow="Selected work" title="Things I have built" id="work-title" />
+    <SectionHeading eyebrow="Selected work" title="Things I have built" id="work-title" index="02" />
     <div class="project-grid">
       {projects.map((project) => (
         <ProjectCard
@@ -56,7 +61,10 @@ const notes = (await getCollection('writing')).sort(byDate).slice(0, 1);
           tags={project.data.tags}
           date={project.data.date}
           href={`/projects/${project.id}/`}
-        />
+          featured={project.id === 'invoice-generator'}
+        >
+          {project.id === 'invoice-generator' && <ProjectPreview slot="media" />}
+        </ProjectCard>
       ))}
     </div>
     <a class="more-link" href="/projects/">All projects →</a>
@@ -64,40 +72,49 @@ const notes = (await getCollection('writing')).sort(byDate).slice(0, 1);
 
   {notes.length > 0 && (
     <section class="section container" id="notes" aria-labelledby="notes-title">
-      <SectionHeading eyebrow="Writing" title="Latest note" id="notes-title" />
-      {notes.map((note) => (
-        <NoteCard
-          title={note.data.title}
-          description={note.data.description}
-          tags={note.data.tags}
-          date={note.data.date}
-          href={`/writing/${note.id}/`}
-        />
-      ))}
+      <SectionHeading eyebrow="Writing" title="Latest note" id="notes-title" index="03" />
+      <div class="note-wrap">
+        {notes.map((note) => (
+          <NoteCard
+            title={note.data.title}
+            description={note.data.description}
+            tags={note.data.tags}
+            date={note.data.date}
+            href={`/writing/${note.id}/`}
+          />
+        ))}
+      </div>
       <a class="more-link" href="/writing/">All notes →</a>
     </section>
   )}
 
-  <section class="section container cta" aria-labelledby="cta-title">
-    <p class="eyebrow">Have something in mind?</p>
-    <h2 id="cta-title">Let's make it happen.</h2>
-    <p>Design, web work or a practical security pass — tell me what you need.</p>
-    <a class="button button-primary" href={inquiryHref}>Start a project →</a>
+  <section class="section container" aria-labelledby="cta-title">
+    <div class="cta panel">
+      <div>
+        <p class="eyebrow">Have something in mind?</p>
+        <h2 id="cta-title">Let's make it happen.</h2>
+        <p>Design, web work or a practical security pass — tell me what you need.</p>
+      </div>
+      <a class="button button-primary" href={inquiryHref}>Start a project →</a>
+    </div>
   </section>
 </BaseLayout>
 
 <style>
   .hero {
-    padding-block: clamp(4rem, 11vw, 8rem) clamp(3rem, 7vw, 5rem);
+    display: grid;
+    align-items: center;
+    gap: 3rem;
+    padding-block: clamp(4rem, 10vw, 7rem) clamp(3rem, 7vw, 5rem);
   }
 
-  .hero .eyebrow {
+  .hero-copy .eyebrow {
     color: var(--color-link);
   }
 
   h1 {
     max-width: 18ch;
-    margin-top: 1rem;
+    margin-top: 1.25rem;
   }
 
   .lede {
@@ -113,32 +130,28 @@ const notes = (await getCollection('writing')).sort(byDate).slice(0, 1);
     font-size: 0.85rem;
   }
 
-  .status-dot {
-    width: 0.6rem;
-    height: 0.6rem;
-    border-radius: 50%;
-    background: var(--color-accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent);
-  }
-
   .actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
   }
 
   .button {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.15rem;
+    padding: 0.85rem 1.3rem;
     border: 1px solid transparent;
     border-radius: var(--radius);
     font-weight: 700;
     font-size: 0.95rem;
     text-decoration: none;
-    transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+    transition: transform var(--transition), background-color var(--transition), border-color var(--transition), color var(--transition);
+  }
+
+  .button:hover {
+    transform: translateY(-2px);
   }
 
   .button-primary {
@@ -153,6 +166,7 @@ const notes = (await getCollection('writing')).sort(byDate).slice(0, 1);
   .button-secondary {
     border-color: var(--color-border);
     color: var(--color-text);
+    background: var(--color-surface);
   }
 
   .button-secondary:hover {
@@ -163,43 +177,64 @@ const notes = (await getCollection('writing')).sort(byDate).slice(0, 1);
   .service-grid,
   .project-grid {
     display: grid;
-    gap: 1px;
+    gap: 1rem;
     margin-top: 2rem;
-    background: var(--color-border);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    overflow: hidden;
   }
 
   .more-link {
     display: inline-block;
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
     font-size: 0.9rem;
+    font-weight: 700;
     text-decoration: none;
   }
 
-  .cta {
-    padding-block: clamp(3rem, 7vw, 5rem);
+  .more-link:hover {
+    color: var(--color-link);
+  }
+
+  .note-wrap {
+    margin-top: 1.5rem;
     border-top: 1px solid var(--color-border);
   }
 
+  .cta {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: flex-start;
+    padding: clamp(2rem, 5vw, 3.5rem);
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 90% 20%, var(--color-accent-soft), transparent 55%),
+      var(--color-surface);
+  }
+
   .cta h2 {
-    margin-top: 0.75rem;
+    margin-top: 0.85rem;
   }
 
   .cta p:not(.eyebrow) {
     margin-top: 1rem;
+    max-width: 52ch;
     color: var(--color-muted);
   }
 
-  .cta .button {
-    margin-top: 1.75rem;
+  @media (min-width: 900px) {
+    .hero {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
   }
 
   @media (min-width: 720px) {
-    .service-grid,
-    .project-grid {
+    .service-grid {
       grid-template-columns: repeat(3, 1fr);
+    }
+
+    .cta {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
     }
   }
 </style>

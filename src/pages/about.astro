@@ -2,38 +2,79 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import SecurityStrip from '../components/SecurityStrip.astro';
+import ProfileCard from '../components/ProfileCard.astro';
 import { site } from '../data/site.js';
+import { experience } from '../data/experience.js';
+
+const stats = [
+  { value: String(site.skills.length).padStart(2, '0'), label: 'Skill areas' },
+  { value: String(experience.length).padStart(2, '0'), label: 'Roles held' },
+  { value: String(site.certifications.length).padStart(2, '0'), label: 'Certifications' },
+];
 ---
 
 <BaseLayout title="About" description={site.about.lead}>
   <div class="container page">
-    <SectionHeading as="h1" eyebrow="About" title="Design, code and security in one toolkit" />
+    <section class="about-hero" aria-labelledby="about-title">
+      <div class="about-intro">
+        <SectionHeading as="h1" eyebrow="About" title="Design, code and security in one toolkit" id="about-title" />
+        <p class="hero-note">{site.about.lead}</p>
 
-    <div class="prose bio">
-      <p class="lead">{site.about.lead}</p>
-      {site.about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-      <p>{site.about.closing}</p>
-    </div>
+        <ul class="stats">
+          {stats.map((stat) => (
+            <li class="panel">
+              <strong>{stat.value}</strong>
+              <span>{stat.label}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <ProfileCard />
+    </section>
+
+    <section class="block" aria-labelledby="story-title">
+      <div class="story-layout">
+        <SectionHeading eyebrow="Background" title="A short story" id="story-title" index="01" />
+        <div class="prose story">
+          <p class="lead">{site.about.lead}</p>
+          {site.about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+          <p>{site.about.closing}</p>
+        </div>
+      </div>
+    </section>
 
     <section class="block" aria-labelledby="skills-title">
-      <SectionHeading eyebrow="Toolkit" title="Skills" id="skills-title" />
+      <SectionHeading eyebrow="Toolkit" title="Skills" id="skills-title" index="02">
+        Grouped the way I actually use them — language, systems, security and the people side.
+      </SectionHeading>
       <div class="skill-grid">
         {site.skills.map((group) => (
-          <div class="skill-group">
-            <h3>{group.label}</h3>
-            <ul>
-              {group.items.map((item) => <li>{item}</li>)}
+          <article class="skill-group panel">
+            <div class="skill-head">
+              <span class="skill-count">{String(group.items.length).padStart(2, '0')}</span>
+              <h3>{group.label}</h3>
+            </div>
+            <ul class="chip-list">
+              {group.items.map((item) => <li class="chip">{item}</li>)}
             </ul>
-          </div>
+          </article>
         ))}
       </div>
     </section>
 
     <section class="block" aria-labelledby="background-title">
-      <SectionHeading eyebrow="Background" title="Education & certifications" id="background-title" />
+      <SectionHeading eyebrow="Background" title="Education & certifications" id="background-title" index="03" />
       <div class="detail-grid">
-        <div>
-          <h3>Education</h3>
+        <div class="detail-panel panel">
+          <div class="detail-head">
+            <span class="detail-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 9 9-5 9 5-9 5-9-5Z" />
+                <path d="M7 11v5c0 1.5 2.2 3 5 3s5-1.5 5-3v-5" />
+              </svg>
+            </span>
+            <h3>Education</h3>
+          </div>
           <ul class="details">
             {site.education.map((item) => (
               <li>
@@ -44,8 +85,16 @@ import { site } from '../data/site.js';
             ))}
           </ul>
         </div>
-        <div>
-          <h3>Certifications</h3>
+        <div class="detail-panel panel">
+          <div class="detail-head">
+            <span class="detail-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3 5 6v5c0 4.5 2.8 8.4 7 10 4.2-1.6 7-5.5 7-10V6l-7-3Z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+            </span>
+            <h3>Certifications</h3>
+          </div>
           <ul class="details">
             {site.certifications.map((item) => (
               <li>
@@ -60,7 +109,7 @@ import { site } from '../data/site.js';
     </section>
 
     <section class="block" aria-labelledby="approach-title">
-      <SectionHeading eyebrow="How I work" title="Clarity, consistency, teamwork" id="approach-title">
+      <SectionHeading eyebrow="How I work" title="Clarity, consistency, teamwork" id="approach-title" index="04">
         Good work depends on knowing what matters, keeping it consistent, and communicating clearly while you do it.
       </SectionHeading>
       <SecurityStrip />
@@ -73,57 +122,140 @@ import { site } from '../data/site.js';
     padding-block: clamp(3rem, 8vw, 6rem);
   }
 
-  .page h1 {
-    max-width: 20ch;
+  .about-hero {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
   }
 
-  .bio {
+  .about-intro h1 {
+    max-width: 18ch;
+  }
+
+  .hero-note {
+    max-width: 58ch;
+    margin-top: 1.5rem;
+    color: var(--color-muted);
+    font-size: 1.1rem;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
     margin-top: 2.5rem;
+    padding: 0;
+    list-style: none;
   }
 
-  .bio .lead {
-    font-size: 1.2rem;
-    color: var(--color-text);
+  .stats li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1.1rem;
+    background: var(--color-surface);
+    box-shadow: none;
   }
 
-  .bio p + p {
-    margin-top: 1.25rem;
+  .stats strong {
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--color-link);
+  }
+
+  .stats span {
+    font-size: 0.75rem;
+    color: var(--color-muted);
   }
 
   .block {
     margin-top: var(--space-section);
   }
 
-  .skill-grid,
-  .detail-grid {
+  .story-layout {
     display: grid;
-    gap: 1px;
-    margin-top: 2rem;
-    background: var(--color-border);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    overflow: hidden;
+    gap: 2rem;
   }
 
-  .skill-group,
-  .detail-grid > div {
-    padding: 1.5rem;
-    background: var(--color-bg);
+  .story {
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-left: 3px solid var(--color-accent);
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    background: var(--color-surface);
   }
 
-  .skill-group h3,
-  .detail-grid h3 {
-    margin-bottom: 1rem;
+  .story .lead {
+    font-size: 1.15rem;
+    color: var(--color-text);
   }
 
-  .skill-group ul {
-    padding-left: 1.1rem;
+  .story p + p {
+    margin-top: 1.25rem;
     color: var(--color-muted);
   }
 
-  .skill-group li + li,
-  .details li + li {
-    margin-top: 0.5rem;
+  .skill-grid,
+  .detail-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .skill-group {
+    padding: 1.5rem;
+    background: var(--color-surface);
+    box-shadow: none;
+    transition: transform var(--transition), border-color var(--transition);
+  }
+
+  .skill-group:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-accent-line);
+  }
+
+  .skill-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .skill-count {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-link);
+  }
+
+  .detail-panel {
+    padding: 1.75rem;
+    background: var(--color-surface);
+    box-shadow: none;
+  }
+
+  .detail-head {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .detail-icon {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    flex: none;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 10px;
+    background: var(--color-accent-soft);
+    color: var(--color-link);
+  }
+
+  .detail-icon svg {
+    width: 1.3rem;
+    height: 1.3rem;
   }
 
   .details {
@@ -134,17 +266,37 @@ import { site } from '../data/site.js';
   .details li {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.25rem;
+    padding-block: 1.1rem;
   }
 
   .details li + li {
-    padding-top: 1rem;
     border-top: 1px solid var(--color-border);
   }
 
-  .muted {
+  .details span {
     color: var(--color-muted);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+  }
+
+  .muted {
+    font-family: var(--font-mono);
+    font-size: 0.72rem !important;
+    color: var(--color-link) !important;
+  }
+
+  @media (min-width: 900px) {
+    .about-hero {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .story-layout {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 4rem;
+      align-items: start;
+    }
   }
 
   @media (min-width: 720px) {

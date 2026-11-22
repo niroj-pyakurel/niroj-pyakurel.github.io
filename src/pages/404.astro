@@ -4,33 +4,53 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout title="Page not found" description="The page you were looking for could not be found.">
   <div class="container not-found">
-    <p class="eyebrow">404</p>
-    <h1>This page isn't here.</h1>
-    <p>The link may be out of date. You can head back home or get in touch.</p>
-    <div class="actions">
-      <a class="button" href="/">Back home →</a>
-      <a class="button button-secondary" href="/contact/">Contact me</a>
+    <div class="code panel" aria-hidden="true">404</div>
+    <div class="content">
+      <p class="eyebrow">Lost route</p>
+      <h1>This page isn't here.</h1>
+      <p>The link may be out of date. You can head back home, see the work, or get in touch.</p>
+      <div class="actions">
+        <a class="button" href="/">Back home <span aria-hidden="true">→</span></a>
+        <a class="button button-secondary" href="/projects/">See my work</a>
+        <a class="button button-secondary" href="/contact/">Contact me</a>
+      </div>
     </div>
   </div>
 </BaseLayout>
 
 <style>
   .not-found {
-    padding-block: clamp(5rem, 14vw, 10rem);
+    display: grid;
+    align-items: center;
+    gap: 3rem;
+    min-height: 62vh;
+    padding-block: clamp(4rem, 10vw, 7rem);
   }
 
-  .eyebrow {
-    color: var(--color-link);
+  .code {
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+    font-family: var(--font-mono);
+    font-size: clamp(5rem, 16vw, 10rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.1em;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--color-accent);
+    background:
+      radial-gradient(circle at 50% 50%, var(--color-accent-soft), transparent 65%),
+      var(--color-surface);
   }
 
   h1 {
     margin-top: 1rem;
   }
 
-  .not-found > p:not(.eyebrow) {
+  .content > p:not(.eyebrow) {
+    max-width: 48ch;
     margin-top: 1.25rem;
     color: var(--color-muted);
-    max-width: 48ch;
   }
 
   .actions {
@@ -42,18 +62,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .button {
     display: inline-flex;
-    padding: 0.75rem 1.15rem;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.25rem;
     background: var(--color-accent);
     color: var(--color-accent-ink);
     border: 1px solid transparent;
     border-radius: var(--radius);
     font-weight: 700;
     text-decoration: none;
+    transition: transform var(--transition);
+  }
+
+  .button:hover {
+    transform: translateY(-2px);
   }
 
   .button-secondary {
-    background: transparent;
+    background: var(--color-surface);
     color: var(--color-text);
     border-color: var(--color-border);
+  }
+
+  @media (min-width: 900px) {
+    .not-found {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 5rem;
+    }
   }
 </style>

@@ -1,4 +1,4 @@
-/* Shared prose styles for Markdown articles (Phase 2). */
+/* Shared prose styles for Markdown articles. */
 .prose {
   max-width: 68ch;
 }
@@ -8,9 +8,20 @@
 }
 
 .prose h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
   margin-top: 2em;
   font-size: 1.6rem;
   letter-spacing: -0.02em;
+}
+
+.prose h2::before {
+  content: '';
+  width: 1.75rem;
+  height: 2px;
+  flex: none;
+  background: var(--color-accent);
 }
 
 .prose h3 {
@@ -18,13 +29,22 @@
   font-size: 1.2rem;
 }
 
+.prose strong {
+  color: var(--color-text);
+}
+
 .prose ul,
 .prose ol {
   padding-left: 1.25rem;
+  color: var(--color-muted);
 }
 
 .prose li + li {
-  margin-top: 0.35em;
+  margin-top: 0.45em;
+}
+
+.prose li::marker {
+  color: var(--color-link);
 }
 
 .prose code {
@@ -32,25 +52,59 @@
   font-size: 0.9em;
   background: var(--color-surface);
   padding: 0.15em 0.35em;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
+  color: var(--color-link);
 }
 
 .prose pre {
   overflow-x: auto;
-  padding: 1rem;
+  padding: 1.15rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
 }
 
 .prose pre code {
   background: none;
+  border: 0;
   padding: 0;
+  color: var(--color-text);
 }
 
 .prose blockquote {
-  padding-left: 1rem;
+  padding: 1rem 1.25rem;
   border-left: 3px solid var(--color-accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--color-surface);
   color: var(--color-muted);
   font-style: italic;
+}
+
+.prose hr {
+  height: 1px;
+  border: 0;
+  background: var(--color-border);
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.prose th,
+.prose td {
+  padding: 0.7rem;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+}
+
+.prose th {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-link);
 }

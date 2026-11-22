@@ -1,9 +1,12 @@
 ---
-const { eyebrow, title, id, as: Heading = 'h2' } = Astro.props;
+const { eyebrow, title, id, index, as: Heading = 'h2' } = Astro.props;
 ---
 
 <div class="section-heading">
-  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <div class="heading-top">
+    {index && <span class="heading-index" aria-hidden="true">{index}</span>}
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  </div>
   <Heading id={id}>{title}</Heading>
   <slot />
 </div>
@@ -13,11 +16,23 @@ const { eyebrow, title, id, as: Heading = 'h2' } = Astro.props;
     max-width: 70ch;
   }
 
+  .heading-top {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .heading-index {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-link);
+  }
+
   .section-heading h2 {
     margin-top: 0.75rem;
   }
 
-  .section-heading :global(p:not(.eyebrow)) {
+  .section-heading > :global(p:not(.eyebrow)) {
     margin-top: 1rem;
     color: var(--color-muted);
   }

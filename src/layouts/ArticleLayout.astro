@@ -23,42 +23,67 @@ const when = date
 
 <BaseLayout title={title} description={description} type="article">
   <article class="article container">
-    <header class="article-header">
-      <p class="eyebrow">{eyebrow}</p>
-      <h1>{title}</h1>
-      <p class="article-lede">{description}</p>
-      <div class="article-meta">
-        {when && <time datetime={new Date(date).toISOString().slice(0, 10)}>{when}</time>}
-        {readingTime && <span>{readingTime}</span>}
-        {tags.length > 0 && (
-          <ul class="tags">
-            {tags.map((tag) => <li><Tag label={tag} /></li>)}
-          </ul>
-        )}
+    <header class="article-header panel">
+      <div class="header-content">
+        <p class="eyebrow">{eyebrow}</p>
+        <h1>{title}</h1>
+        <p class="article-lede">{description}</p>
+        <div class="article-meta">
+          {when && <time datetime={new Date(date).toISOString().slice(0, 10)}>{when}</time>}
+          {readingTime && <span>{readingTime}</span>}
+          {tags.length > 0 && (
+            <ul class="tags">
+              {tags.map((tag) => <li><Tag label={tag} /></li>)}
+            </ul>
+          )}
+        </div>
       </div>
+      <div class="header-mark" aria-hidden="true">{'{ }'}</div>
     </header>
 
-    <div class="prose article-body">
-      <slot />
+    <div class="article-layout">
+      <div class="prose article-body">
+        <slot />
+      </div>
+
+      <aside class="article-aside">
+        {securityNotes && (
+          <section class="security-notes panel" aria-labelledby="security-notes-title">
+            <span class="aside-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3 5 6v5c0 4.5 2.8 8.4 7 10 4.2-1.6 7-5.5 7-10V6l-7-3Z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+            </span>
+            <p class="eyebrow">Security lens</p>
+            <h2 id="security-notes-title">Security notes</h2>
+            <p>{securityNotes}</p>
+          </section>
+        )}
+
+        <div class="aside-card panel">
+          <p class="eyebrow">Back to</p>
+          <a class="back-link" href={backHref}>← {backLabel}</a>
+        </div>
+      </aside>
     </div>
 
-    {securityNotes && (
-      <section class="security-notes" aria-labelledby="security-notes-title">
-        <p class="eyebrow">Security lens</p>
-        <h2 id="security-notes-title">Security notes</h2>
-        <p>{securityNotes}</p>
-      </section>
+    {(prev || next) && (
+      <nav class="article-nav" aria-label="More articles">
+        {prev ? (
+          <a class="panel nav-card" href={prev.href} rel="prev">
+            <span class="eyebrow">← Previous</span>
+            <strong>{prev.title}</strong>
+          </a>
+        ) : <span class="nav-spacer" aria-hidden="true"></span>}
+        {next && (
+          <a class="panel nav-card" href={next.href} rel="next">
+            <span class="eyebrow">Next →</span>
+            <strong>{next.title}</strong>
+          </a>
+        )}
+      </nav>
     )}
-
-    <footer class="article-footer">
-      <a class="back-link" href={backHref}>← {backLabel}</a>
-      {(prev || next) && (
-        <nav class="article-nav" aria-label="More articles">
-          {prev && <a href={prev.href} rel="prev">← {prev.title}</a>}
-          {next && <a href={next.href} rel="next">{next.title} →</a>}
-        </nav>
-      )}
-    </footer>
   </article>
 </BaseLayout>
 
@@ -67,16 +92,34 @@ const when = date
     padding-block: clamp(3rem, 8vw, 6rem);
   }
 
-  .article-header h1 {
+  .article-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: clamp(1.75rem, 5vw, 3rem);
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 100% 0%, var(--color-accent-soft), transparent 55%),
+      var(--color-surface);
+  }
+
+  .header-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .header-content h1 {
     max-width: 20ch;
     margin-top: 1rem;
   }
 
   .article-lede {
-    margin-top: 1.25rem;
-    font-size: 1.15rem;
-    color: var(--color-muted);
     max-width: 62ch;
+    margin-top: 1.25rem;
+    color: var(--color-muted);
+    font-size: 1.15rem;
   }
 
   .article-meta {
@@ -84,7 +127,7 @@ const when = date
     align-items: center;
     flex-wrap: wrap;
     gap: 0.75rem 1.25rem;
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
     font-family: var(--font-mono);
     font-size: 0.75rem;
     color: var(--color-muted);
@@ -98,56 +141,130 @@ const when = date
     list-style: none;
   }
 
+  .header-mark {
+    position: absolute;
+    right: -0.1em;
+    bottom: -0.35em;
+    font-family: var(--font-mono);
+    font-size: clamp(7rem, 18vw, 13rem);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--color-accent-soft);
+    pointer-events: none;
+  }
+
+  .article-layout {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+  }
+
   .article-body {
-    margin-top: 3rem;
+    min-width: 0;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg);
+  }
+
+  .article-aside {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
   }
 
   .security-notes {
-    margin-top: 3rem;
     padding: 1.5rem;
-    border: 1px solid var(--color-border);
     border-left: 3px solid var(--color-accent);
-    border-radius: var(--radius);
-    background: var(--color-surface);
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    background:
+      radial-gradient(circle at 100% 0%, var(--color-accent-soft), transparent 55%),
+      var(--color-surface);
+  }
+
+  .aside-icon {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 10px;
+    background: var(--color-accent-soft);
+    color: var(--color-link);
+  }
+
+  .aside-icon svg {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+  .security-notes .eyebrow {
+    color: var(--color-link);
   }
 
   .security-notes h2 {
-    margin-top: 0.5rem;
-    font-size: 1.4rem;
+    margin-top: 0.6rem;
+    font-size: 1.35rem;
   }
 
   .security-notes > p:last-child {
-    margin-top: 0.75rem;
+    margin-top: 0.85rem;
     color: var(--color-muted);
+    font-size: 0.92rem;
   }
 
-  .article-footer {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-top: 3rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
-    font-size: 0.9rem;
+  .aside-card {
+    padding: 1.25rem 1.5rem;
+    background: var(--color-surface);
+    box-shadow: none;
   }
 
   .back-link {
+    display: inline-block;
+    margin-top: 0.6rem;
+    font-weight: 700;
     text-decoration: none;
   }
 
   .article-nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;
     gap: 1rem;
+    margin-top: 2.5rem;
   }
 
-  .article-nav a {
-    color: var(--color-muted);
+  .nav-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.25rem 1.5rem;
     text-decoration: none;
+    transition: transform var(--transition), border-color var(--transition);
   }
 
-  .article-nav a:hover {
-    color: var(--color-link);
+  .nav-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-accent-line);
+  }
+
+  .nav-card strong {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 960px) {
+    .article-layout {
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .article-aside {
+      position: sticky;
+      top: 2rem;
+    }
+
+    .article-nav {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 </style>

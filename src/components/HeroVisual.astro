@@ -1,0 +1,192 @@
+---
+import { site } from '../data/site.js';
+---
+
+<div class="hero-visual" aria-hidden="true">
+  <div class="glow"></div>
+  <div class="orbit orbit-one"></div>
+  <div class="orbit orbit-two"></div>
+
+  <div class="visual-mark">NP</div>
+
+  <div class="visual-card code-card">
+    <div class="card-bar">
+      <span></span><span></span><span></span>
+      <em>niroj.py</em>
+    </div>
+    <div class="code-lines">
+      <p><span class="key">name</span> = <span class="str">'Niroj Pyakurel'</span></p>
+      <p><span class="key">base</span> = <span class="str">'Kathmandu, NP'</span></p>
+      <p><span class="key">focus</span> = [<span class="str">'design'</span>, <span class="str">'web'</span>, <span class="str">'security'</span>]</p>
+      <p><span class="key">status</span> = <span class="str">'available'</span></p>
+    </div>
+  </div>
+
+  <div class="visual-card tool-card">
+    <span class="mini-label">toolbox</span>
+    <ul class="chip-list">
+      {site.security.tools.map((tool) => <li class="chip chip-accent">{tool}</li>)}
+    </ul>
+  </div>
+
+  <div class="visual-status"><span class="status-dot"></span>{site.availability}</div>
+</div>
+
+<style>
+  .hero-visual {
+    position: relative;
+    min-height: 440px;
+    isolation: isolate;
+  }
+
+  .glow {
+    position: absolute;
+    inset: 12% 8% 18% 12%;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--color-accent-soft), transparent 68%);
+    filter: blur(10px);
+  }
+
+  .orbit {
+    position: absolute;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 24px;
+  }
+
+  .orbit-one {
+    inset: 8% 10% 12% 8%;
+    transform: rotate(-9deg);
+  }
+
+  .orbit-two {
+    inset: 20% 2% 4% 22%;
+    border-color: var(--color-border);
+    transform: rotate(11deg);
+  }
+
+  .visual-mark {
+    position: absolute;
+    top: 4%;
+    right: 4%;
+    font-family: var(--font-mono);
+    font-size: clamp(5rem, 12vw, 9rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.1em;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--color-accent-line);
+  }
+
+  .visual-card {
+    position: absolute;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-raised);
+    box-shadow: var(--shadow-card);
+    animation: float 7s ease-in-out infinite;
+  }
+
+  .code-card {
+    top: 16%;
+    left: 0;
+    width: min(100%, 430px);
+    overflow: hidden;
+  }
+
+  .card-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .card-bar span {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--color-border);
+  }
+
+  .card-bar span:first-child {
+    background: var(--color-accent);
+  }
+
+  .card-bar em {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-style: normal;
+    color: var(--color-muted);
+  }
+
+  .code-lines {
+    display: grid;
+    gap: 0.55rem;
+    padding: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: clamp(0.62rem, 1.2vw, 0.78rem);
+    line-height: 1.5;
+    overflow-x: auto;
+  }
+
+  .code-lines p {
+    white-space: nowrap;
+    color: var(--color-muted);
+  }
+
+  .key {
+    color: var(--color-link);
+  }
+
+  .str {
+    color: var(--color-text);
+  }
+
+  .tool-card {
+    right: 0;
+    bottom: 10%;
+    width: min(88%, 320px);
+    padding: 1.1rem;
+    animation-delay: -3s;
+  }
+
+  .mini-label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .visual-status {
+    position: absolute;
+    left: 6%;
+    bottom: 2%;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 999px;
+    background: var(--color-bg);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @media (max-width: 900px) {
+    .hero-visual {
+      display: none;
+    }
+  }
+</style>

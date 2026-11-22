@@ -6,47 +6,106 @@ import { socials } from '../data/socials.js';
 import { experience } from '../data/experience.js';
 
 const inquiryHref = `mailto:${site.email}?subject=${encodeURIComponent('Project inquiry')}`;
+
+const iconFor = (label) => {
+  if (label === 'Email') return 'mail';
+  if (label === 'LinkedIn') return 'linkedin';
+  return 'github';
+};
 ---
 
 <BaseLayout title="Contact" description={`Contact ${site.name} for design, web and security work in ${site.location}.`}>
   <div class="container page">
-    <SectionHeading as="h1" eyebrow="Contact" title="Let's work together" />
-    <p class="intro">{site.availability}. Email is the fastest way to reach me; I'm based in {site.location} and happy to work remotely.</p>
+    <section class="contact-hero" aria-labelledby="contact-title">
+      <div>
+        <SectionHeading as="h1" eyebrow="Contact" title="Let's work together" id="contact-title" />
+        <p class="intro">{site.availability}. Email is the fastest way to reach me; I'm based in {site.location} and happy to work remotely.</p>
+        <a class="primary-cta" href={inquiryHref}>
+          Start a project <span aria-hidden="true">→</span>
+        </a>
+      </div>
 
-    <a class="primary-cta" href={inquiryHref}>Start a project →</a>
+      <div class="contact-callout panel">
+        <span class="status-dot" aria-hidden="true"></span>
+        <p class="callout-label">Currently</p>
+        <p class="callout-text">{site.availability}</p>
+        <div class="callout-rule"></div>
+        <p class="callout-meta">Kathmandu, Nepal · Remote friendly</p>
+        <a class="callout-link" href={inquiryHref}>Send an email →</a>
+      </div>
+    </section>
 
     <section class="block" aria-labelledby="details-title">
-      <SectionHeading eyebrow="Details" title="Where to find me" id="details-title" />
-      <ul class="contact-list">
+      <SectionHeading eyebrow="Details" title="Where to find me" id="details-title" index="01" />
+      <ul class="contact-cards">
         {socials.map((social) => (
-          <li>
-            <span>{social.label}</span>
+          <li class="panel">
             <a href={social.href} rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
-              {social.handle}
+              <span class="card-icon" aria-hidden="true">
+                {iconFor(social.label) === 'mail' && (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <path d="m3 7 9 6 9-6" />
+                  </svg>
+                )}
+                {iconFor(social.label) === 'linkedin' && (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 9v10" /><path d="M6 5.5v.01" />
+                    <path d="M11 19v-6a3 3 0 0 1 6 0v6" /><path d="M11 9v10" />
+                  </svg>
+                )}
+                {iconFor(social.label) === 'github' && (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 19c-4 1.5-4-2-6-2.5" /><path d="M15 22v-4a4 4 0 0 0-1-3.2c3-.4 6-1.5 6-6.5A5 5 0 0 0 18.5 4 4.6 4.6 0 0 0 18.4.5S17 .1 15 1.5a12 12 0 0 0-6 0C7 .1 5.6.5 5.6.5A4.6 4.6 0 0 0 5.5 4 5 5 0 0 0 4 8.3c0 5 3 6.1 6 6.5A4 4 0 0 0 9 18v4" />
+                  </svg>
+                )}
+              </span>
+              <span class="card-body">
+                <span class="card-label">{social.label}</span>
+                <strong>{social.handle}</strong>
+              </span>
+              <span class="card-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
         ))}
-        <li>
-          <span>Location</span>
-          <span>{site.location}</span>
+        <li class="panel location-card">
+          <span class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" />
+            </svg>
+          </span>
+          <span class="card-body">
+            <span class="card-label">Location</span>
+            <strong>{site.location}</strong>
+          </span>
         </li>
       </ul>
     </section>
 
     <section class="block" aria-labelledby="experience-title">
-      <SectionHeading eyebrow="Background" title="Experience" id="experience-title" />
-      <ul class="experience-list">
-        {experience.map((item) => (
+      <SectionHeading eyebrow="Background" title="Experience" id="experience-title" index="02">
+        A quick look at where I've worked. The full timeline is on the resume.
+      </SectionHeading>
+      <ol class="experience-list">
+        {experience.map((item, index) => (
           <li>
-            <div>
-              <strong>{item.role}</strong>
-              <span>{item.organization}</span>
+            <span class="timeline-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <div class="timeline-body">
+              <div class="timeline-head">
+                <div>
+                  <strong>{item.role}</strong>
+                  <span>{item.organization}</span>
+                </div>
+                <span class="period">{item.period}</span>
+              </div>
+              {item.highlights.length > 0 && (
+                <p>{item.highlights[0]}</p>
+              )}
             </div>
-            <span class="muted">{item.period}</span>
           </li>
         ))}
-      </ul>
-      <a class="more-link" href="/resume/">Full resume →</a>
+      </ol>
+      <a class="more-link" href="/resume/">See full resume →</a>
     </section>
   </div>
 </BaseLayout>
@@ -56,8 +115,18 @@ const inquiryHref = `mailto:${site.email}?subject=${encodeURIComponent('Project 
     padding-block: clamp(3rem, 8vw, 6rem);
   }
 
+  .contact-hero {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  .contact-hero h1 {
+    max-width: 14ch;
+  }
+
   .intro {
-    max-width: 60ch;
+    max-width: 58ch;
     margin-top: 1.5rem;
     color: var(--color-muted);
     font-size: 1.1rem;
@@ -65,11 +134,60 @@ const inquiryHref = `mailto:${site.email}?subject=${encodeURIComponent('Project 
 
   .primary-cta {
     display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
     margin-top: 1.75rem;
-    padding: 0.75rem 1.15rem;
+    padding: 0.9rem 1.35rem;
     background: var(--color-accent);
     color: var(--color-accent-ink);
     border-radius: var(--radius);
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform var(--transition), background-color var(--transition);
+  }
+
+  .primary-cta:hover {
+    transform: translateY(-2px);
+    background: color-mix(in srgb, var(--color-accent) 85%, white);
+  }
+
+  .contact-callout {
+    padding: 2rem;
+    background:
+      radial-gradient(circle at 100% 0%, var(--color-accent-soft), transparent 55%),
+      var(--color-surface);
+  }
+
+  .callout-label {
+    margin-top: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .callout-text {
+    margin-top: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+  }
+
+  .callout-rule {
+    height: 1px;
+    margin-block: 1.5rem;
+    background: var(--color-border);
+  }
+
+  .callout-meta {
+    color: var(--color-muted);
+    font-size: 0.9rem;
+  }
+
+  .callout-link {
+    display: inline-block;
+    margin-top: 1rem;
     font-weight: 700;
     text-decoration: none;
   }
@@ -78,48 +196,165 @@ const inquiryHref = `mailto:${site.email}?subject=${encodeURIComponent('Project 
     margin-top: var(--space-section);
   }
 
-  .contact-list,
-  .experience-list {
+  .contact-cards {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
     padding: 0;
     list-style: none;
   }
 
-  .contact-list li,
-  .experience-list li {
+  .contact-cards a,
+  .location-card {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--color-border);
+    align-items: center;
+    gap: 1.1rem;
+    height: 100%;
+    padding: 1.35rem;
+    text-decoration: none;
+    transition: transform var(--transition), border-color var(--transition);
   }
 
-  .contact-list span:first-child {
+  .contact-cards a:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-accent-line);
+  }
+
+  .card-icon {
+    display: grid;
+    place-items: center;
+    width: 2.8rem;
+    height: 2.8rem;
+    flex: none;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 10px;
+    background: var(--color-accent-soft);
+    color: var(--color-link);
+  }
+
+  .card-icon svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  .card-label {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.68rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--color-muted);
   }
 
-  .experience-list strong {
+  .card-body strong {
+    color: var(--color-text);
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
+  }
+
+  .card-arrow {
+    margin-left: auto;
+    color: var(--color-link);
+  }
+
+  .experience-list {
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .experience-list li {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0 0 2rem 1.75rem;
+    position: relative;
+  }
+
+  .experience-list li:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline-index {
+    position: absolute;
+    left: -0.95rem;
+    top: 0;
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 50%;
+    background: var(--color-bg);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--color-link);
+  }
+
+  .timeline-body {
+    flex: 1;
+    padding: 1.35rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+
+  .timeline-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .timeline-head strong {
     display: block;
+    font-size: 1.1rem;
   }
 
-  .experience-list div span {
+  .timeline-head div span {
     color: var(--color-muted);
+    font-size: 0.9rem;
   }
 
-  .muted {
+  .period {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-link);
+  }
+
+  .timeline-body p {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
     color: var(--color-muted);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
   .more-link {
     display: inline-block;
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
     font-size: 0.9rem;
+    font-weight: 700;
     text-decoration: none;
+  }
+
+  @media (min-width: 900px) {
+    .contact-hero {
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 4rem;
+    }
+  }
+
+  @media (min-width: 720px) {
+    .contact-cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 </style>

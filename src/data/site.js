@@ -15,16 +15,19 @@ export const site = {
       title: 'Design & digital media',
       description:
         'Brand graphics, social and web visuals from real work in travel media and live television.',
+      icon: 'design',
     },
     {
       title: 'Web security reviews',
       description:
         'Practical vulnerability checks with Nmap, Burp Suite and Wireshark — findings prioritized in plain language.',
+      icon: 'shield',
     },
     {
       title: 'Web development',
       description:
         'Clean HTML, CSS and Python foundations, built with security in mind from the start.',
+      icon: 'code',
     },
   ],
 

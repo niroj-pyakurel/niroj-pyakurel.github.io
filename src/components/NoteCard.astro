@@ -10,25 +10,77 @@ const when = new Date(date).toLocaleDateString('en-US', {
 ---
 
 <article class="note-card" data-tags={tags.join(' ')}>
-  <div class="card-meta">
-    <p class="eyebrow">{when}</p>
-    {tags.length > 0 && (
-      <ul class="tags">
-        {tags.map((tag) => <li><Tag label={tag} /></li>)}
-      </ul>
-    )}
+  <div class="date-badge" aria-hidden="true">
+    <span>{new Date(date).toLocaleDateString('en-US', { day: '2-digit' })}</span>
+    <small>{new Date(date).toLocaleDateString('en-US', { month: 'short' })}</small>
   </div>
-  <h3><a href={href}>{title} <span aria-hidden="true">→</span></a></h3>
-  <p>{description}</p>
+
+  <div class="note-content">
+    <div class="card-meta">
+      <p class="eyebrow">{when}</p>
+      {tags.length > 0 && (
+        <ul class="tags">
+          {tags.map((tag) => <li><Tag label={tag} /></li>)}
+        </ul>
+      )}
+    </div>
+
+    <h3><a href={href}>{title}</a></h3>
+    <p>{description}</p>
+  </div>
+
+  <a class="note-arrow" href={href} aria-label={`Read ${title}`}>
+    <span aria-hidden="true">→</span>
+  </a>
 </article>
 
 <style>
   .note-card {
     display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-    padding: 1.5rem 0;
-    border-bottom: 1px solid var(--color-border);
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    border: 1px solid transparent;
+    border-bottom-color: var(--color-border);
+    border-radius: var(--radius);
+    transition: background-color var(--transition), border-color var(--transition);
+  }
+
+  .note-card:hover {
+    border-color: var(--color-accent-line);
+    background: var(--color-surface);
+  }
+
+  .date-badge {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    flex: none;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 12px;
+    background: var(--color-accent-soft);
+    font-family: var(--font-mono);
+    line-height: 1;
+  }
+
+  .date-badge span {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--color-link);
+  }
+
+  .date-badge small {
+    margin-top: 0.2rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .note-content {
+    flex: 1;
+    min-width: 0;
   }
 
   .card-meta {
@@ -48,7 +100,8 @@ const when = new Date(date).toLocaleDateString('en-US', {
   }
 
   h3 {
-    font-size: 1.25rem;
+    margin-top: 0.85rem;
+    font-size: 1.3rem;
   }
 
   h3 a {
@@ -60,12 +113,33 @@ const when = new Date(date).toLocaleDateString('en-US', {
     color: var(--color-link);
   }
 
-  h3 span {
-    color: var(--color-link);
-  }
-
-  .note-card > p:last-child {
+  .note-content > p {
+    margin-top: 0.6rem;
     color: var(--color-muted);
     font-size: 0.95rem;
+  }
+
+  .note-arrow {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: none;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    color: var(--color-link);
+    text-decoration: none;
+    transition: transform var(--transition), border-color var(--transition);
+  }
+
+  .note-arrow:hover {
+    transform: translateX(3px);
+    border-color: var(--color-accent-line);
+  }
+
+  @media (max-width: 520px) {
+    .note-arrow {
+      display: none;
+    }
   }
 </style>

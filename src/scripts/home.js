@@ -17,6 +17,15 @@ function initTerminal(root) {
 
   const mailHref = root.dataset.mailHref || '#';
   let runToken = 0;
+  let scrollFrame = 0;
+
+  const scrollToBottom = () => {
+    if (scrollFrame) return;
+    scrollFrame = requestAnimationFrame(() => {
+      scrollFrame = 0;
+      output.scrollTop = output.scrollHeight;
+    });
+  };
 
   const appendCommand = (command) => {
     const line = document.createElement('div');
@@ -32,7 +41,7 @@ function initTerminal(root) {
 
     line.append(prompt, value);
     output.append(line);
-    output.scrollTop = output.scrollHeight;
+    scrollToBottom();
   };
 
   const appendOutput = ({ text, tone = '' }) => {
@@ -45,7 +54,7 @@ function initTerminal(root) {
 
     line.append(value);
     output.append(line);
-    output.scrollTop = output.scrollHeight;
+    scrollToBottom();
   };
 
   const render = async (rawCommand) => {
@@ -234,38 +243,44 @@ function legacyCopy(text) {
 }
 
 function initCopyEmail(root) {
-  const button = root.querySelector('[data-copy-email]');
+  const buttons = [...root.querySelectorAll('[data-copy-email]')];
   const toast = root.querySelector('[data-toast]');
-  const label = root.querySelector('[data-copy-label]');
+  const labels = [...root.querySelectorAll('[data-copy-label]')];
 
-  if (!button || !toast) return;
+  if (buttons.length === 0 || !toast) return;
 
   let timer;
 
   const announce = (message, success) => {
     toast.textContent = message;
     toast.classList.add('is-visible');
-    if (label) label.textContent = success ? 'Copied!' : 'Copy failed';
+    labels.forEach((label) => {
+      label.textContent = success ? 'Copied!' : 'Copy failed';
+    });
 
     clearTimeout(timer);
     timer = setTimeout(() => {
       toast.classList.remove('is-visible');
-      if (label) label.textContent = 'Copy email';
+      labels.forEach((label) => {
+        label.textContent = 'Copy Email';
+      });
     }, 2000);
   };
 
-  button.addEventListener('click', async () => {
-    const email = button.dataset.email || '';
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(email);
-      } else {
-        legacyCopy(email);
+  buttons.forEach((button) => {
+    button.addEventListener('click', async () => {
+      const email = button.dataset.email || '';
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(email);
+        } else {
+          legacyCopy(email);
+        }
+        announce('Copied!', true);
+      } catch {
+        announce('Copy failed', false);
       }
-      announce('Copied to clipboard', true);
-    } catch {
-      announce('Could not copy — select the email below', false);
-    }
+    });
   });
 }
 

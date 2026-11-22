@@ -38,13 +38,88 @@ const marqueeTools = [
   ...securityOrder.map((name) => site.security.tools.find((tool) => tool === name)).filter(Boolean),
 ];
 
-const codeLines = [
-  { text: 'const craft = {', tone: 'kw' },
-  { text: `  design: '${designService?.title ?? 'Design'}',`, tone: 'str' },
-  { text: `  web: '${codeService?.title ?? 'Web'}',`, tone: 'str' },
-  { text: '  security: true', tone: 'bool' },
-  { text: '};', tone: 'kw' },
+const ideLines = [
+  [
+    { tone: 'kw', text: 'import' },
+    { tone: 'punc', text: ' { ' },
+    { tone: 'obj', text: 'useState' },
+    { tone: 'punc', text: ' } ' },
+    { tone: 'kw', text: 'from' },
+    { tone: 'str', text: " 'react';" },
+  ],
+  [
+    { tone: 'kw', text: 'import ' },
+    { tone: 'obj', text: 'Link' },
+    { tone: 'kw', text: ' from ' },
+    { tone: 'str', text: "'next/link';" },
+  ],
+  [],
+  [
+    { tone: 'kw', text: 'export default ' },
+    { tone: 'kw', text: 'function ' },
+    { tone: 'fn', text: 'CraftCard' },
+    { tone: 'punc', text: '() {' },
+  ],
+  [
+    { tone: 'punc', text: '  const ' },
+    { tone: 'punc', text: '[' },
+    { tone: 'obj', text: 'ready, setReady' },
+    { tone: 'punc', text: '] = ' },
+    { tone: 'fn', text: 'useState' },
+    { tone: 'punc', text: '(true);' },
+  ],
+  [],
+  [
+    { tone: 'kw', text: '  return ' },
+    { tone: 'punc', text: '(' },
+  ],
+  [
+    { tone: 'punc', text: '    <' },
+    { tone: 'tag', text: 'article' },
+    { tone: 'attr', text: ' className' },
+    { tone: 'punc', text: '=' },
+    { tone: 'str', text: '"rounded-2xl border-emerald-400/30 bg-slate-950 p-6"' },
+    { tone: 'punc', text: '>' },
+  ],
+  [
+    { tone: 'punc', text: '      <' },
+    { tone: 'tag', text: 'p' },
+    { tone: 'attr', text: ' className' },
+    { tone: 'punc', text: '=' },
+    { tone: 'str', text: '"text-emerald-300"' },
+    { tone: 'punc', text: '>Secure by default</' },
+    { tone: 'tag', text: 'p' },
+    { tone: 'punc', text: '>' },
+  ],
+  [
+    { tone: 'punc', text: '      <' },
+    { tone: 'tag', text: 'Link' },
+    { tone: 'attr', text: ' href' },
+    { tone: 'punc', text: '=' },
+    { tone: 'str', text: '"/projects"' },
+    { tone: 'attr', text: ' className' },
+    { tone: 'punc', text: '=' },
+    { tone: 'str', text: '"inline-flex text-emerald-300"' },
+    { tone: 'punc', text: '>View work →</' },
+    { tone: 'tag', text: 'Link' },
+    { tone: 'punc', text: '>' },
+  ],
+  [
+    { tone: 'punc', text: '    </' },
+    { tone: 'tag', text: 'article' },
+    { tone: 'punc', text: '>' },
+  ],
+  [
+    { tone: 'punc', text: '  );' },
+  ],
+  [
+    { tone: 'punc', text: '}' },
+  ],
 ];
+
+const designStack = ['Photoshop', 'Figma', 'Illustrator'];
+const webStack = ['React', 'Tailwind CSS', 'TypeScript', 'Python'];
+const securityStack = ['Burp Suite', 'Nmap', 'Wireshark', 'Penetration Testing'];
 
 const skillSample = site.skills.slice(0, 4);
 
@@ -205,128 +280,192 @@ const formatNoteDate = (date) =>
 
       <div class="bento">
         <article class="pillar pillar-design" data-tilt>
-          <div class="pillar-bar">
-            <span>01</span>
-            <span>UI/UX &amp; Brand Design</span>
-          </div>
-          <div class="pillar-content">
-            <h3>UI/UX &amp; Brand Design</h3>
-            <p>{designService?.description}</p>
-          </div>
-
-          <div class="artboard" data-design-artboard aria-hidden="true">
-            <div class="artboard-head">
-              <span data-artboard-label>Hero / cover</span>
-              <span>artboard preview</span>
-            </div>
-
-            <div class="artboard-stage">
-              <div class="artboard-panel is-active" data-artboard-panel="hero">
-                <div class="artboard-type"><span>Aa</span><small>display</small></div>
-                <div class="artboard-wire">
-                  <div class="wire-bar"></div>
-                  <div class="wire-bar short"></div>
-                  <div class="wire-block"></div>
-                  <div class="wire-grid"><i></i><i></i><i></i></div>
-                </div>
-                <div class="swatches">
-                  <i style="--swatch: #4ade80"></i>
-                  <i style="--swatch: #0f766e"></i>
-                  <i style="--swatch: #ffc078"></i>
-                  <i style="--swatch: #07151a"></i>
-                </div>
-              </div>
-
-              <div class="artboard-panel" data-artboard-panel="brand">
-                <div class="artboard-type"><span>NP</span><small>monogram</small></div>
-                <div class="artboard-wire">
-                  <div class="wire-lockup"><i></i><span></span></div>
-                  <div class="wire-scale"><i></i><i></i><i></i></div>
-                  <div class="wire-bar short"></div>
-                </div>
-                <div class="swatches">
-                  <i style="--swatch: #4ade80"></i>
-                  <i style="--swatch: #0d7a5f"></i>
-                  <i style="--swatch: #eaf6f3"></i>
-                  <i style="--swatch: #07151a"></i>
-                </div>
-              </div>
-
-              <div class="artboard-panel" data-artboard-panel="campaign">
-                <div class="artboard-type"><span>03</span><small>cards</small></div>
-                <div class="artboard-wire">
-                  <div class="wire-grid wire-grid--tall"><i></i><i></i><i></i></div>
-                  <div class="wire-bar"></div>
-                  <div class="wire-bar short"></div>
-                </div>
-                <div class="swatches">
-                  <i style="--swatch: #ffc078"></i>
-                  <i style="--swatch: #4ade80"></i>
-                  <i style="--swatch: #132c34"></i>
-                  <i style="--swatch: #eaf6f3"></i>
-                </div>
-              </div>
+          <div class="pillar-top">
+            <span class="pillar-index">01</span>
+            <div class="pillar-content">
+              <h3>UI/UX &amp; Brand Design</h3>
+              <p>{designService?.description}</p>
             </div>
           </div>
 
-          <div class="figma-mini">
-            <div class="mini-head"><span>layers</span><span>03</span></div>
-            <ul class="layer-list">
-              <li>
-                <button type="button" class="layer-row is-selected" data-layer="hero" aria-pressed="true">
-                  <i class="swatch swatch-mint"></i><span>Hero / cover</span>
+          <div class="glass-panel figma-panel" data-design-artboard>
+            <div class="window-bar">
+              <span class="window-dots panel-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="window-name">❖ Figma</span>
+              <span class="window-meta">100%</span>
+            </div>
+
+            <div class="figma-body">
+              <div class="figma-canvas">
+                <div class="canvas-head">
+                  <span data-artboard-label>Hero UI</span>
+                  <span>frame 01 · 100%</span>
+                </div>
+
+                <div class="canvas-stage">
+                  <div class="design-preview is-active" data-artboard-panel="hero">
+                    <div class="preview-hero">
+                      <span class="preview-avatar">NP</span>
+                      <div class="preview-copy">
+                        <span class="preview-kicker">FREELANCE · KATHMANDU</span>
+                        <strong>Crafted with clarity.</strong>
+                        <i></i><i></i>
+                      </div>
+                      <span class="preview-badge">ACTIVE</span>
+                    </div>
+                    <div class="preview-tags">
+                      <span>UI</span><span>HERO</span><span>GRID</span>
+                    </div>
+                  </div>
+
+                  <div class="design-preview" data-artboard-panel="system">
+                    <div class="preview-lockup">
+                      <span class="monogram-mark">NP</span>
+                      <div class="lockup-lines"><i></i><i></i><i></i></div>
+                    </div>
+                    <div class="system-grid">
+                      <i></i><i></i><i></i><i></i>
+                    </div>
+                    <span class="preview-badge">TOKENS</span>
+                  </div>
+
+                  <div class="design-preview" data-artboard-panel="assets">
+                    <div class="asset-row">
+                      <div class="asset-card"><i></i><span>cover</span></div>
+                      <div class="asset-card"><i></i><span>post</span></div>
+                      <div class="asset-card"><i></i><span>story</span></div>
+                    </div>
+                    <div class="asset-bars"><i></i><i></i></div>
+                    <span class="preview-badge">EXPORT</span>
+                  </div>
+                </div>
+
+                <div class="design-specimen">
+                  <div class="type-specimen">
+                    <span>Aa</span>
+                    <div><strong>Satoshi</strong><small>Display / body pairing</small></div>
+                  </div>
+                  <div class="hex-palette" aria-label="Palette: #4ADE80, #0B1516, #F8FAFC">
+                    <span><i style="--swatch: #4ade80"></i>#4ADE80</span>
+                    <span><i style="--swatch: #0b1516"></i>#0B1516</span>
+                    <span><i style="--swatch: #f8fafc"></i>#F8FAFC</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="layer-timeline" role="group" aria-label="Design layers">
+                <button type="button" class="timeline-item is-selected" data-layer="hero" aria-pressed="true">
+                  <span>❖ Hero UI</span>
                 </button>
-              </li>
-              <li>
-                <button type="button" class="layer-row" data-layer="brand" aria-pressed="false">
-                  <i class="swatch swatch-ink"></i><span>Brand kit</span>
+                <button type="button" class="timeline-item" data-layer="system" aria-pressed="false">
+                  <span>❖ Design System</span>
                 </button>
-              </li>
-              <li>
-                <button type="button" class="layer-row" data-layer="campaign" aria-pressed="false">
-                  <i class="swatch swatch-amber"></i><span>Campaign set</span>
+                <button type="button" class="timeline-item" data-layer="assets" aria-pressed="false">
+                  <span>❖ Brand Assets</span>
                 </button>
-              </li>
-            </ul>
-            <div class="mini-foot">{site.designTools.join(' · ')}</div>
+              </div>
+            </div>
           </div>
+
+          <div class="tool-pill">{designStack.join(' · ')}</div>
         </article>
 
         <article class="pillar pillar-code" data-tilt>
-          <div class="pillar-bar">
-            <span>02</span>
-            <span>Full-Stack Web Development</span>
+          <div class="pillar-top">
+            <span class="pillar-index">02</span>
+            <div class="pillar-content">
+              <h3>Full-Stack Web Development</h3>
+              <p>{codeService?.description}</p>
+            </div>
           </div>
-          <div class="pillar-content">
-            <h3>Full-Stack Web Development</h3>
-            <p>{codeService?.description}</p>
+
+          <div class="glass-panel ide-panel">
+            <div class="window-bar">
+              <span class="window-dots panel-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="window-name">craft.ts</span>
+              <span class="window-meta">TSX</span>
+            </div>
+
+            <div class="ide-body">
+              <pre class="code-mini"><code>{ideLines.map((segments, index) => (
+                <span class="code-line">
+                  <span class="line-no" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                  <span>{segments.map((segment) => (
+                    <span class={`tok-${segment.tone}`}>{segment.text}</span>
+                  ))}</span>
+                </span>
+              ))}</code></pre>
+
+              <div class="browser-preview" aria-hidden="true">
+                <div class="browser-bar">
+                  <span class="browser-dots"><i></i><i></i><i></i></span>
+                  <span>localhost:3000</span>
+                  <span class="http-status">200 OK</span>
+                </div>
+                <div class="browser-body">
+                  <div class="preview-nav"><span>NP.</span><span>Work →</span></div>
+                  <div class="preview-headline">Secure by default.</div>
+                  <div class="preview-placeholder"><i></i><i></i></div>
+                  <span class="preview-status">Live Preview → 200 OK</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="code-wrap" aria-hidden="true">
-            <pre class="code-mini"><code>{codeLines.map((line) => (
-              <span class={`code-line tone-${line.tone}`}>{line.text}</span>
-            ))}</code></pre>
-            <div class="code-status"><span>✓</span> {languages.join(' / ')}</div>
-          </div>
+
+          <div class="tool-pill">{webStack.join(' · ')}</div>
         </article>
 
         <article class="pillar pillar-security" data-tilt>
-          <div class="pillar-bar">
-            <span>03</span>
-            <span>Practical Security Audits</span>
+          <div class="pillar-top">
+            <span class="pillar-index">03</span>
+            <div class="pillar-content">
+              <h3>Practical Security Audits</h3>
+              <p>{securityService?.description}</p>
+            </div>
           </div>
-          <div class="pillar-content">
-            <h3>Practical Security Audits</h3>
-            <p>{securityService?.description}</p>
+
+          <div class="glass-panel audit-panel">
+            <div class="window-bar">
+              <span class="window-dots panel-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="window-name">niroj@sec:~/audit</span>
+              <span class="audit-ready"><i></i> AUDIT READY</span>
+            </div>
+
+            <div class="audit-body">
+              <p class="audit-command"><span>$</span> scan --target localhost --depth basic</p>
+              <p class="audit-muted">→ mapping target surface and active services</p>
+
+              <div class="audit-checks">
+                <div>
+                  <span class="check">✓</span>
+                  <strong>Nmap</strong>
+                  <small>ports / services</small>
+                  <span class="check-state">RUNNING</span>
+                </div>
+                <div>
+                  <span class="check">✓</span>
+                  <strong>Burp Suite</strong>
+                  <small>web requests</small>
+                  <span class="check-state">RUNNING</span>
+                </div>
+                <div>
+                  <span class="check">✓</span>
+                  <strong>Wireshark</strong>
+                  <small>traffic capture</small>
+                  <span class="check-state">RUNNING</span>
+                </div>
+              </div>
+
+              <div class="audit-results">
+                <span class="result-pass">[PASS] SSL/TLS</span>
+                <span class="result-secure">[SECURE] OWASP Top 10</span>
+              </div>
+
+              <div class="audit-progress"><i></i></div>
+            </div>
           </div>
-          <div class="scan-mini" aria-hidden="true">
-            <div class="scan-head"><span class="scan-light"></span> toolchain check</div>
-            <ul>
-              {site.security.tools.map((tool) => (
-                <li><span class="check">✓</span>{tool}</li>
-              ))}
-            </ul>
-            <div class="scan-foot">{site.security.label} · {site.location}</div>
-          </div>
+
+          <div class="tool-pill">{securityStack.join(' · ')}</div>
         </article>
       </div>
     </section>
@@ -458,28 +597,47 @@ const formatNoteDate = (date) =>
     <section class="section container" aria-labelledby="cta-title">
       <div class="final-cta">
         <p class="section-kicker">// 04 — let's talk</p>
-        <h2 id="cta-title">Have an idea that needs clean design and solid security?</h2>
-        <p class="cta-copy">
-          Available for freelance design, web builds, and security audits — send a note and let's map out the first step.
-        </p>
 
-        <div class="final-actions">
-          <a class="btn btn-primary" href={inquiryHref} data-magnetic>
-            <span>Start a project</span><span aria-hidden="true">→</span>
-          </a>
-          <button
-            class="btn btn-ghost"
-            type="button"
-            data-magnetic
-            data-copy-email
-            data-email={site.email}
-          >
-            <span data-copy-label>Copy email</span><span aria-hidden="true">⧉</span>
-          </button>
+        <div class="cta-grid">
+          <div class="cta-copy-wrap">
+            <h2 id="cta-title">Have a project in mind? Let's build something exceptional.</h2>
+            <p class="cta-copy">
+              Available for freelance design, full-stack development, and security audits — reach out to discuss your goals.
+            </p>
+          </div>
+
+          <div class="cta-side">
+            <div class="email-wrap">
+              <button
+                class="email-display"
+                type="button"
+                data-copy-email
+                data-email={site.email}
+                aria-label={`Copy email address ${site.email}`}
+              >
+                <span class="email-icon" aria-hidden="true">@</span>
+                <span class="email-address">{site.email}</span>
+                <span class="email-copy-icon" aria-hidden="true">⧉</span>
+              </button>
+              <div class="toast" data-toast role="status" aria-live="polite">Copied!</div>
+            </div>
+
+            <div class="final-actions">
+              <a class="btn btn-primary" href={inquiryHref} data-magnetic>
+                <span>Start a project</span><span aria-hidden="true">→</span>
+              </a>
+              <button
+                class="btn btn-ghost"
+                type="button"
+                data-magnetic
+                data-copy-email
+                data-email={site.email}
+              >
+                <span data-copy-label>Copy Email</span><span aria-hidden="true">⧉</span>
+              </button>
+            </div>
+          </div>
         </div>
-
-        <p class="final-email">{site.email}</p>
-        <div class="toast" data-toast role="status" aria-live="polite">Copied to clipboard</div>
       </div>
     </section>
   </div>
@@ -983,9 +1141,10 @@ const formatNoteDate = (date) =>
 
   .bento {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1rem;
     margin-top: 2.25rem;
+    align-items: stretch;
   }
 
   .pillar {
@@ -993,18 +1152,23 @@ const formatNoteDate = (date) =>
     --ry: 0deg;
     --tilt-x: 50%;
     --tilt-y: 50%;
+    --panel-text: #e8f4f0;
+    --panel-muted: #8fa9a5;
+    --panel-line: rgb(148 184 176 / 0.13);
+    --panel-accent: #4ade80;
     position: relative;
     isolation: isolate;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 1.4rem;
-    min-height: 21rem;
-    padding: clamp(1.4rem, 3vw, 2rem);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-xl);
-    background: var(--color-surface);
-    box-shadow: var(--shadow-soft);
+    gap: 1rem;
+    min-height: 34rem;
+    padding: clamp(1.25rem, 2.2vw, 1.6rem);
+    border: 1px solid rgb(148 184 176 / 0.16);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(155deg, rgb(13 27 29 / 0.94), rgb(6 17 19 / 0.97));
+    box-shadow: 0 18px 44px rgb(0 0 0 / 0.26), inset 0 1px 0 rgb(255 255 255 / 0.035);
+    color: var(--panel-text);
     transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
     transition: transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease;
   }
@@ -1017,7 +1181,7 @@ const formatNoteDate = (date) =>
     pointer-events: none;
     background: radial-gradient(
       420px circle at var(--tilt-x) var(--tilt-y),
-      color-mix(in srgb, var(--color-accent) 12%, transparent),
+      rgb(74 222 128 / 0.14),
       transparent 68%
     );
     opacity: 0;
@@ -1025,333 +1189,650 @@ const formatNoteDate = (date) =>
   }
 
   .pillar:hover {
-    border-color: var(--color-accent-line);
-    box-shadow: var(--shadow-card);
+    border-color: rgb(74 222 128 / 0.42);
+    box-shadow: 0 24px 60px rgb(0 0 0 / 0.32), 0 0 32px rgb(74 222 128 / 0.1);
   }
 
   .pillar:hover::after {
     opacity: 1;
   }
 
-  .pillar-design {
-    grid-column: span 7;
-    grid-row: span 2;
-    min-height: 30rem;
-  }
-
-  .pillar-code,
-  .pillar-security {
-    grid-column: span 5;
-  }
-
-  .pillar-bar {
+  .pillar-top {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.67rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-muted);
+    align-items: flex-start;
+    gap: 0.8rem;
   }
 
-  .pillar-bar span:first-child {
-    color: var(--color-accent);
+  .pillar-index {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    flex: none;
+    border: 1px solid rgb(74 222 128 / 0.34);
+    border-radius: 9px;
+    background: rgb(74 222 128 / 0.1);
+    color: var(--panel-accent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
     font-weight: 700;
   }
 
   .pillar-content h3 {
-    font-size: clamp(1.35rem, 2.6vw, 1.85rem);
+    font-size: clamp(1.15rem, 1.7vw, 1.45rem);
   }
 
   .pillar-content p {
-    margin-top: 0.7rem;
-    color: var(--color-muted);
-    font-size: 0.92rem;
+    margin-top: 0.4rem;
+    color: var(--panel-muted);
+    font-size: 0.82rem;
+    line-height: 1.5;
   }
 
-  .artboard {
+  .glass-panel {
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    background: var(--color-surface-raised);
-    font-family: var(--font-mono);
+    border: 1px solid var(--panel-line);
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgb(13 29 31 / 0.92), rgb(5 16 18 / 0.96));
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
   }
 
-  .artboard-head {
+  .window-bar {
     display: flex;
     align-items: center;
+    gap: 0.5rem;
+    min-height: 2rem;
+    padding: 0.45rem 0.6rem;
+    border-bottom: 1px solid var(--panel-line);
+    background: rgb(255 255 255 / 0.02);
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+  }
+
+  .window-dots,
+  .browser-dots {
+    display: flex;
+    gap: 0.22rem;
+    flex: none;
+  }
+
+  .window-dots i,
+  .browser-dots i {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: #3d5c5b;
+  }
+
+  .window-dots i:first-child,
+  .browser-dots i:first-child {
+    background: var(--panel-accent);
+  }
+
+  .window-name {
+    overflow: hidden;
+    color: var(--panel-text);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .window-meta {
+    margin-left: auto;
+    color: var(--panel-muted);
+    white-space: nowrap;
+  }
+
+  /* Card 01 — Figma-inspired artboard */
+  .figma-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    height: calc(100% - 2rem);
+    padding: 0.6rem;
+  }
+
+  .figma-canvas {
+    overflow: hidden;
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    background: #071416;
+  }
+
+  .canvas-head {
+    display: flex;
     justify-content: space-between;
     gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid var(--color-border);
-    color: var(--color-muted);
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--panel-line);
+    color: var(--panel-muted);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
   }
 
-  .artboard-head span:first-child {
-    color: var(--color-link);
+  .canvas-head span:first-child {
+    color: var(--panel-accent);
   }
 
-  .artboard-stage {
-    min-height: 10.5rem;
-    padding: 0.9rem;
-    background:
-      radial-gradient(circle at 90% 0%, var(--color-accent-soft), transparent 60%),
-      var(--color-bg-deep);
+  .canvas-stage {
+    position: relative;
+    min-height: 9.6rem;
+    padding: 0.6rem;
   }
 
-  .artboard-panel {
+  .design-preview {
     display: none;
-    grid-template-columns: auto 1fr;
+    position: relative;
+    min-height: 8.4rem;
+  }
+
+  .design-preview.is-active {
+    display: block;
+    animation: line-in 260ms ease both;
+  }
+
+  .preview-hero {
+    display: flex;
     align-items: center;
-    gap: 0.9rem;
+    gap: 0.6rem;
+    padding: 0.65rem;
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    background: #0b1d20;
   }
 
-  .artboard-panel.is-active {
-    display: grid;
-    animation: line-in 300ms ease both;
-  }
-
-  .artboard-type {
+  .preview-avatar,
+  .monogram-mark {
     display: grid;
     place-items: center;
-    align-content: center;
-    width: 4.5rem;
-    height: 4.5rem;
-    border: 1px solid var(--color-accent-line);
-    border-radius: 14px;
-    background: var(--color-accent-soft);
+    width: 2.4rem;
+    height: 2.4rem;
+    flex: none;
+    border-radius: 8px;
+    background: var(--panel-accent);
+    color: #03110f;
     font-family: var(--font-display);
-    font-size: 2rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    line-height: 1;
-    color: var(--color-accent);
   }
 
-  .artboard-type small {
-    margin-top: 0.35rem;
-    font-family: var(--font-mono);
-    font-size: 0.48rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-  }
-
-  .artboard-wire {
-    display: grid;
-    gap: 0.45rem;
+  .preview-copy {
     min-width: 0;
   }
 
-  .wire-bar {
-    height: 0.42rem;
+  .preview-kicker {
+    display: block;
+    color: var(--panel-accent);
+    font-size: 0.43rem;
+    letter-spacing: 0.08em;
+  }
+
+  .preview-copy strong {
+    display: block;
+    margin-top: 0.2rem;
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    line-height: 1.1;
+  }
+
+  .preview-copy i {
+    display: block;
+    width: 82%;
+    height: 0.22rem;
+    margin-top: 0.38rem;
     border-radius: 999px;
-    background: var(--color-border);
+    background: #2b464b;
   }
 
-  .wire-bar.short {
-    width: 55%;
+  .preview-copy i + i {
+    width: 54%;
+    margin-top: 0.25rem;
   }
 
-  .wire-block {
-    height: 2.6rem;
-    border: 1px dashed var(--color-accent-line);
-    border-radius: 8px;
-    background: var(--color-accent-soft);
+  .preview-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.55rem;
+    padding: 0.16rem 0.4rem;
+    border-radius: 999px;
+    background: rgb(74 222 128 / 0.14);
+    color: var(--panel-accent);
+    font-size: 0.43rem;
+    letter-spacing: 0.08em;
   }
 
-  .wire-grid {
+  .preview-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+  }
+
+  .preview-tags span {
+    padding: 0.18rem 0.42rem;
+    border: 1px solid var(--panel-line);
+    border-radius: 999px;
+    color: var(--panel-muted);
+    font-size: 0.44rem;
+  }
+
+  .preview-lockup {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.75rem;
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    background: #0b1d20;
+  }
+
+  .lockup-lines {
+    display: grid;
+    flex: 1;
+    gap: 0.35rem;
+  }
+
+  .lockup-lines i,
+  .asset-bars i {
+    height: 0.34rem;
+    border-radius: 999px;
+    background: #2b464b;
+  }
+
+  .lockup-lines i:nth-child(2) { width: 72%; }
+  .lockup-lines i:nth-child(3) { width: 48%; }
+
+  .system-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.35rem;
+    margin-top: 0.55rem;
+  }
+
+  .system-grid i {
+    height: 2.4rem;
+    border: 1px solid var(--panel-line);
+    border-radius: 7px;
+    background: rgb(255 255 255 / 0.025);
+  }
+
+  .system-grid i:nth-child(2) { background: rgb(74 222 128 / 0.12); }
+  .system-grid i:nth-child(3) { background: rgb(45 212 191 / 0.1); }
+
+  .asset-row {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.4rem;
   }
 
-  .wire-grid i {
-    height: 1.35rem;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    background: var(--color-surface-raised);
+  .asset-card {
+    padding: 0.45rem;
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    background: #0b1d20;
+    text-align: center;
   }
 
-  .wire-grid--tall i {
-    height: 2.6rem;
+  .asset-card i {
+    display: block;
+    height: 2.2rem;
+    border-radius: 5px;
+    background: linear-gradient(150deg, rgb(74 222 128 / 0.3), rgb(45 212 191 / 0.08));
   }
 
-  .wire-lockup {
+  .asset-card span {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--panel-muted);
+    font-size: 0.43rem;
+  }
+
+  .asset-bars {
+    display: grid;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+  }
+
+  .design-specimen {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.55rem 0.65rem;
+    border-top: 1px solid var(--panel-line);
+    background: #081518;
+  }
+
+  .type-specimen {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
 
-  .wire-lockup i {
-    width: 1.9rem;
-    height: 1.9rem;
-    flex: none;
-    border-radius: 6px;
-    background: var(--color-accent);
+  .type-specimen > span {
+    color: var(--panel-accent);
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1;
   }
 
-  .wire-lockup span {
-    width: 60%;
-    height: 0.5rem;
-    border-radius: 999px;
-    background: var(--color-border);
+  .type-specimen strong,
+  .type-specimen small {
+    display: block;
+    white-space: nowrap;
   }
 
-  .wire-scale {
-    display: grid;
-    gap: 0.35rem;
-  }
+  .type-specimen strong { font-size: 0.6rem; }
+  .type-specimen small { color: var(--panel-muted); font-size: 0.43rem; }
 
-  .wire-scale i {
-    height: 0.45rem;
-    border-radius: 999px;
-    background: var(--color-accent-line);
-  }
-
-  .wire-scale i:nth-child(2) { width: 70%; }
-  .wire-scale i:nth-child(3) { width: 45%; }
-
-  .swatches {
+  .hex-palette {
     display: flex;
-    gap: 0.35rem;
-    grid-column: 1 / -1;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.45rem;
   }
 
-  .swatches i {
-    width: 1.1rem;
-    height: 1.1rem;
-    border: 1px solid color-mix(in srgb, var(--color-text) 22%, transparent);
+  .hex-palette span {
+    display: flex;
+    align-items: center;
+    gap: 0.22rem;
+    color: var(--panel-muted);
+    font-size: 0.42rem;
+    white-space: nowrap;
+  }
+
+  .hex-palette i {
+    width: 0.55rem;
+    height: 0.55rem;
+    border: 1px solid rgb(255 255 255 / 0.18);
     border-radius: 50%;
     background: var(--swatch);
   }
 
-  .figma-mini,
-  .code-wrap,
-  .scan-mini {
-    margin-top: auto;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    background: var(--color-bg-deep);
+  .layer-timeline {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+  }
+
+  .timeline-item {
+    padding: 0.42rem 0.28rem;
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    background: rgb(255 255 255 / 0.02);
+    color: var(--panel-muted);
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-  }
-
-  .mini-head,
-  .scan-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.65rem 0.8rem;
-    border-bottom: 1px solid var(--color-border);
-    color: var(--color-muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .layer-list,
-  .scan-mini ul {
-    padding: 0.55rem;
-    list-style: none;
-  }
-
-  .layer-row {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    width: 100%;
-    padding: 0.5rem 0.65rem;
-    border: 1px solid transparent;
-    border-radius: 7px;
-    background: transparent;
-    color: var(--color-muted);
-    font: inherit;
-    text-align: left;
+    font-size: 0.5rem;
+    text-align: center;
     cursor: pointer;
-    transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+    transition: border-color 200ms ease, background-color 200ms ease, color 200ms ease;
   }
 
-  .layer-row:hover {
-    color: var(--color-text);
+  .timeline-item:hover {
+    border-color: rgb(74 222 128 / 0.34);
+    color: var(--panel-text);
   }
 
-  .layer-row.is-selected {
-    border-color: var(--color-accent-line);
-    background: var(--color-accent-soft);
-    color: var(--color-text);
+  .timeline-item.is-selected {
+    border-color: rgb(74 222 128 / 0.55);
+    background: rgb(74 222 128 / 0.12);
+    color: var(--panel-accent);
   }
 
-  .swatch {
-    width: 0.75rem;
-    height: 0.75rem;
-    flex: none;
-    border-radius: 4px;
-    border: 1px solid color-mix(in srgb, var(--color-text) 18%, transparent);
-  }
-
-  .swatch-mint { background: var(--color-accent); }
-  .swatch-ink { background: var(--color-surface-raised); }
-  .swatch-amber { background: var(--color-accent-2); }
-
-  .mini-foot,
-  .scan-foot {
-    padding: 0.6rem 0.8rem;
-    border-top: 1px solid var(--color-border);
-    color: var(--color-link);
+  /* Card 02 — IDE and live browser preview */
+  .ide-body {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 2rem);
+    min-height: 0;
+    padding: 0.55rem;
   }
 
   .code-mini {
+    flex: 1;
+    min-height: 10.5rem;
     margin: 0;
-    padding: 0.9rem;
-    overflow-x: auto;
-    line-height: 1.7;
+    padding: 0.55rem 0.65rem;
+    overflow: auto;
+    color: var(--panel-text);
+    font-family: var(--font-mono);
+    font-size: 0.61rem;
+    line-height: 1.65;
+    scrollbar-width: thin;
   }
 
   .code-line {
-    display: block;
+    display: flex;
+    gap: 0.65rem;
+    min-height: 1.05rem;
+    white-space: pre;
   }
 
-  .code-status {
+  .line-no {
+    color: #44615f;
+    user-select: none;
+  }
+
+  .tok-kw { color: #c792ea; }
+  .tok-str { color: #a5e88a; }
+  .tok-fn { color: #7dd3fc; }
+  .tok-obj { color: #ffd580; }
+  .tok-punc { color: #89a5a2; }
+  .tok-tag { color: #67e8f9; }
+  .tok-attr { color: #c4b5fd; }
+
+  .browser-preview {
+    flex: none;
+    overflow: hidden;
+    margin-top: 0.5rem;
+    border: 1px solid var(--panel-line);
+    border-radius: 9px;
+    background: #08191b;
+  }
+
+  .browser-bar {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.65rem 0.9rem;
-    border-top: 1px solid var(--color-border);
-    color: var(--color-muted);
+    gap: 0.45rem;
+    padding: 0.35rem 0.5rem;
+    border-bottom: 1px solid var(--panel-line);
+    color: var(--panel-muted);
+    font-size: 0.48rem;
   }
 
-  .code-status span {
-    color: var(--color-accent);
+  .http-status {
+    margin-left: auto;
+    color: var(--panel-accent);
   }
 
-  .scan-mini .scan-head {
-    justify-content: flex-start;
-    gap: 0.5rem;
+  .browser-body {
+    padding: 0.6rem;
   }
 
-  .scan-light {
-    width: 0.45rem;
-    height: 0.45rem;
+  .preview-nav {
+    display: flex;
+    justify-content: space-between;
+    color: var(--panel-accent);
+    font-size: 0.52rem;
+  }
+
+  .preview-headline {
+    margin-top: 0.45rem;
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+
+  .preview-placeholder {
+    display: flex;
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+  }
+
+  .preview-placeholder i {
+    flex: 1;
+    height: 0.27rem;
+    border-radius: 999px;
+    background: #254047;
+  }
+
+  .preview-placeholder i:last-child { flex: 0.6; }
+
+  .preview-status {
+    display: inline-block;
+    margin-top: 0.55rem;
+    padding: 0.24rem 0.48rem;
+    border: 1px solid rgb(74 222 128 / 0.28);
+    border-radius: 999px;
+    background: rgb(74 222 128 / 0.08);
+    color: var(--panel-accent);
+    font-size: 0.48rem;
+  }
+
+  /* Card 03 — Security audit terminal */
+  .audit-panel .window-bar {
+    border-bottom-color: rgb(74 222 128 / 0.2);
+  }
+
+  .audit-ready {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    margin-left: auto;
+    color: var(--panel-accent);
+    font-size: 0.47rem;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .audit-ready i {
+    width: 0.38rem;
+    height: 0.38rem;
     border-radius: 50%;
-    background: var(--color-accent);
+    background: var(--panel-accent);
+    box-shadow: 0 0 0 3px rgb(74 222 128 / 0.12);
     animation: live-pulse 3s ease-in-out infinite;
   }
 
-  .scan-mini li {
+  .audit-body {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 0.55rem;
-    padding: 0.28rem 0.6rem;
-    color: var(--color-muted);
+    height: calc(100% - 2rem);
+    padding: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+  }
+
+  .audit-command,
+  .audit-muted {
+    margin: 0;
+  }
+
+  .audit-command { color: var(--panel-text); }
+  .audit-command span { color: var(--panel-accent); }
+  .audit-muted { color: #6f8c89; }
+
+  .audit-checks {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .audit-checks > div {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    background: rgb(255 255 255 / 0.02);
   }
 
   .check {
-    color: var(--color-accent);
+    grid-row: 1 / span 2;
+    color: var(--panel-accent);
     font-weight: 700;
+  }
+
+  .audit-checks strong {
+    color: var(--panel-text);
+    font-size: 0.56rem;
+  }
+
+  .audit-checks small {
+    grid-column: 2;
+    color: #6f8c89;
+    font-size: 0.44rem;
+  }
+
+  .check-state {
+    grid-row: 1 / span 2;
+    grid-column: 3;
+    color: var(--panel-accent);
+    font-size: 0.42rem;
+  }
+
+  .audit-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .audit-results span {
+    padding: 0.3rem 0.45rem;
+    border-radius: 6px;
+    font-size: 0.48rem;
+  }
+
+  .result-pass {
+    border: 1px solid rgb(74 222 128 / 0.3);
+    background: rgb(74 222 128 / 0.12);
+    color: var(--panel-accent);
+  }
+
+  .result-secure {
+    border: 1px solid rgb(45 212 191 / 0.26);
+    background: rgb(45 212 191 / 0.1);
+    color: #5eead4;
+  }
+
+  .audit-progress {
+    overflow: hidden;
+    height: 0.3rem;
+    margin-top: auto;
+    border-radius: 999px;
+    background: #20373a;
+  }
+
+  .audit-progress i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #4ade80, #2dd4bf);
+    transform: scaleX(0.82);
+    transform-origin: left center;
+    animation: audit-progress 3.2s ease-in-out infinite alternate;
+  }
+
+  .tool-pill {
+    margin-top: auto;
+    padding: 0.48rem 0.65rem;
+    border: 1px solid var(--panel-line);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.03);
+    color: #a9c1bd;
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    text-align: center;
+  }
+
+  @keyframes audit-progress {
+    from { transform: scaleX(0.62); }
+    to { transform: scaleX(0.92); }
   }
 
   .spotlight {
@@ -1681,15 +2162,23 @@ const formatNoteDate = (date) =>
   }
 
   .final-cta {
+    --cta-text: #f8fafc;
+    --cta-muted: #a7c9bd;
+    --cta-accent: #4ade80;
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    padding: clamp(2rem, 6vw, 4.25rem);
+    padding: clamp(2rem, 5.5vw, 4rem);
+    border: 1px solid rgb(74 222 128 / 0.26);
     border-radius: var(--radius-xl);
-    background: var(--color-accent);
-    color: var(--color-accent-ink);
-    box-shadow: var(--shadow-card);
-    text-align: center;
+    background:
+      radial-gradient(circle at 86% 8%, rgb(74 222 128 / 0.16), transparent 42%),
+      radial-gradient(circle at 0% 100%, rgb(15 118 110 / 0.18), transparent 48%),
+      linear-gradient(145deg, rgb(10 22 24 / 0.96), rgb(4 15 19 / 0.95));
+    box-shadow: 0 28px 70px rgb(0 0 0 / 0.34), inset 0 1px 0 rgb(255 255 255 / 0.05),
+      0 0 50px rgb(74 222 128 / 0.07);
+    color: var(--cta-text);
+    text-align: left;
   }
 
   .final-cta::before {
@@ -1697,79 +2186,164 @@ const formatNoteDate = (date) =>
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: radial-gradient(circle at 85% 10%, rgb(255 255 255 / 0.22), transparent 55%);
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgb(148 184 176 / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(148 184 176 / 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: linear-gradient(120deg, #000, transparent 72%);
+    mask-image: linear-gradient(120deg, #000, transparent 72%);
   }
 
-  .final-cta .section-kicker,
-  .final-cta .cta-copy,
-  .final-cta .final-email {
-    color: color-mix(in srgb, var(--color-accent-ink) 78%, transparent);
+  .final-cta .section-kicker {
+    color: var(--cta-accent);
+  }
+
+  .cta-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: end;
   }
 
   .final-cta h2 {
-    max-width: 22ch;
-    margin: 1rem auto 0;
-    font-size: clamp(1.9rem, 4.6vw, 3.1rem);
+    max-width: 20ch;
+    margin-top: 1rem;
+    font-size: clamp(2rem, 4.4vw, 3.35rem);
+    line-height: 1.02;
+    letter-spacing: -0.04em;
   }
 
   .cta-copy {
-    max-width: 52ch;
-    margin: 1rem auto 0;
+    max-width: 54ch;
+    margin-top: 1.1rem;
+    color: var(--cta-muted);
+    font-size: clamp(0.92rem, 1.4vw, 1rem);
+  }
+
+  .cta-side {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .email-wrap {
+    position: relative;
+  }
+
+  .email-display {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    width: 100%;
+    min-width: 0;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid rgb(74 222 128 / 0.24);
+    border-radius: 14px;
+    background: rgb(4 15 19 / 0.62);
+    color: var(--cta-text);
+    font-family: var(--font-mono);
+    font-size: clamp(0.78rem, 1.25vw, 0.92rem);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
+  }
+
+  .email-display:hover {
+    border-color: var(--cta-accent);
+    background: rgb(74 222 128 / 0.07);
+    box-shadow: 0 0 0 3px rgb(74 222 128 / 0.1), 0 12px 28px rgb(0 0 0 / 0.25);
+  }
+
+  .email-icon {
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    flex: none;
+    border-radius: 50%;
+    background: rgb(74 222 128 / 0.14);
+    color: var(--cta-accent);
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+
+  .email-address {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .email-copy-icon {
+    margin-left: auto;
+    color: var(--cta-accent);
+    font-size: 1rem;
   }
 
   .final-actions {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.8rem;
-    margin-top: 2rem;
+    gap: 0.7rem;
   }
 
   .final-cta .btn-primary {
-    background: var(--color-accent-ink);
-    color: var(--color-accent);
+    background: #4ade80;
+    color: #020617;
+    font-weight: 600;
   }
 
   .final-cta .btn-primary:hover {
-    background: color-mix(in srgb, var(--color-accent-ink) 86%, transparent);
+    background: #34d399;
+    box-shadow: 0 14px 34px rgb(52 211 153 / 0.22);
   }
 
   .final-cta .btn-ghost {
-    border-color: color-mix(in srgb, var(--color-accent-ink) 45%, transparent);
-    background: transparent;
-    color: var(--color-accent-ink);
+    border-color: rgb(248 250 252 / 0.22);
+    background: rgb(255 255 255 / 0.03);
+    color: var(--cta-text);
   }
 
   .final-cta .btn-ghost:hover {
-    border-color: var(--color-accent-ink);
-    color: var(--color-accent-ink);
-  }
-
-  .final-email {
-    margin-top: 1.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
+    border-color: rgb(74 222 128 / 0.6);
+    background: rgb(74 222 128 / 0.08);
+    color: var(--cta-accent);
   }
 
   .toast {
     position: absolute;
-    left: 50%;
-    bottom: 1rem;
-    padding: 0.5rem 0.9rem;
+    right: 0.75rem;
+    bottom: calc(100% + 0.5rem);
+    padding: 0.35rem 0.65rem;
+    border: 1px solid rgb(74 222 128 / 0.4);
     border-radius: 999px;
-    background: var(--color-accent-ink);
-    color: var(--color-accent);
+    background: #0b1e20;
+    color: var(--cta-accent);
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     opacity: 0;
-    transform: translate(-50%, 8px);
+    transform: translateY(6px);
     pointer-events: none;
     transition: opacity 220ms ease, transform 220ms ease;
   }
 
+  .toast::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 1rem;
+    border: 5px solid transparent;
+    border-top-color: rgb(74 222 128 / 0.4);
+  }
+
   .toast.is-visible {
     opacity: 1;
-    transform: translate(-50%, 0);
+    transform: translateY(0);
+  }
+
+  @media (max-width: 900px) {
+    .cta-grid {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
   }
 
   @keyframes word-in {
@@ -1819,22 +2393,35 @@ const formatNoteDate = (date) =>
     }
   }
 
-  @media (max-width: 899px) {
+  @media (max-width: 1080px) {
+    .bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pillar-security {
+      grid-column: 1 / -1;
+    }
+
+    .pillar {
+      min-height: 31rem;
+    }
+  }
+
+  @media (max-width: 760px) {
     .bento {
       grid-template-columns: 1fr;
     }
 
-    .pillar,
-    .pillar-design,
-    .pillar-code,
     .pillar-security {
-      grid-column: 1 / -1;
-      grid-row: auto;
-      min-height: 20rem;
+      grid-column: auto;
     }
 
-    .pillar-design {
-      min-height: 25rem;
+    .pillar {
+      min-height: auto;
+    }
+
+    .glass-panel {
+      min-height: 27rem;
     }
 
     .spotlight-preview {
@@ -1932,7 +2519,10 @@ const formatNoteDate = (date) =>
       background-position: center;
     }
 
-    .marquee-track {
+    .marquee-track,
+    .audit-progress i,
+    .audit-ready i,
+    .live-dot {
       animation: none;
     }
 

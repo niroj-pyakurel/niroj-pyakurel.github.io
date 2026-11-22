@@ -34,7 +34,25 @@ const stats = [
 
     <section class="block" aria-labelledby="story-title">
       <div class="story-layout">
-        <SectionHeading eyebrow="Background" title="A short story" id="story-title" index="01" />
+        <div class="story-side">
+          <SectionHeading eyebrow="Background" title="A short story" id="story-title" index="01" />
+          <figure class="story-photo">
+            <picture>
+              <source srcset="/niroj.webp?v=20261122c" type="image/webp" />
+              <img
+                src="/niroj.png?v=20261122b"
+                width="256"
+                height="256"
+                loading="lazy"
+                alt="Portrait of Niroj Pyakurel"
+              />
+            </picture>
+            <figcaption>
+              <strong>{site.name}</strong>
+              <span>Design · Web · Security</span>
+            </figcaption>
+          </figure>
+        </div>
         <div class="prose story">
           <p class="lead">{site.about.lead}</p>
           {site.about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
@@ -219,6 +237,57 @@ const stats = [
   .story-layout {
     display: grid;
     gap: 2rem;
+  }
+
+  .story-side {
+    display: grid;
+    gap: 1.5rem;
+    align-content: start;
+  }
+
+  .story-photo {
+    display: grid;
+    justify-items: center;
+    gap: 1.1rem;
+    margin: 0;
+    padding: 1.5rem;
+    border: 1px solid var(--color-accent-line);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 50% 0%, var(--color-accent-soft), transparent 65%),
+      var(--color-bg-deep);
+  }
+
+  .story-photo picture {
+    display: contents;
+  }
+
+  .story-photo img {
+    width: min(100%, 10rem);
+    aspect-ratio: 1;
+    object-fit: cover;
+    border: 2px solid var(--color-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 0 0.5rem var(--color-accent-soft);
+  }
+
+  .story-photo figcaption {
+    text-align: center;
+  }
+
+  .story-photo figcaption strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+  }
+
+  .story-photo figcaption span {
+    display: block;
+    margin-top: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
   }
 
   .story {

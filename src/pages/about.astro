@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import CTABanner from '../components/CTABanner.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import { site } from '../data/site.js';
 import { experience } from '../data/experience.js';
@@ -121,7 +120,7 @@ const principles = [
     </section>
 
     <section class="block" aria-labelledby="background-title">
-      <SectionHeading eyebrow="Background" title="Experience & education" id="background-title" index="03" />
+      <SectionHeading eyebrow="Background" title="Experience" id="background-title" index="03" />
 
       <h3 class="subsection-title">Roles held</h3>
       <ol class="timeline">
@@ -207,12 +206,41 @@ const principles = [
     </section>
   </div>
 
-  <CTABanner />
+  <div class="container closing-wrap">
+    <p class="closing-bar panel">
+      <span>Work together?</span>
+      <a href="/contact/">Get in touch →</a>
+      <span aria-hidden="true">·</span>
+      <a href="/projects/">Projects →</a>
+    </p>
+  </div>
 </BaseLayout>
 
 <style>
   .page {
-    padding-block: clamp(3rem, 8vw, 6rem);
+    padding-block: clamp(3rem, 8vw, 6rem) 1rem;
+  }
+
+  .closing-wrap {
+    padding-bottom: clamp(3rem, 8vw, 6rem);
+  }
+
+  .closing-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .closing-bar a {
+    font-weight: 700;
+    text-decoration: none;
   }
 
   .about-hero {

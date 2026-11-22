@@ -4,7 +4,9 @@ import { site } from '../data/site.js';
 
 <aside class="profile-card panel">
   <div class="profile-top">
-    <div class="monogram" aria-hidden="true">NP</div>
+    <div class="monogram" aria-hidden="true">
+      <img src="/profile-photo.png" width="72" height="72" alt="" />
+    </div>
     <div>
       <p class="eyebrow">Profile</p>
       <h2>{site.name}</h2>
@@ -78,6 +80,15 @@ import { site } from '../data/site.js';
     letter-spacing: -0.08em;
     color: var(--color-text);
     background: var(--color-accent-soft);
+    overflow: hidden;
+  }
+
+  .monogram img {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit: cover;
+    object-position: center;
   }
 
   h2 {

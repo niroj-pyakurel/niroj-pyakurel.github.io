@@ -8,11 +8,7 @@ const isExternal = (href) => /^https?:\/\//.test(href);
 <footer class="site-footer">
   <div class="container footer-main">
     <div class="footer-brand">
-      <svg viewBox="0 0 40 40" width="36" height="36" fill="none" aria-hidden="true">
-        <rect x="1.5" y="1.5" width="37" height="37" rx="9" stroke="var(--color-accent)" stroke-width="2" />
-        <path d="M9 30V10l10 20V10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-        <path d="M24 30V10h5a5 5 0 0 1 0 10h-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
+      <img class="footer-photo" src="/profile-photo.png" width="36" height="36" alt="" />
       <div>
         <strong>{site.name}</strong>
         <p>{site.location} · {site.availability}</p>
@@ -65,6 +61,17 @@ const isExternal = (href) => /^https?:\/\//.test(href);
     display: flex;
     align-items: center;
     gap: 1rem;
+  }
+
+  .footer-photo {
+    width: 36px;
+    height: 36px;
+    flex: none;
+    border: 2px solid var(--color-accent);
+    border-radius: 10px;
+    object-fit: cover;
+    object-position: center;
+    background: var(--color-surface);
   }
 
   .footer-brand strong {

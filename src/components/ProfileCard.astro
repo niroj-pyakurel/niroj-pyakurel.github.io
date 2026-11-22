@@ -5,7 +5,10 @@ import { site } from '../data/site.js';
 <aside class="profile-card panel">
   <div class="profile-top">
     <div class="monogram" aria-hidden="true">
-      <img src="/niroj.png?v=20261122b" width="72" height="72" alt="" />
+      <picture>
+        <source srcset="/niroj.webp?v=20261122c" type="image/webp" />
+        <img src="/niroj.png?v=20261122b" width="72" height="72" alt="" />
+      </picture>
     </div>
     <div>
       <p class="eyebrow">Profile</p>
@@ -81,6 +84,10 @@ import { site } from '../data/site.js';
     color: var(--color-text);
     background: var(--color-accent-soft);
     overflow: hidden;
+  }
+
+  .monogram picture {
+    display: contents;
   }
 
   .monogram img {

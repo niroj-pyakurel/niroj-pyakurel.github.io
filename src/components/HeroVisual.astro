@@ -3,12 +3,21 @@ import { site } from '../data/site.js';
 ---
 
 <div class="hero-visual" aria-hidden="true">
-  <div class="glow"></div>
   <div class="orbit orbit-one"></div>
   <div class="orbit orbit-two"></div>
 
-  <div class="visual-mark">
-    <img src="/niroj.png?v=20261122b" width="144" height="144" alt="" />
+  <div class="identity">
+    <div class="portrait">
+      <picture>
+        <source srcset="/niroj.webp?v=20261122c" type="image/webp" />
+        <img src="/niroj.png?v=20261122b" width="96" height="96" alt="" />
+      </picture>
+    </div>
+    <div class="identity-copy">
+      <span class="mini-label">Based in</span>
+      <strong>{site.location}</strong>
+      <span class="status"><span class="status-dot"></span>{site.availability}</span>
+    </div>
   </div>
 
   <div class="visual-card code-card">
@@ -26,7 +35,7 @@ import { site } from '../data/site.js';
 
   <div class="visual-card tool-card">
     <div class="tool-group">
-      <span class="mini-label">Security</span>
+      <span class="mini-label">Security tools</span>
       <ul class="chip-list">
         {site.security.tools.map((tool) => <li class="chip chip-accent">{tool}</li>)}
       </ul>
@@ -38,74 +47,100 @@ import { site } from '../data/site.js';
       </ul>
     </div>
   </div>
-
-  <div class="visual-status"><span class="status-dot"></span>{site.availability}</div>
 </div>
 
 <style>
   .hero-visual {
     position: relative;
-    min-height: 460px;
+    display: grid;
+    gap: 1rem;
     isolation: isolate;
-  }
-
-  .glow {
-    position: absolute;
-    inset: 12% 8% 18% 12%;
-    z-index: -1;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--color-accent-soft), transparent 68%);
   }
 
   .orbit {
     position: absolute;
+    z-index: -1;
     border: 1px solid var(--color-accent-line);
     border-radius: 50%;
+    pointer-events: none;
   }
 
   .orbit-one {
-    inset: 8% 10% 12% 8%;
-    transform: rotate(-9deg);
+    inset: -6% -4% 24% 10%;
+    opacity: 0.5;
   }
 
   .orbit-two {
-    inset: 20% 2% 4% 22%;
+    inset: 28% 4% -8% -6%;
     border-color: var(--color-teal-line);
-    transform: rotate(11deg);
+    opacity: 0.45;
   }
 
-  .visual-mark {
-    position: absolute;
-    top: 3%;
-    right: 3%;
-    width: clamp(5rem, 12vw, 9rem);
+  .identity {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .portrait {
+    width: clamp(4rem, 9vw, 5.5rem);
     aspect-ratio: 1;
-    border: 2px solid var(--color-accent-line);
-    border-radius: 50%;
+    flex: none;
     overflow: hidden;
-    box-shadow: var(--shadow-card);
+    border: 2px solid var(--color-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 0 6px var(--color-accent-soft);
   }
 
-  .visual-mark img {
+  .portrait picture {
+    display: contents;
+  }
+
+  .portrait img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
   }
 
+  .identity-copy {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .mini-label {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .identity-copy strong {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    letter-spacing: -0.03em;
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-muted);
+  }
+
   .visual-card {
-    position: absolute;
+    width: 100%;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     background: var(--color-surface-raised);
     box-shadow: var(--shadow-card);
-    animation: float 8s ease-in-out infinite;
   }
 
   .code-card {
-    top: 14%;
-    left: 0;
-    width: min(100%, 440px);
     overflow: hidden;
   }
 
@@ -140,9 +175,9 @@ import { site } from '../data/site.js';
   .code-lines {
     display: grid;
     gap: 0.6rem;
-    padding: 1.35rem;
+    padding: 1.25rem;
     font-family: var(--font-mono);
-    font-size: clamp(0.6rem, 1.15vw, 0.78rem);
+    font-size: clamp(0.6rem, 1.1vw, 0.78rem);
     line-height: 1.5;
     overflow-x: auto;
   }
@@ -161,77 +196,19 @@ import { site } from '../data/site.js';
   }
 
   .tool-card {
-    right: 0;
-    bottom: 8%;
     display: grid;
     gap: 1rem;
-    width: min(90%, 330px);
-    padding: 1.2rem;
-    animation-delay: -4s;
+    padding: 1.25rem;
   }
 
-  .mini-label {
+  .tool-group .mini-label {
     display: block;
     margin-bottom: 0.7rem;
-    font-family: var(--font-mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--color-muted);
   }
 
-  .visual-status {
-    position: absolute;
-    left: 5%;
-    bottom: 1%;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.65rem 0.95rem;
-    border: 1px solid var(--color-accent-line);
-    border-radius: 999px;
-    background: var(--color-bg);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    box-shadow: var(--shadow-card);
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  /* Keep the same visual language on small screens instead of hiding it. */
   @media (max-width: 900px) {
-    .hero-visual {
-      min-height: 0;
-    }
-
-    .orbit,
-    .visual-status {
+    .orbit {
       display: none;
-    }
-
-    .code-card {
-      position: relative;
-      top: auto;
-      left: auto;
-      width: 100%;
-      animation: none;
-    }
-
-    .tool-card {
-      position: relative;
-      right: auto;
-      bottom: auto;
-      width: 100%;
-      margin-top: 0.85rem;
-      animation: none;
-    }
-
-    .visual-mark {
-      top: -1.5rem;
-      width: 4rem;
     }
   }
 </style>

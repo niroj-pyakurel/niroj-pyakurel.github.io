@@ -26,8 +26,24 @@ const iconFor = (label) => {
       </div>
 
       <div class="contact-callout panel">
-        <span class="status-dot" aria-hidden="true"></span>
-        <p class="callout-label">Currently</p>
+        <div class="callout-top">
+          <picture>
+            <source srcset="/niroj.webp?v=20261122c" type="image/webp" />
+            <img
+              class="callout-avatar"
+              src="/niroj.png?v=20261122b"
+              width="72"
+              height="72"
+              loading="lazy"
+              alt=""
+            />
+          </picture>
+          <div>
+            <span class="status-dot" aria-hidden="true"></span>
+            <p class="callout-label">Currently</p>
+          </div>
+        </div>
+        <p class="callout-text">{site.availability}</p>
         <p class="callout-text">{site.availability}</p>
         <div class="callout-rule"></div>
         <p class="callout-meta">Kathmandu, Nepal · Remote friendly</p>
@@ -35,8 +51,74 @@ const iconFor = (label) => {
       </div>
     </section>
 
+    <section class="block" aria-labelledby="services-title">
+      <SectionHeading eyebrow="Help" title="How I can help" id="services-title" index="01">
+        Three ways I can make a project clearer, safer and better looking.
+      </SectionHeading>
+      <ul class="service-grid">
+        {site.services.map((service) => (
+          <li class="panel service-card">
+            <span class="service-icon" aria-hidden="true">
+              {service.icon === 'design' && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3 3 12l9 9 9-9-9-9Z" /><path d="M12 3v18" /><path d="m3 12 9-3 9 3" />
+                </svg>
+              )}
+              {service.icon === 'shield' && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3 5 6v5c0 4.5 2.8 8.4 7 10 4.2-1.6 7-5.5 7-10V6l-7-3Z" /><path d="m9 12 2 2 4-4" />
+                </svg>
+              )}
+              {service.icon === 'code' && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m8 7-5 5 5 5" /><path d="m16 7 5 5-5 5" /><path d="m14 4-4 16" />
+                </svg>
+              )}
+            </span>
+            <h2>{service.title}</h2>
+            <p>{service.description}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="block" aria-labelledby="brief-title">
+      <SectionHeading eyebrow="Quick brief" title="Tell me what you need" id="brief-title" index="02">
+        A few lines is enough. This opens your email app with the details filled in — nothing is stored on this site.
+      </SectionHeading>
+      <form class="brief-form panel" id="brief-form" data-email={site.email}>
+        <div class="form-row">
+          <label>
+            <span>Your name</span>
+            <input name="name" type="text" autocomplete="name" placeholder="Your name" required />
+          </label>
+          <label>
+            <span>Your email</span>
+            <input name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+          </label>
+        </div>
+        <label>
+          <span>What is this about?</span>
+          <select name="interest" required>
+            {site.services.map((service) => <option value={service.title}>{service.title}</option>)}
+            <option value="Something else">Something else</option>
+          </select>
+        </label>
+        <label>
+          <span>Project details</span>
+          <textarea name="message" rows="5" placeholder="A short description, timeline and anything I should know." required></textarea>
+        </label>
+        <div class="form-footer">
+          <p>Prefer plain email? <a href={inquiryHref}>{site.email}</a></p>
+          <button class="primary-cta" type="submit">
+            Open email draft <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
     <section class="block" aria-labelledby="details-title">
-      <SectionHeading eyebrow="Details" title="Where to find me" id="details-title" index="01" />
+      <SectionHeading eyebrow="Details" title="Where to find me" id="details-title" index="03" />
       <ul class="contact-cards">
         {socials.map((social) => (
           <li class="panel">
@@ -83,7 +165,7 @@ const iconFor = (label) => {
     </section>
 
     <section class="block" aria-labelledby="experience-title">
-      <SectionHeading eyebrow="Background" title="Experience" id="experience-title" index="02">
+      <SectionHeading eyebrow="Background" title="Experience" id="experience-title" index="04">
         A quick look at where I've worked. The full timeline is on the resume.
       </SectionHeading>
       <ol class="experience-list">
@@ -109,6 +191,22 @@ const iconFor = (label) => {
     </section>
   </div>
 </BaseLayout>
+
+<script>
+  const form = document.querySelector('#brief-form');
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const name = String(data.get('name') || '').trim();
+    const email = String(data.get('email') || '').trim();
+    const interest = String(data.get('interest') || '').trim();
+    const message = String(data.get('message') || '').trim();
+    const subject = `${interest} inquiry — ${name}`;
+    const body = [`Name: ${name}`, `Email: ${email}`, `Interested in: ${interest}`, '', message].join('\n');
+    const to = form.dataset.email || '';
+    window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+</script>
 
 <style>
   .page {
@@ -190,6 +288,162 @@ const iconFor = (label) => {
     margin-top: 1rem;
     font-weight: 700;
     text-decoration: none;
+  }
+
+  .callout-top {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .callout-avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+    flex: none;
+    object-fit: cover;
+    border: 2px solid var(--color-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px var(--color-accent-soft);
+  }
+
+  .callout-top picture {
+    display: contents;
+  }
+
+  .callout-top .callout-label {
+    margin-top: 0.35rem;
+  }
+
+  .service-grid {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .service-card {
+    padding: 1.6rem;
+    background: var(--color-surface);
+    box-shadow: none;
+    transition: transform var(--transition), border-color var(--transition);
+  }
+
+  .service-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-accent-line);
+  }
+
+  .service-icon {
+    display: grid;
+    place-items: center;
+    width: 2.8rem;
+    height: 2.8rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 10px;
+    background: var(--color-accent-soft);
+    color: var(--color-link);
+  }
+
+  .service-icon svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .service-card h2 {
+    font-size: 1.1rem;
+  }
+
+  .service-card p {
+    margin-top: 0.75rem;
+    color: var(--color-muted);
+    font-size: 0.92rem;
+  }
+
+  .brief-form {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2rem;
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    background:
+      radial-gradient(circle at 100% 0%, var(--color-teal-soft), transparent 45%),
+      var(--color-surface);
+    box-shadow: none;
+  }
+
+  .brief-form label {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .brief-form label > span {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .brief-form input,
+  .brief-form select,
+  .brief-form textarea {
+    width: 100%;
+    padding: 0.8rem 0.95rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg-deep);
+    color: var(--color-text);
+    font: inherit;
+    font-size: 0.95rem;
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+
+  .brief-form textarea {
+    min-height: 8rem;
+    resize: vertical;
+  }
+
+  .brief-form input::placeholder,
+  .brief-form textarea::placeholder {
+    color: var(--color-muted);
+    opacity: 0.75;
+  }
+
+  .brief-form input:focus,
+  .brief-form select:focus,
+  .brief-form textarea:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-soft);
+    outline: none;
+  }
+
+  .form-row {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .form-footer p {
+    color: var(--color-muted);
+    font-size: 0.85rem;
+  }
+
+  .form-footer a {
+    color: var(--color-link);
+  }
+
+  .brief-form .primary-cta {
+    margin-top: 0;
   }
 
   .block {
@@ -354,6 +608,14 @@ const iconFor = (label) => {
 
   @media (min-width: 720px) {
     .contact-cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .service-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .form-row {
       grid-template-columns: repeat(2, 1fr);
     }
   }

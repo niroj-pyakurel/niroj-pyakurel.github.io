@@ -229,11 +229,13 @@ const isActive = (href) => (href === '/' ? path === '/' : path === href.replace(
       top: 100%;
       right: 0;
       left: 0;
-      padding: 0.75rem var(--gutter) 1rem;
-      border-bottom: 1px solid var(--color-border);
-      background: var(--header-bg);
-      -webkit-backdrop-filter: blur(14px);
-      backdrop-filter: blur(14px);
+      padding: 0.9rem var(--gutter) 1.1rem;
+      border: 1px solid var(--color-border);
+      border-top: 0;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      background: var(--menu-bg);
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
       box-shadow: var(--shadow-card);
       opacity: 0;
       visibility: hidden;
@@ -259,13 +261,17 @@ const isActive = (href) => (href === '/' ? path === '/' : path === href.replace(
       padding: 0.8rem 0.95rem;
       border: 1px solid transparent;
       border-radius: var(--radius);
+      color: var(--color-text);
       font-size: 0.95rem;
+      font-weight: 600;
     }
 
     .primary-nav a:hover,
     .primary-nav a[aria-current='page'] {
       border-color: var(--color-accent-line);
       background: var(--color-accent-soft);
+      color: var(--color-link);
+      font-weight: 700;
       text-decoration: none;
     }
   }

@@ -1,0 +1,159 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import SecurityStrip from '../components/SecurityStrip.astro';
+import { site } from '../data/site.js';
+---
+
+<BaseLayout title="About" description={site.about.lead}>
+  <div class="container page">
+    <SectionHeading as="h1" eyebrow="About" title="Design, code and security in one toolkit" />
+
+    <div class="prose bio">
+      <p class="lead">{site.about.lead}</p>
+      {site.about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      <p>{site.about.closing}</p>
+    </div>
+
+    <section class="block" aria-labelledby="skills-title">
+      <SectionHeading eyebrow="Toolkit" title="Skills" id="skills-title" />
+      <div class="skill-grid">
+        {site.skills.map((group) => (
+          <div class="skill-group">
+            <h3>{group.label}</h3>
+            <ul>
+              {group.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="background-title">
+      <SectionHeading eyebrow="Background" title="Education & certifications" id="background-title" />
+      <div class="detail-grid">
+        <div>
+          <h3>Education</h3>
+          <ul class="details">
+            {site.education.map((item) => (
+              <li>
+                <strong>{item.degree}</strong>
+                <span>{item.school}</span>
+                <span class="muted">{item.period}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3>Certifications</h3>
+          <ul class="details">
+            {site.certifications.map((item) => (
+              <li>
+                <strong>{item.title}</strong>
+                <span>{item.issuer}</span>
+                <span class="muted">{item.date}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="approach-title">
+      <SectionHeading eyebrow="How I work" title="Clarity, consistency, teamwork" id="approach-title">
+        Good work depends on knowing what matters, keeping it consistent, and communicating clearly while you do it.
+      </SectionHeading>
+      <SecurityStrip />
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+
+  .page h1 {
+    max-width: 20ch;
+  }
+
+  .bio {
+    margin-top: 2.5rem;
+  }
+
+  .bio .lead {
+    font-size: 1.2rem;
+    color: var(--color-text);
+  }
+
+  .bio p + p {
+    margin-top: 1.25rem;
+  }
+
+  .block {
+    margin-top: var(--space-section);
+  }
+
+  .skill-grid,
+  .detail-grid {
+    display: grid;
+    gap: 1px;
+    margin-top: 2rem;
+    background: var(--color-border);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .skill-group,
+  .detail-grid > div {
+    padding: 1.5rem;
+    background: var(--color-bg);
+  }
+
+  .skill-group h3,
+  .detail-grid h3 {
+    margin-bottom: 1rem;
+  }
+
+  .skill-group ul {
+    padding-left: 1.1rem;
+    color: var(--color-muted);
+  }
+
+  .skill-group li + li,
+  .details li + li {
+    margin-top: 0.5rem;
+  }
+
+  .details {
+    padding: 0;
+    list-style: none;
+  }
+
+  .details li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .details li + li {
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .muted {
+    color: var(--color-muted);
+    font-size: 0.85rem;
+  }
+
+  @media (min-width: 720px) {
+    .skill-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .detail-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

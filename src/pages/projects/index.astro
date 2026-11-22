@@ -1,0 +1,98 @@
+---
+import { getCollection } from 'astro:content';
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const projects = (await getCollection('projects')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const filters = ['all', 'design', 'web', 'security'];
+---
+
+<BaseLayout title="Projects" description="Selected projects by Niroj Pyakurel, including the Invoice Generator.">
+  <div class="container page">
+    <SectionHeading
+      as="h1"
+      eyebrow="Projects"
+      title="Things I've built"
+    >
+      Each project includes a short security note — what was considered, in plain language.
+    </SectionHeading>
+
+    <div class="filter-bar" data-tag-filter=".project-card" role="group" aria-label="Filter projects by tag">
+      {filters.map((filter) => (
+        <button type="button" data-filter={filter} aria-pressed={filter === 'all'}>{filter}</button>
+      ))}
+    </div>
+
+    <div class="project-grid">
+      {projects.map((project) => (
+        <ProjectCard
+          title={project.data.title}
+          description={project.data.description}
+          tags={project.data.tags}
+          date={project.data.date}
+          href={`/projects/${project.id}/`}
+        />
+      ))}
+    </div>
+    <p class="empty-note">More projects are added as the work happens.</p>
+  </div>
+</BaseLayout>
+
+<script>
+  import { initTagFilters } from '../../scripts/filters.js';
+
+  initTagFilters();
+</script>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+
+  .filter-bar button {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: border-color var(--transition), color var(--transition);
+  }
+
+  .filter-bar button:hover,
+  .filter-bar button[aria-pressed='true'] {
+    border-color: var(--color-link);
+    color: var(--color-link);
+  }
+
+  .project-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .empty-note {
+    margin-top: 2rem;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 760px) {
+    .project-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

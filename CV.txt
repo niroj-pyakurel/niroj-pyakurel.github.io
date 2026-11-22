@@ -1,0 +1,80 @@
+NIROJ PYAKUREL
+Email: nirojpyakurel7@gmail.com
+Phone: 9843391800
+LinkedIn: in/niroj-pyakurel7
+Location: Kathmandu, Nepal
+
+================================================================================
+PROFILE
+================================================================================
+Computer Science student specializing in Cybersecurity and Networking, with 
+hands-on experience in security tools, programming, and system administration. 
+Skilled in Python, networking, and vulnerability assessment. Also experienced in 
+television production, graphic design, and digital media, with the ability to 
+combine technical knowledge, creativity, and teamwork to deliver effective 
+solutions.
+
+================================================================================
+SKILLS
+================================================================================
+* Programming Languages: Python, HTML, CSS, C
+* Operating Systems: Windows Administration, Linux
+* Security Tools: Nessus, Nmap, Wireshark, Brup Suite
+* Networking: DNS & DHCP, Routing and Switching, VPN
+* Soft Skills: Problem Solving, Time Management, Leadership
+
+================================================================================
+PROFESSIONAL EXPERIENCE
+================================================================================
+Jr. Producer | Himalaya Television
+10/2026 - 11/2026
+* Worked closely with the analyst, host, and graphics operator during Red Bull 
+  Cricket Live coverage of the Nepal Premier League (NPL).
+* Coordinated on-air discussions and match analysis.
+* Assisted with live match statistics and graphics.
+* Supported smooth communication between the production team.
+* Contributed to the overall live broadcast presentation.
+
+Graphic Designer | Yalla Himalayas Travel and Tours
+05/2025 - 03/2026
+* Designed engaging graphics for social media, websites, brochures, flyers, and 
+  other marketing materials.
+* Created promotional visuals for travel packages, trekking, tours, and holiday 
+  campaigns.
+* Maintained brand consistency across digital and print media.
+* Edited photos and produced visually appealing content to increase customer 
+  engagement.
+
+================================================================================
+PROJECTS
+================================================================================
+Invoice Generator
+* Developed an invoice generator application using Python and Tkinter to 
+  simplify the billing process.
+* Automated calculations for subtotal, tax, and total.
+* Generated professional invoices in Word (.docx) format using docxtpl.
+* Designed a user-friendly interface for quick data entry.
+* Enabled one-click invoice creation for efficiency and ease of use.
+
+================================================================================
+EDUCATION
+================================================================================
+Bachelor in Computer Science (Honors Cybersecurity and Networking)
+Lincoln University College, Malaysia — Kathmandu, Nepal
+05/2024 - Present
+
+Higher Secondary Examinaton
+Uniglobe Higher Secondary School — Kathmandu, Nepal
+07/2021 - 04/2023
+
+================================================================================
+CERTIFICATIONS
+================================================================================
+* Cybersecurity for Businesses — EC council (11/2025)
+* Ethical Hacking — Netcad (03/2026)
+
+================================================================================
+ROLES & RESPONSIBILITIES
+================================================================================
+President | Leo Club of Karhmandu Imperial
+06/2026 - Present

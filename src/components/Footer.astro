@@ -1,0 +1,62 @@
+---
+import { site } from '../data/site.js';
+import { socials } from '../data/socials.js';
+
+const isExternal = (href) => /^https?:\/\//.test(href);
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>© {new Date().getFullYear()} {site.name} · {site.location}</p>
+    <ul class="footer-links">
+      {socials.map((social) => (
+        <li>
+          <a
+            href={social.href}
+            aria-label={`${social.label}: ${social.handle}`}
+            rel={isExternal(social.href) ? 'noopener noreferrer' : undefined}
+          >
+            {social.label}
+          </a>
+        </li>
+      ))}
+      <li><a href="/rss.xml">RSS</a></li>
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-section);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    padding-block: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer-links a {
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+
+  .footer-links a:hover {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+</style>

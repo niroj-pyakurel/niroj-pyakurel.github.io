@@ -1,0 +1,152 @@
+---
+import { navigation } from '../data/navigation.js';
+import { site } from '../data/site.js';
+import ThemeToggle from './ThemeToggle.astro';
+
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isActive = (href) => (href === '/' ? path === '/' : path === href.replace(/\/+$/, ''));
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label={`${site.name} — home`}>
+      <svg
+        class="brand-mark"
+        viewBox="0 0 40 40"
+        width="34"
+        height="34"
+        fill="none"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <rect x="1.5" y="1.5" width="37" height="37" rx="9" stroke="var(--color-accent)" stroke-width="2" />
+        <path
+          d="M9 30V10l10 20V10"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M24 30V10h5a5 5 0 0 1 0 10h-5"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <span class="wordmark">{site.name}</span>
+    </a>
+
+    <div class="header-right">
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <ul>
+          {navigation.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <ThemeToggle />
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 1.5rem;
+    flex-wrap: wrap;
+    padding-block: 0.9rem;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--color-text);
+    font-weight: 750;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+
+  .brand:hover .wordmark {
+    color: var(--color-link);
+  }
+
+  .brand-mark {
+    flex: none;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .primary-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1.1rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .primary-nav a {
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+
+  .primary-nav a:hover,
+  .primary-nav a[aria-current='page'] {
+    color: var(--color-link);
+  }
+
+  .primary-nav a[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.35em;
+  }
+
+  @media (max-width: 760px) {
+    .header-inner {
+      align-items: flex-start;
+    }
+
+    .header-right {
+      order: 3;
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .primary-nav {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .primary-nav ul {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+      scrollbar-width: thin;
+    }
+
+    .primary-nav li {
+      flex: none;
+    }
+  }
+</style>

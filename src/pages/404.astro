@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page not found" description="The page you were looking for could not be found.">
+  <div class="container not-found">
+    <p class="eyebrow">404</p>
+    <h1>This page isn't here.</h1>
+    <p>The link may be out of date. You can head back home or get in touch.</p>
+    <div class="actions">
+      <a class="button" href="/">Back home →</a>
+      <a class="button button-secondary" href="/contact/">Contact me</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding-block: clamp(5rem, 14vw, 10rem);
+  }
+
+  .eyebrow {
+    color: var(--color-link);
+  }
+
+  h1 {
+    margin-top: 1rem;
+  }
+
+  .not-found > p:not(.eyebrow) {
+    margin-top: 1.25rem;
+    color: var(--color-muted);
+    max-width: 48ch;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .button {
+    display: inline-flex;
+    padding: 0.75rem 1.15rem;
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .button-secondary {
+    background: transparent;
+    color: var(--color-text);
+    border-color: var(--color-border);
+  }
+</style>

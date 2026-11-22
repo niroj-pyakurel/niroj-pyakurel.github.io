@@ -1,0 +1,205 @@
+---
+import { getCollection } from 'astro:content';
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import SecurityStrip from '../components/SecurityStrip.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import NoteCard from '../components/NoteCard.astro';
+import { site } from '../data/site.js';
+
+const inquiryHref = `mailto:${site.email}?subject=${encodeURIComponent('Project inquiry')}`;
+const byDate = (a, b) => b.data.date.getTime() - a.data.date.getTime();
+const projects = (await getCollection('projects')).sort(byDate).slice(0, 2);
+const notes = (await getCollection('writing')).sort(byDate).slice(0, 1);
+---
+
+<BaseLayout>
+  <section class="hero container" aria-labelledby="hero-title">
+    <p class="eyebrow">{site.hero.eyebrow}</p>
+    <h1 id="hero-title">{site.hero.headline}</h1>
+    <p class="lede">{site.hero.lede}</p>
+
+    <p class="status">
+      <span class="status-dot" aria-hidden="true"></span>
+      {site.availability}
+    </p>
+
+    <div class="actions">
+      <a class="button button-primary" href={inquiryHref}>
+        Start a project <span aria-hidden="true">→</span>
+      </a>
+      <a class="button button-secondary" href="/projects/">
+        See my work <span aria-hidden="true">↓</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section container" id="services" aria-labelledby="services-title">
+    <SectionHeading eyebrow="What I do" title="Services" id="services-title" />
+    <div class="service-grid">
+      {site.services.map((service, index) => (
+        <ServiceCard {...service} index={index + 1} />
+      ))}
+    </div>
+    <SecurityStrip />
+  </section>
+
+  <section class="section container" id="work" aria-labelledby="work-title">
+    <SectionHeading eyebrow="Selected work" title="Things I have built" id="work-title" />
+    <div class="project-grid">
+      {projects.map((project) => (
+        <ProjectCard
+          title={project.data.title}
+          description={project.data.description}
+          tags={project.data.tags}
+          date={project.data.date}
+          href={`/projects/${project.id}/`}
+        />
+      ))}
+    </div>
+    <a class="more-link" href="/projects/">All projects →</a>
+  </section>
+
+  {notes.length > 0 && (
+    <section class="section container" id="notes" aria-labelledby="notes-title">
+      <SectionHeading eyebrow="Writing" title="Latest note" id="notes-title" />
+      {notes.map((note) => (
+        <NoteCard
+          title={note.data.title}
+          description={note.data.description}
+          tags={note.data.tags}
+          date={note.data.date}
+          href={`/writing/${note.id}/`}
+        />
+      ))}
+      <a class="more-link" href="/writing/">All notes →</a>
+    </section>
+  )}
+
+  <section class="section container cta" aria-labelledby="cta-title">
+    <p class="eyebrow">Have something in mind?</p>
+    <h2 id="cta-title">Let's make it happen.</h2>
+    <p>Design, web work or a practical security pass — tell me what you need.</p>
+    <a class="button button-primary" href={inquiryHref}>Start a project →</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: clamp(4rem, 11vw, 8rem) clamp(3rem, 7vw, 5rem);
+  }
+
+  .hero .eyebrow {
+    color: var(--color-link);
+  }
+
+  h1 {
+    max-width: 18ch;
+    margin-top: 1rem;
+  }
+
+  .lede {
+    margin-top: 1.5rem;
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+  }
+
+  .status-dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--color-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.15rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+  }
+
+  .button-primary {
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+
+  .button-primary:hover {
+    background: color-mix(in srgb, var(--color-accent) 85%, white);
+  }
+
+  .button-secondary {
+    border-color: var(--color-border);
+    color: var(--color-text);
+  }
+
+  .button-secondary:hover {
+    border-color: var(--color-link);
+    color: var(--color-link);
+  }
+
+  .service-grid,
+  .project-grid {
+    display: grid;
+    gap: 1px;
+    margin-top: 2rem;
+    background: var(--color-border);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .more-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .cta {
+    padding-block: clamp(3rem, 7vw, 5rem);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .cta h2 {
+    margin-top: 0.75rem;
+  }
+
+  .cta p:not(.eyebrow) {
+    margin-top: 1rem;
+    color: var(--color-muted);
+  }
+
+  .cta .button {
+    margin-top: 1.75rem;
+  }
+
+  @media (min-width: 720px) {
+    .service-grid,
+    .project-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

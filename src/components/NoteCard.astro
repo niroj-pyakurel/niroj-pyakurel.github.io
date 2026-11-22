@@ -1,0 +1,71 @@
+---
+import Tag from './Tag.astro';
+
+const { title, description, tags = [], href, date } = Astro.props;
+const when = new Date(date).toLocaleDateString('en-US', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+---
+
+<article class="note-card" data-tags={tags.join(' ')}>
+  <div class="card-meta">
+    <p class="eyebrow">{when}</p>
+    {tags.length > 0 && (
+      <ul class="tags">
+        {tags.map((tag) => <li><Tag label={tag} /></li>)}
+      </ul>
+    )}
+  </div>
+  <h3><a href={href}>{title} <span aria-hidden="true">→</span></a></h3>
+  <p>{description}</p>
+</article>
+
+<style>
+  .note-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  h3 a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  h3 a:hover {
+    color: var(--color-link);
+  }
+
+  h3 span {
+    color: var(--color-link);
+  }
+
+  .note-card > p:last-child {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+  }
+</style>

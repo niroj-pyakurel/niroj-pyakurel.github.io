@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { site } from '../data/site.js';
+import { socials } from '../data/socials.js';
+import { experience } from '../data/experience.js';
+
+const inquiryHref = `mailto:${site.email}?subject=${encodeURIComponent('Project inquiry')}`;
+---
+
+<BaseLayout title="Contact" description={`Contact ${site.name} for design, web and security work in ${site.location}.`}>
+  <div class="container page">
+    <SectionHeading as="h1" eyebrow="Contact" title="Let's work together" />
+    <p class="intro">{site.availability}. Email is the fastest way to reach me; I'm based in {site.location} and happy to work remotely.</p>
+
+    <a class="primary-cta" href={inquiryHref}>Start a project →</a>
+
+    <section class="block" aria-labelledby="details-title">
+      <SectionHeading eyebrow="Details" title="Where to find me" id="details-title" />
+      <ul class="contact-list">
+        {socials.map((social) => (
+          <li>
+            <span>{social.label}</span>
+            <a href={social.href} rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+              {social.handle}
+            </a>
+          </li>
+        ))}
+        <li>
+          <span>Location</span>
+          <span>{site.location}</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="block" aria-labelledby="experience-title">
+      <SectionHeading eyebrow="Background" title="Experience" id="experience-title" />
+      <ul class="experience-list">
+        {experience.map((item) => (
+          <li>
+            <div>
+              <strong>{item.role}</strong>
+              <span>{item.organization}</span>
+            </div>
+            <span class="muted">{item.period}</span>
+          </li>
+        ))}
+      </ul>
+      <a class="more-link" href="/resume/">Full resume →</a>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+
+  .intro {
+    max-width: 60ch;
+    margin-top: 1.5rem;
+    color: var(--color-muted);
+    font-size: 1.1rem;
+  }
+
+  .primary-cta {
+    display: inline-flex;
+    margin-top: 1.75rem;
+    padding: 0.75rem 1.15rem;
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+    border-radius: var(--radius);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .block {
+    margin-top: var(--space-section);
+  }
+
+  .contact-list,
+  .experience-list {
+    padding: 0;
+    list-style: none;
+  }
+
+  .contact-list li,
+  .experience-list li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .contact-list span:first-child {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .experience-list strong {
+    display: block;
+  }
+
+  .experience-list div span {
+    color: var(--color-muted);
+  }
+
+  .muted {
+    color: var(--color-muted);
+    font-size: 0.85rem;
+  }
+
+  .more-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+</style>

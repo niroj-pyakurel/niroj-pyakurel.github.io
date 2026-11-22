@@ -1,0 +1,27 @@
+---
+const { label, href, active = false } = Astro.props;
+const className = `tag${active ? ' tag-active' : ''}`;
+---
+
+{href ? <a class={className} href={href}>{label}</a> : <span class={className}>{label}</span>}
+
+<style>
+  .tag {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--color-muted);
+    text-decoration: none;
+    text-transform: lowercase;
+  }
+
+  a.tag:hover,
+  .tag-active {
+    border-color: var(--color-link);
+    color: var(--color-link);
+  }
+</style>

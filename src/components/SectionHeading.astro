@@ -1,0 +1,24 @@
+---
+const { eyebrow, title, id, as: Heading = 'h2' } = Astro.props;
+---
+
+<div class="section-heading">
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <Heading id={id}>{title}</Heading>
+  <slot />
+</div>
+
+<style>
+  .section-heading {
+    max-width: 70ch;
+  }
+
+  .section-heading h2 {
+    margin-top: 0.75rem;
+  }
+
+  .section-heading :global(p:not(.eyebrow)) {
+    margin-top: 1rem;
+    color: var(--color-muted);
+  }
+</style>

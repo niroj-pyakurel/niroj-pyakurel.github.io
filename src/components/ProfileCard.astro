@@ -15,9 +15,16 @@ import { site } from '../data/site.js';
   <p class="availability"><span class="status-dot"></span>{site.availability}</p>
 
   <div class="profile-block">
-    <span class="mini-label">Toolbox</span>
+    <span class="mini-label">Security</span>
     <ul class="chip-list">
       {site.security.tools.map((tool) => <li class="chip chip-accent">{tool}</li>)}
+    </ul>
+  </div>
+
+  <div class="profile-block">
+    <span class="mini-label">Creative</span>
+    <ul class="chip-list">
+      {site.designTools.map((tool) => <li class="chip chip-teal">{tool}</li>)}
     </ul>
   </div>
 

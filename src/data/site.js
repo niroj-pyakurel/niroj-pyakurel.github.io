@@ -51,11 +51,15 @@ export const site = {
 
   skills: [
     { label: 'Languages', items: ['Python', 'HTML', 'CSS', 'C'] },
+    { label: 'Design tools', items: ['Photoshop', 'Canva', 'Figma'] },
     { label: 'Systems', items: ['Windows Administration', 'Linux'] },
     { label: 'Security tools', items: ['Nessus', 'Nmap', 'Wireshark', 'Burp Suite'] },
     { label: 'Networking', items: ['DNS & DHCP', 'Routing and Switching', 'VPN'] },
     { label: 'Soft skills', items: ['Problem Solving', 'Time Management', 'Leadership'] },
   ],
+
+  // Added at the user's request — creative toolkit shown in the shared toolbox chips.
+  designTools: ['Photoshop', 'Canva', 'Figma'],
 
   // Secondary thread, shown as a compact strip on the home page and reinforced elsewhere.
   security: {

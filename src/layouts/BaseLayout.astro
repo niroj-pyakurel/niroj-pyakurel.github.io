@@ -1,4 +1,7 @@
 ---
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/dm-sans';
+
 import '../styles/tokens.css';
 import '../styles/global.css';
 import '../styles/prose.css';
@@ -6,6 +9,7 @@ import '../styles/prose.css';
 import SEOHead from '../components/SEOHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import AbstractBackdrop from '../components/AbstractBackdrop.astro';
 import { site } from '../data/site.js';
 
 const { title, description = site.hero.lede, type = 'website' } = Astro.props;
@@ -34,6 +38,7 @@ const { title, description = site.hero.lede, type = 'website' } = Astro.props;
     <SEOHead title={title} description={description} type={type} />
   </head>
   <body>
+    <AbstractBackdrop />
     <a class="skip-link" href="#main">Skip to content</a>
     <Header />
     <main id="main">

@@ -57,11 +57,11 @@ const isActive = (href) => (href === '/' ? path === '/' : path === href.replace(
 
 <style>
   .site-header {
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 50;
     border-bottom: 1px solid var(--color-border);
-    background:
-      linear-gradient(90deg, var(--color-accent-soft), transparent 28%),
-      var(--color-bg);
+    background: var(--color-bg);
   }
 
   .site-header::before {
@@ -86,8 +86,9 @@ const isActive = (href) => (href === '/' ? path === '/' : path === href.replace(
     align-items: center;
     gap: 0.65rem;
     color: var(--color-text);
-    font-weight: 750;
-    letter-spacing: -0.02em;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.035em;
     text-decoration: none;
   }
 
@@ -135,13 +136,15 @@ const isActive = (href) => (href === '/' ? path === '/' : path === href.replace(
 
   @media (max-width: 760px) {
     .header-inner {
-      align-items: flex-start;
+      align-items: center;
+      padding-block: 0.75rem;
     }
 
     .header-right {
       order: 3;
       width: 100%;
       justify-content: space-between;
+      gap: 0.75rem;
     }
 
     .primary-nav {
@@ -150,14 +153,24 @@ const isActive = (href) => (href === '/' ? path === '/' : path === href.replace(
     }
 
     .primary-nav ul {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      padding-bottom: 0.25rem;
-      scrollbar-width: thin;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.35rem 0.5rem;
+      text-align: center;
     }
 
-    .primary-nav li {
-      flex: none;
+    .primary-nav a {
+      display: block;
+      padding: 0.35rem 0.25rem;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      font-size: 0.78rem;
+    }
+
+    .primary-nav a[aria-current='page'] {
+      border-color: var(--color-accent-line);
+      background: var(--color-accent-soft);
+      text-decoration: none;
     }
   }
 </style>

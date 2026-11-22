@@ -56,7 +56,7 @@ Create `src/content/writing/your-slug.md` with `title`, `description`, `date` an
 
 ## Resume PDF
 
-`public/niroj-pyakurel-resume.pdf` is generated from the `/resume` page. To refresh it after editing resume data, print `/resume` to PDF from a browser with background graphics enabled, and replace the file.
+`public/niroj-pyakurel-resume.pdf` is the FlowCV export supplied by Niroj. To replace it, drop the new PDF at that exact path, bump the `?v=` query on the link in `src/pages/resume.astro` to bust browser caching, then rebuild.
 
 ## Deployment
 

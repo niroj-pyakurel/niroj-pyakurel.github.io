@@ -2,239 +2,982 @@
 import { getCollection } from 'astro:content';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import ServiceCard from '../components/ServiceCard.astro';
-import SecurityStrip from '../components/SecurityStrip.astro';
-import HeroVisual from '../components/HeroVisual.astro';
-import ProjectCard from '../components/ProjectCard.astro';
 import ProjectPreview from '../components/ProjectPreview.astro';
-import NoteCard from '../components/NoteCard.astro';
+import Tag from '../components/Tag.astro';
 import { site } from '../data/site.js';
+import { experience } from '../data/experience.js';
 
 const inquiryHref = `mailto:${site.email}?subject=${encodeURIComponent('Project inquiry')}`;
 const byDate = (a, b) => b.data.date.getTime() - a.data.date.getTime();
 const projects = (await getCollection('projects')).sort(byDate).slice(0, 2);
 const notes = (await getCollection('writing')).sort(byDate).slice(0, 1);
+
+const stats = [
+  { value: String(site.skills.length).padStart(2, '0'), label: 'Skill areas' },
+  { value: String(experience.length).padStart(2, '0'), label: 'Roles held' },
+  { value: String(site.certifications.length).padStart(2, '0'), label: 'Certifications' },
+];
+
+const formatNoteDate = (date) =>
+  new Date(date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+
+const creativeList = site.designTools.map((tool) => `"${tool}"`).join(', ');
+const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
 ---
 
 <BaseLayout>
-  <section class="hero container" aria-labelledby="hero-title">
-    <div class="hero-copy">
-      <p class="eyebrow">{site.hero.eyebrow}</p>
-      <h1 id="hero-title">{site.hero.headline}</h1>
-      <p class="lede">{site.hero.lede}</p>
+  <div class="terminal-home">
+    <section class="hero container" aria-labelledby="hero-title">
+      <div class="terminal-window">
+        <div class="window-bar">
+          <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="window-path">~/niroj/portfolio</span>
+          <span class="window-live"><span class="live-dot" aria-hidden="true"></span>online</span>
+        </div>
 
-      <p class="status">
-        <span class="status-dot" aria-hidden="true"></span>
-        {site.availability}
-      </p>
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="cmd-line"><span class="prompt">$</span> whoami <span class="cursor" aria-hidden="true">_</span></p>
+            <h1 id="hero-title">Design. Build.<br /><span>Secure.</span></h1>
+            <p class="lede">{site.hero.lede}</p>
 
-      <div class="actions">
-        <a class="button button-primary" href={inquiryHref}>
-          Start a project <span aria-hidden="true">→</span>
-        </a>
-        <a class="button button-secondary" href="/projects/">
-          See my work <span aria-hidden="true">↓</span>
-        </a>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href={inquiryHref}>start a project <span aria-hidden="true">→</span></a>
+              <a class="btn btn-ghost" href="/projects/">view work <span aria-hidden="true">↗</span></a>
+            </div>
+
+            <p class="availability"><span class="live-dot" aria-hidden="true"></span>{site.availability}</p>
+          </div>
+
+          <aside class="console" aria-label="Profile snapshot">
+            <div class="console-top">
+              <div class="console-identity">
+                <picture>
+                  <source srcset="/niroj.webp?v=20261122c" type="image/webp" />
+                  <img src="/niroj.png?v=20261122b" width="56" height="56" alt="" />
+                </picture>
+                <div>
+                  <strong>{site.name}</strong>
+                  <span>{site.location}</span>
+                </div>
+              </div>
+              <span class="console-tag">PROFILE.SNAPSHOT</span>
+            </div>
+
+            <pre><code><span class="c-comment">// live profile data</span>
+<span class="c-key">role</span>     = <span class="c-str">"Freelance designer / CS student"</span>
+<span class="c-key">focus</span>    = [<span class="c-str">"design"</span>, <span class="c-str">"web"</span>, <span class="c-str">"security"</span>]
+<span class="c-key">creative</span> = [<span class="c-str">{creativeList}</span>]
+<span class="c-key">security</span>  = [<span class="c-str">{securityList}</span>]
+<span class="c-key">status</span>   = <span class="c-ok">● {site.availability}</span></code></pre>
+          </aside>
+        </div>
       </div>
-    </div>
-    <HeroVisual />
-  </section>
 
-  <section class="section container" id="services" aria-labelledby="services-title">
-    <SectionHeading eyebrow="What I do" title="Services" id="services-title" index="01" />
-    <div class="service-grid">
-      {site.services.map((service, index) => (
-        <ServiceCard {...service} index={index + 1} />
-      ))}
-    </div>
-    <SecurityStrip />
-  </section>
-
-  <section class="section container" id="work" aria-labelledby="work-title">
-    <SectionHeading eyebrow="Selected work" title="Things I have built" id="work-title" index="02" />
-    <div class="project-grid">
-      {projects.map((project) => (
-        <ProjectCard
-          title={project.data.title}
-          description={project.data.description}
-          tags={project.data.tags}
-          date={project.data.date}
-          href={`/projects/${project.id}/`}
-          featured={project.id === 'invoice-generator'}
-        >
-          {project.id === 'invoice-generator' && <ProjectPreview slot="media" />}
-        </ProjectCard>
-      ))}
-    </div>
-    <a class="more-link" href="/projects/">All projects →</a>
-  </section>
-
-  {notes.length > 0 && (
-    <section class="section container" id="notes" aria-labelledby="notes-title">
-      <SectionHeading eyebrow="Writing" title="Latest note" id="notes-title" index="03" />
-      <div class="note-wrap">
-        {notes.map((note) => (
-          <NoteCard
-            title={note.data.title}
-            description={note.data.description}
-            tags={note.data.tags}
-            date={note.data.date}
-            href={`/writing/${note.id}/`}
-          />
+      <div class="metrics" role="list" aria-label="At a glance">
+        {stats.map((stat) => (
+          <div class="metric" role="listitem">
+            <strong>{stat.value}</strong>
+            <span>{stat.label}</span>
+          </div>
         ))}
       </div>
-      <a class="more-link" href="/writing/">All notes →</a>
     </section>
-  )}
 
-  <section class="section container" aria-labelledby="cta-title">
-    <div class="cta panel">
-      <div>
-        <p class="eyebrow">Have something in mind?</p>
-        <h2 id="cta-title">Let's make it happen.</h2>
-        <p>Design, web work or a practical security pass — tell me what you need.</p>
+    <section class="section container" id="services" aria-labelledby="services-title">
+      <header class="section-head">
+        <p class="section-kicker">// 01 — capabilities</p>
+        <h2 id="services-title">What I bring to the table</h2>
+        <p>Three practical lanes, one consistent approach: clear thinking, clean execution, and security considered from the start.</p>
+      </header>
+
+      <div class="module-list">
+        {site.services.map((service, index) => (
+          <article class="module">
+            <span class="module-index">0{index + 1}</span>
+            <span class="module-icon" aria-hidden="true">
+              {service.icon === 'design' && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 16.5 11 9l4 4 5-5" /><path d="M15 8h5v5" /><path d="M3 20h18" />
+                </svg>
+              )}
+              {service.icon === 'shield' && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3 5 6v5c0 4.5 2.8 8.4 7 10 4.2-1.6 7-5.5 7-10V6l-7-3Z" /><path d="m9 12 2 2 4-4" />
+                </svg>
+              )}
+              {service.icon === 'code' && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m8 7-5 5 5 5" /><path d="m16 7 5 5-5 5" /><path d="m14 4-4 16" />
+                </svg>
+              )}
+            </span>
+            <div class="module-copy">
+              <h3>{service.title}</h3>
+              <p>{service.description}</p>
+            </div>
+            <span class="module-arrow" aria-hidden="true">→</span>
+          </article>
+        ))}
       </div>
-      <a class="button button-primary" href={inquiryHref}>Start a project →</a>
-    </div>
-  </section>
+
+      <aside class="security-console" aria-labelledby="security-title">
+        <div class="security-head">
+          <span class="security-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3 5 6v5c0 4.5 2.8 8.4 7 10 4.2-1.6 7-5.5 7-10V6l-7-3Z" /><path d="m9 12 2 2 4-4" />
+            </svg>
+          </span>
+          <div>
+            <p class="section-kicker">{site.security.label}</p>
+            <h3 id="security-title">Security is part of the build, not an afterthought.</h3>
+          </div>
+        </div>
+        <p class="security-note">{site.security.note}</p>
+        <div class="security-meta">
+          <div>
+            <span class="meta-label">toolkit</span>
+            <ul class="chip-list">
+              {site.security.tools.map((tool) => <li class="chip chip-accent">{tool}</li>)}
+            </ul>
+          </div>
+          <div>
+            <span class="meta-label">certifications</span>
+            <ul class="chip-list">
+              {site.security.certifications.map((cert) => <li class="chip">{cert}</li>)}
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section container" id="work" aria-labelledby="work-title">
+      <header class="section-head">
+        <p class="section-kicker">// 02 — shipped work</p>
+        <h2 id="work-title">Things I have built</h2>
+        <p>Real projects with real constraints. The first one is local-first by design, so the data stays with the person using it.</p>
+      </header>
+
+      <div class="work-list">
+        {projects.map((project, index) => (
+          <article class:list={['work-card', { featured: index === 0 }]}>
+            {index === 0 && (
+              <div class="work-media">
+                <ProjectPreview />
+              </div>
+            )}
+            <div class="work-body">
+              <div class="work-meta">
+                <span class="work-index">0{index + 1}</span>
+                <span>{project.data.date.getFullYear()} · {project.data.stack?.join(' / ') || 'Project'}</span>
+              </div>
+              <h3><a href={`/projects/${project.id}/`}>{project.data.title}</a></h3>
+              <p>{project.data.description}</p>
+              {project.data.securityNotes && (
+                <p class="work-security">
+                  <strong>SECURITY NOTE</strong>
+                  {project.data.securityNotes}
+                </p>
+              )}
+              <ul class="chip-list work-tags">
+                {project.data.tags.map((tag) => <li><Tag label={tag} /></li>)}
+              </ul>
+              <a class="work-link" href={`/projects/${project.id}/`}>open case study <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <a class="text-link" href="/projects/">all projects <span aria-hidden="true">→</span></a>
+    </section>
+
+    {notes.length > 0 && (
+      <section class="section container" id="notes" aria-labelledby="notes-title">
+        <header class="section-head">
+          <p class="section-kicker">// 03 — log</p>
+          <h2 id="notes-title">Latest note</h2>
+        </header>
+
+        <div class="log-list">
+          {notes.map((note) => (
+            <article class="log-card">
+              <time datetime={note.data.date.toISOString()}>{formatNoteDate(note.data.date)}</time>
+              <div>
+                <h3><a href={`/writing/${note.id}/`}>{note.data.title}</a></h3>
+                <p>{note.data.description}</p>
+              </div>
+              <a class="log-arrow" href={`/writing/${note.id}/`} aria-label={`Read ${note.data.title}`}>
+                <span aria-hidden="true">→</span>
+              </a>
+            </article>
+          ))}
+        </div>
+
+        <a class="text-link" href="/writing/">all notes <span aria-hidden="true">→</span></a>
+      </section>
+    )}
+
+    <section class="section container" aria-labelledby="cta-title">
+      <div class="command-cta">
+        <p class="cmd-line"><span class="prompt">$</span> start-project --with niroj <span class="cursor" aria-hidden="true">_</span></p>
+        <div class="cta-grid">
+          <div>
+            <h2 id="cta-title">Let's make it happen.</h2>
+            <p>Design, web work or a practical security pass — tell me what you need and I'll get back to you.</p>
+          </div>
+          <a class="btn btn-primary" href={inquiryHref}>open email <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+  </div>
 </BaseLayout>
 
 <style>
-  .hero {
-    display: grid;
-    align-items: center;
-    gap: 3rem;
-    padding-block: clamp(4rem, 10vw, 7rem) clamp(3rem, 7vw, 5rem);
+  .terminal-home {
+    position: relative;
+    isolation: isolate;
   }
 
-  .hero-copy .eyebrow {
+  .terminal-home::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 52px 52px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 78%);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 78%);
+    opacity: 0.55;
+  }
+
+  .hero {
+    display: grid;
+    gap: 1.25rem;
+    padding-block: clamp(2.5rem, 7vw, 5rem) clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .terminal-window {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 92%, transparent), var(--color-surface)),
+      var(--color-surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .terminal-window::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 38%;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent, var(--color-accent-soft), transparent);
+    opacity: 0.5;
+    transform: translateY(-120%);
+    animation: scan 11s linear infinite;
+  }
+
+  .window-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface-raised);
+  }
+
+  .window-dots {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .window-dots i {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--color-border);
+  }
+
+  .window-dots i:first-child {
+    background: var(--color-accent-2);
+  }
+
+  .window-path {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-muted);
+  }
+
+  .window-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     color: var(--color-link);
   }
 
+  .live-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    flex: none;
+    border-radius: 50%;
+    background: var(--color-accent);
+    box-shadow: 0 0 0 4px var(--color-accent-soft);
+    animation: live-pulse 3.6s ease-in-out infinite;
+  }
+
+  .hero-grid {
+    display: grid;
+    gap: 2.5rem;
+    padding: clamp(1.75rem, 5vw, 3.5rem);
+  }
+
+  .cmd-line {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+
+  .prompt {
+    margin-right: 0.5rem;
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .cursor {
+    color: var(--color-accent);
+    animation: cursor-blink 1.2s steps(1) infinite;
+  }
+
   h1 {
-    max-width: 18ch;
-    margin-top: 1.25rem;
+    margin-top: 1.1rem;
+    font-size: clamp(3rem, 9vw, 6.2rem);
+    line-height: 0.94;
+    letter-spacing: -0.06em;
+  }
+
+  h1 span {
+    color: var(--color-accent);
   }
 
   .lede {
+    max-width: 56ch;
     margin-top: 1.5rem;
+    color: var(--color-muted);
+    font-size: 1.05rem;
   }
 
-  .status {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-top: 2rem;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-  }
-
-  .actions {
+  .hero-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin-top: 1.75rem;
+    margin-top: 2rem;
   }
 
-  .button {
+  .btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.85rem 1.3rem;
+    gap: 0.6rem;
+    padding: 0.85rem 1.25rem;
     border: 1px solid transparent;
     border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
     font-weight: 700;
-    font-size: 0.95rem;
     text-decoration: none;
-    transition: transform var(--transition), background-color var(--transition), border-color var(--transition), color var(--transition);
+    transition: transform var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition);
   }
 
-  .button:hover {
+  .btn:hover {
     transform: translateY(-2px);
   }
 
-  .button-primary {
+  .btn-primary {
     background: var(--color-accent);
     color: var(--color-accent-ink);
   }
 
-  .button-primary:hover {
+  .btn-primary:hover {
     background: var(--accent-hover);
+    box-shadow: 0 12px 28px var(--color-accent-soft);
   }
 
-  .button-secondary {
+  .btn-ghost {
     border-color: var(--color-border);
+    background: var(--color-surface-raised);
     color: var(--color-text);
-    background: var(--color-surface);
   }
 
-  .button-secondary:hover {
-    border-color: var(--color-link);
+  .btn-ghost:hover {
+    border-color: var(--color-accent-line);
     color: var(--color-link);
   }
 
-  .service-grid,
-  .project-grid {
+  .availability {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-top: 1.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+
+  .console {
+    align-self: stretch;
+    padding: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 1.6rem, var(--grid-line) 1.6rem 1.61rem),
+      var(--color-bg-deep);
+    box-shadow: inset 0 0 40px color-mix(in srgb, var(--color-text) 5%, transparent);
+  }
+
+  .console-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .console-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-width: 0;
+  }
+
+  .console-identity picture {
+    display: contents;
+  }
+
+  .console-identity img {
+    width: 3.5rem;
+    height: 3.5rem;
+    flex: none;
+    border: 2px solid var(--color-accent);
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  .console-identity strong,
+  .console-identity span {
+    display: block;
+    overflow-wrap: anywhere;
+  }
+
+  .console-identity strong {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .console-identity span {
+    margin-top: 0.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--color-muted);
+  }
+
+  .console-tag {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    color: var(--color-link);
+    white-space: nowrap;
+  }
+
+  .console pre {
+    margin: 1.1rem 0 0;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.75;
+    color: var(--color-muted);
+  }
+
+  .c-comment { color: var(--color-link); opacity: 0.75; }
+  .c-key { color: var(--color-link); }
+  .c-str { color: var(--color-accent-2); }
+  .c-ok { color: var(--color-accent); }
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .metric {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .metric strong {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--color-accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .metric span {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .section-head {
+    max-width: 68ch;
+  }
+
+  .section-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-link);
+  }
+
+  .section-head h2 {
+    margin-top: 0.8rem;
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+  }
+
+  .section-head > p:last-child {
+    margin-top: 1rem;
+    color: var(--color-muted);
+  }
+
+  .module-list {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .module {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: center;
+    gap: 1.1rem;
+    padding: 1.35rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-soft);
+    transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+  }
+
+  .module:hover {
+    transform: translateX(4px);
+    border-color: var(--color-accent-line);
+    box-shadow: var(--shadow-card);
+  }
+
+  .module-index {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-accent);
+  }
+
+  .module-icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: none;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 50%;
+    background: var(--color-accent-soft);
+    color: var(--color-link);
+  }
+
+  .module-icon svg {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+  .module-copy h3 {
+    font-size: 1.1rem;
+  }
+
+  .module-copy p {
+    margin-top: 0.4rem;
+    color: var(--color-muted);
+    font-size: 0.92rem;
+  }
+
+  .module-arrow {
+    color: var(--color-link);
+    font-size: 1.1rem;
+  }
+
+  .security-console {
+    margin-top: 1rem;
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background:
+      radial-gradient(circle at 100% 0%, var(--color-accent-soft), transparent 45%),
+      var(--color-surface);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .security-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .security-icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    flex: none;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 50%;
+    background: var(--color-accent-soft);
+    color: var(--color-link);
+  }
+
+  .security-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .security-head h3 {
+    margin-top: 0.5rem;
+    font-size: 1.35rem;
+  }
+
+  .security-note {
+    max-width: 70ch;
+    margin-top: 1.25rem;
+    color: var(--color-muted);
+  }
+
+  .security-meta {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .meta-label {
+    display: block;
+    margin-bottom: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .work-list {
     display: grid;
     gap: 1rem;
     margin-top: 2rem;
   }
 
-  .more-link {
-    display: inline-block;
-    margin-top: 1.75rem;
-    font-size: 0.9rem;
-    font-weight: 700;
-    text-decoration: none;
-  }
-
-  .more-link:hover {
-    color: var(--color-link);
-  }
-
-  .note-wrap {
-    margin-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .cta {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    align-items: flex-start;
-    padding: clamp(2rem, 5vw, 3.5rem);
+  .work-card {
     overflow: hidden;
-    background:
-      radial-gradient(circle at 90% 20%, var(--color-accent-soft), transparent 55%),
-      var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-soft);
+    transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
   }
 
-  .cta h2 {
-    margin-top: 0.85rem;
+  .work-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-accent-line);
+    box-shadow: var(--shadow-card);
   }
 
-  .cta p:not(.eyebrow) {
-    margin-top: 1rem;
-    max-width: 52ch;
+  .work-card.featured {
+    display: grid;
+    align-items: stretch;
+  }
+
+  .work-media {
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    background: var(--color-bg-deep);
+  }
+
+  .work-body {
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .work-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     color: var(--color-muted);
   }
 
-  @media (min-width: 900px) {
-    .hero {
+  .work-index {
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .work-body h3 {
+    margin-top: 0.9rem;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+  }
+
+  .work-body h3 a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .work-body h3 a:hover {
+    color: var(--color-link);
+  }
+
+  .work-body > p:not(.work-meta):not(.work-security) {
+    margin-top: 1rem;
+    color: var(--color-muted);
+  }
+
+  .work-security {
+    margin-top: 1.5rem;
+    padding: 1rem 1.15rem;
+    border-left: 2px solid var(--color-accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: var(--color-accent-soft);
+    font-size: 0.88rem;
+  }
+
+  .work-security strong {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: var(--color-link);
+  }
+
+  .work-tags {
+    margin-top: 1.25rem;
+  }
+
+  .work-link,
+  .text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--color-link);
+    text-decoration: none;
+  }
+
+  .work-link {
+    margin-top: 1.5rem;
+  }
+
+  .text-link {
+    margin-top: 1.75rem;
+  }
+
+  .work-link:hover span,
+  .text-link:hover span {
+    transform: translateX(4px);
+  }
+
+  .work-link span,
+  .text-link span {
+    transition: transform var(--transition);
+  }
+
+  .log-list {
+    margin-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .log-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.5rem 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+    transition: background-color var(--transition), padding-inline var(--transition);
+  }
+
+  .log-card:hover {
+    padding-inline: 1rem;
+    background: var(--color-surface);
+  }
+
+  .log-card time {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    color: var(--color-link);
+    white-space: nowrap;
+  }
+
+  .log-card h3 {
+    font-size: 1.15rem;
+  }
+
+  .log-card h3 a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .log-card h3 a:hover {
+    color: var(--color-link);
+  }
+
+  .log-card p {
+    margin-top: 0.4rem;
+    color: var(--color-muted);
+    font-size: 0.92rem;
+  }
+
+  .log-arrow {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    color: var(--color-link);
+    text-decoration: none;
+    transition: transform var(--transition), border-color var(--transition);
+  }
+
+  .log-arrow:hover {
+    transform: translateX(3px);
+    border-color: var(--color-accent-line);
+  }
+
+  .command-cta {
+    padding: clamp(1.75rem, 5vw, 3rem);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 90% 10%, var(--color-accent-soft), transparent 55%),
+      var(--color-surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .cta-grid {
+    display: grid;
+    gap: 1.5rem;
+    align-items: end;
+    margin-top: 1.25rem;
+  }
+
+  .cta-grid h2 {
+    font-size: clamp(1.8rem, 4vw, 2.7rem);
+  }
+
+  .cta-grid p {
+    max-width: 58ch;
+    margin-top: 0.85rem;
+    color: var(--color-muted);
+  }
+
+  @keyframes cursor-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  @keyframes live-pulse {
+    0%, 100% { box-shadow: 0 0 0 4px var(--color-accent-soft); }
+    50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-accent) 8%, transparent); }
+  }
+
+  @keyframes scan {
+    to { transform: translateY(360%); }
+  }
+
+  @media (min-width: 860px) {
+    .hero-grid {
       grid-template-columns: 1.05fr 0.95fr;
+      align-items: center;
+    }
+
+    .security-meta {
+      grid-template-columns: 0.8fr 1.2fr;
+    }
+
+    .work-card.featured {
+      grid-template-columns: 1fr 1fr;
     }
   }
 
   @media (min-width: 720px) {
-    .service-grid {
-      grid-template-columns: repeat(3, 1fr);
+    .cta-grid {
+      grid-template-columns: 1fr auto;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .module {
+      grid-template-columns: auto 1fr;
+      align-items: start;
+      gap: 0.9rem;
     }
 
-    .cta {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
+    .module-index,
+    .module-arrow {
+      display: none;
+    }
+
+    .log-card {
+      grid-template-columns: 1fr auto;
+    }
+
+    .log-card time {
+      grid-column: 1 / -1;
+    }
+
+    .window-path {
+      display: none;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .metric {
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .console pre {
+      font-size: 0.65rem;
     }
   }
 </style>

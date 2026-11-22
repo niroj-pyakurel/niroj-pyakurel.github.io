@@ -20,9 +20,9 @@ npm run preview  # preview the built site
 | Hero copy, availability, service order, contact details, skills, bio, security thread | `src/data/site.js` |
 | Navigation links | `src/data/navigation.js` |
 | Email / LinkedIn / GitHub links | `src/data/socials.js` |
-| Work experience (feeds `/contact` and `/resume`) | `src/data/experience.js` |
+| Work experience (feeds `/about` and `/resume`) | `src/data/experience.js` |
 | Case studies | `src/content/projects/*.md` |
-| Notes | `src/content/writing/*.md` |
+| Blog posts | `src/content/blog/*.md` |
 | Theme colors, typography, spacing | `src/styles/tokens.css` |
 | Global layout styles | `src/styles/global.css` |
 
@@ -50,9 +50,9 @@ securityNotes: What was checked or considered, in plain language.
 
 Tags available: `design`, `web`, `security`. Every project should include `securityNotes`.
 
-## Adding a note
+## Adding a blog post
 
-Create `src/content/writing/your-slug.md` with `title`, `description`, `date` and optional `tags` in frontmatter, then write the note in Markdown. The feed at `/rss.xml` updates automatically.
+Create `src/content/blog/your-slug.md` with `title`, `description`, `date` and optional `tags` in frontmatter, then write the post in Markdown. The feed at `/rss.xml` updates automatically. Old `/writing/*` URLs redirect to `/blog/*`.
 
 ## Resume PDF
 

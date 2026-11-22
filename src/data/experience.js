@@ -29,6 +29,9 @@ export const experience = [
     organization: 'Leo Club of Kathmandu Imperial',
     period: 'Jun 2026 – Present',
     group: 'Roles & responsibilities',
-    highlights: [],
+    highlights: [
+      'Led club initiatives and coordinated community events from planning through delivery.',
+      'Managed team communications and member updates to keep volunteers aligned.',
+    ],
   },
 ];

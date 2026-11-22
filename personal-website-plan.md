@@ -71,7 +71,7 @@ export const site = {
   security: {
     label: 'Security lens',
     tools: ['Nessus', 'Nmap', 'Wireshark', 'Burp Suite'],
-    certifications: ['Cybersecurity for Businesses — EC-Council', 'Ethical Hacking — Netcad'],
+    certifications: ['Cybersecurity for Businesses — EC-Council', 'Ethical Hacking — Cisco NetAcad'],
     note: 'Every web project gets a basic security pass before launch.'
   }
 };
@@ -90,7 +90,7 @@ export const site = {
 
 ### About
 
-Lead with the freelance identity and the blend of skills: design/media work alongside the CS/security background. Include CS degree (Bachelor in Computer Science, Honors Cybersecurity and Networking — Lincoln University College, Malaysia / Kathmandu, 05/2024–Present), certifications (Cybersecurity for Businesses — EC-Council, 11/2025; Ethical Hacking — Netcad, 03/2026), and tools (Nessus, Nmap, Wireshark, Burp Suite). Follow with the creative differentiator: graphic design at Yalla Himalayas Travel and Tours and live NPL coverage at Himalaya Television. Close on clarity, consistency and teamwork.
+Lead with the freelance identity and the blend of skills: design/media work alongside the CS/security background. Include CS degree (Bachelor in Computer Science, Honors Cybersecurity and Networking — Lincoln University College, Malaysia / Kathmandu, 05/2024–Present), certifications (Cybersecurity for Businesses — EC-Council, 11/2025; Ethical Hacking — Cisco NetAcad, 03/2026), and tools (Nessus, Nmap, Wireshark, Burp Suite). Follow with the creative differentiator: graphic design at Yalla Himalayas Travel and Tours and live NPL coverage at Himalaya Television. Close on clarity, consistency and teamwork.
 
 ### Services (Home page)
 
@@ -103,7 +103,7 @@ Security is secondary in the pitch but visible in four places:
 1. **Home** — a compact `SecurityStrip` directly under the service cards, rendered from `site.security`: the four tools, both certifications, and the one-line "security lens" statement.
 2. **Projects index** — a `security` tag/filter alongside `design` and `web`, so visitors can find security-relevant work.
 3. **Case studies** — every project includes a short "Security notes" subsection describing what was checked or considered. Written honestly from real work; no invented client engagements.
-4. **Writing** — a `security` tag on notes, with the first sample note about practical security tooling.
+4. **Blog** — a `security` tag on posts, with the first sample post about practical security tooling.
 
 `/about` and `/resume` already carry the degree, certifications and tools, reinforcing the same thread.
 
@@ -137,7 +137,7 @@ A single `src/data/experience.js` file feeds both the compact block on `/contact
 - Bachelor in Computer Science (Honors Cybersecurity and Networking), Lincoln University College, Malaysia — Kathmandu, Nepal, 05/2024–Present
 - Higher Secondary Examination, Uniglobe Higher Secondary School, Kathmandu, 07/2021–04/2023
 - Cybersecurity for Businesses — EC-Council, 11/2025
-- Ethical Hacking — Netcad, 03/2026
+- Ethical Hacking — Cisco NetAcad, 03/2026
 
 ### Contact
 
@@ -156,14 +156,14 @@ Copy the FlowCV PDF into `public/niroj-pyakurel-resume.pdf` and link it from `/r
 ## 4. Information Architecture
 
 ```txt
-/                     Home — hero, availability, services, security lens, selected work, latest note, CTA
-/about                About — background, tools, approach, values
+/                     Home — hero, availability, services, security lens, selected work, latest post, CTA
+/about                About — background, roles timeline, tools, principles, CTA
 /projects             Projects index — tag filters including `security`
 /projects/[slug]      Case study (Invoice Generator first) with Security notes section
-/writing              Notes — tag filters including `security`, occasional posts only
-/writing/[slug]       Note detail — prose layout, reading time, prev/next
+/blog                 Blog — tag filters including `security`, occasional posts only
+/blog/[slug]          Post detail — prose layout, reading time, prev/next
 /resume               Full timeline, skills, education, certifications, PDF link
-/contact              Email + LinkedIn + compact Experience
+/contact              Email + LinkedIn + quick brief and details
 /404                  Friendly not-found page
 /rss.xml              Feed
 /sitemap-index.xml    Sitemap
@@ -208,12 +208,12 @@ Copy the FlowCV PDF into `public/niroj-pyakurel-resume.pdf` and link it from `/r
 │   │   └── Tag.astro
 │   ├── content/
 │   │   ├── projects/                # *.md + frontmatter
-│   │   └── writing/                 # *.md + frontmatter
+│   │   └── blog/                    # *.md + frontmatter
 │   ├── data/
 │   │   ├── site.js                  # positioning and details — the swap file
 │   │   ├── navigation.js
 │   │   ├── socials.js
-│   │   └── experience.js            # single source for Contact + Resume
+│   │   └── experience.js            # single source for About + Resume
 │   ├── layouts/
 │   │   ├── BaseLayout.astro
 │   │   └── ArticleLayout.astro
@@ -222,8 +222,8 @@ Copy the FlowCV PDF into `public/niroj-pyakurel-resume.pdf` and link it from `/r
 │   │   ├── about.astro
 │   │   ├── projects/index.astro
 │   │   ├── projects/[slug].astro
-│   │   ├── writing/index.astro
-│   │   ├── writing/[slug].astro
+│   │   ├── blog/index.astro
+│   │   ├── blog/[slug].astro
 │   │   ├── resume.astro
 │   │   ├── contact.astro
 │   │   ├── 404.astro
@@ -286,7 +286,7 @@ Workflow requirements for `.github/workflows/deploy.yml`:
 
 ### Phase 2 — Content & pages
 
-- Define Markdown content collections for projects and writing.
+- Define Markdown content collections for projects and blog posts.
 - Add the Invoice Generator case study and one sample note.
 - Build all routes in the IA, including `ArticleLayout` and `404`.
 - Build `ServiceCard`, `SecurityStrip`, `ProjectCard`, `NoteCard`, `Tag`.

@@ -1,8 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CTABanner from '../components/CTABanner.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import SecurityStrip from '../components/SecurityStrip.astro';
-import ProfileCard from '../components/ProfileCard.astro';
 import { site } from '../data/site.js';
 import { experience } from '../data/experience.js';
 
@@ -10,6 +9,24 @@ const stats = [
   { value: String(site.skills.length).padStart(2, '0'), label: 'Skill areas' },
   { value: String(experience.length).padStart(2, '0'), label: 'Roles held' },
   { value: String(site.certifications.length).padStart(2, '0'), label: 'Certifications' },
+];
+
+const principles = [
+  {
+    number: '01',
+    title: 'Clarity',
+    copy: 'Start with the real goal, strip out the noise, and make the next step obvious to everyone involved.',
+  },
+  {
+    number: '02',
+    title: 'Consistency',
+    copy: 'Keep the same care from first sketch to final handoff — in the visuals, the code, and the documentation.',
+  },
+  {
+    number: '03',
+    title: 'Security by Default',
+    copy: 'Treat basic checks and clear findings as part of normal delivery, not an afterthought at the end.',
+  },
 ];
 ---
 
@@ -29,7 +46,29 @@ const stats = [
           ))}
         </ul>
       </div>
-      <ProfileCard />
+      <aside class="glance-card panel" aria-labelledby="glance-title">
+        <div class="glance-head">
+          <p class="eyebrow">At a glance</p>
+          <h2 id="glance-title">Focus areas</h2>
+        </div>
+
+        <ul class="focus-list">
+          {site.services.map((service, index) => (
+            <li>
+              <span class="focus-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              <div>
+                <strong>{service.title}</strong>
+                <p>{service.description}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <div class="glance-footer">
+          <span>{site.location}</span>
+          <a href="/contact/">Available for freelance work <span aria-hidden="true">→</span></a>
+        </div>
+      </aside>
     </section>
 
     <section class="block story-section" aria-labelledby="story-title">
@@ -82,7 +121,30 @@ const stats = [
     </section>
 
     <section class="block" aria-labelledby="background-title">
-      <SectionHeading eyebrow="Background" title="Education & certifications" id="background-title" index="03" />
+      <SectionHeading eyebrow="Background" title="Experience & education" id="background-title" index="03" />
+
+      <h3 class="subsection-title">Roles held</h3>
+      <ol class="timeline">
+        {experience.map((item, index) => (
+          <li>
+            <span class="timeline-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <div class="timeline-body">
+              <div class="timeline-head">
+                <div>
+                  <strong>{item.role}</strong>
+                  <span>{item.organization}</span>
+                </div>
+                <span class="period">{item.period}</span>
+              </div>
+              <ul class="timeline-highlights">
+                {item.highlights.map((highlight) => <li>{highlight}</li>)}
+              </ul>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <h3 class="subsection-title">Education & certifications</h3>
       <div class="detail-grid">
         <div class="detail-panel panel">
           <div class="detail-head">
@@ -131,9 +193,21 @@ const stats = [
       <SectionHeading eyebrow="How I work" title="Clarity, consistency, teamwork" id="approach-title" index="04">
         Good work depends on knowing what matters, keeping it consistent, and communicating clearly while you do it.
       </SectionHeading>
-      <SecurityStrip />
+      <div class="principles panel">
+        <div class="principle-grid">
+          {principles.map((principle) => (
+            <article class="principle">
+              <span class="principle-number" aria-hidden="true">{principle.number}</span>
+              <h3>{principle.title}</h3>
+              <p>{principle.copy}</p>
+            </article>
+          ))}
+        </div>
+      </div>
     </section>
   </div>
+
+  <CTABanner />
 </BaseLayout>
 
 <style>
@@ -186,6 +260,81 @@ const stats = [
   .stats span {
     font-size: 0.75rem;
     color: var(--color-muted);
+  }
+
+  .glance-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: clamp(1.5rem, 3.5vw, 2rem);
+    background:
+      radial-gradient(circle at 100% 0%, var(--color-accent-soft), transparent 52%),
+      var(--color-surface);
+  }
+
+  .glance-head h2 {
+    margin-top: 0.6rem;
+    font-size: 1.5rem;
+  }
+
+  .focus-list {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .focus-list li {
+    display: flex;
+    gap: 0.9rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .focus-list li:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .focus-index {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-link);
+  }
+
+  .focus-list strong {
+    display: block;
+    font-size: 0.98rem;
+  }
+
+  .focus-list p {
+    margin-top: 0.3rem;
+    color: var(--color-muted);
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+
+  .glance-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .glance-footer span {
+    color: var(--color-muted);
+    font-size: 0.8rem;
+  }
+
+  .glance-footer a {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
   }
 
   .block {
@@ -328,6 +477,121 @@ const stats = [
     color: var(--caption-ink);
   }
 
+  .subsection-title {
+    margin-top: 2.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-link);
+  }
+
+  .timeline {
+    display: grid;
+    gap: 1rem;
+    margin: 1.25rem 0 0;
+    padding: 0 0 0 1.5rem;
+    list-style: none;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .timeline li {
+    position: relative;
+  }
+
+  .timeline-index {
+    position: absolute;
+    top: 1.25rem;
+    left: -2.35rem;
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 50%;
+    background: var(--color-surface);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--color-link);
+  }
+
+  .timeline-body {
+    padding: 1.4rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+  }
+
+  .timeline-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .timeline-head strong {
+    display: block;
+    font-size: 1.05rem;
+  }
+
+  .timeline-head div span {
+    color: var(--color-muted);
+    font-size: 0.88rem;
+  }
+
+  .period {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-link);
+  }
+
+  .timeline-highlights {
+    margin-top: 1rem;
+    padding-left: 1.1rem;
+    color: var(--color-muted);
+    font-size: 0.88rem;
+  }
+
+  .timeline-highlights li + li {
+    margin-top: 0.35rem;
+  }
+
+  .principles {
+    margin-top: 2rem;
+    overflow: hidden;
+  }
+
+  .principle-grid {
+    display: grid;
+  }
+
+  .principle {
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+  }
+
+  .principle + .principle {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .principle-number {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-link);
+  }
+
+  .principle h3 {
+    margin-top: 0.9rem;
+    font-size: 1.15rem;
+  }
+
+  .principle p {
+    margin-top: 0.65rem;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
   .skill-grid,
   .detail-grid {
     display: grid;
@@ -423,7 +687,7 @@ const stats = [
     .about-hero {
       grid-template-columns: 1.1fr 0.9fr;
       gap: 4rem;
-      align-items: center;
+      align-items: stretch;
     }
 
     .story-layout {
@@ -438,6 +702,15 @@ const stats = [
   }
 
   @media (min-width: 720px) {
+    .principle-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .principle + .principle {
+      border-top: 0;
+      border-left: 1px solid var(--color-border);
+    }
+
     .skill-grid {
       grid-template-columns: repeat(3, 1fr);
     }

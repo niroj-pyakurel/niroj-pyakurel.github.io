@@ -3,6 +3,7 @@ export function initTagFilters() {
     const selector = group.getAttribute('data-tag-filter');
     const cards = document.querySelectorAll(selector);
     const buttons = group.querySelectorAll('button[data-filter]');
+    const counter = document.querySelector('[data-filter-count]');
 
     const apply = (tag) => {
       cards.forEach((card) => {
@@ -12,6 +13,10 @@ export function initTagFilters() {
       buttons.forEach((button) => {
         button.setAttribute('aria-pressed', String(button.dataset.filter === tag));
       });
+      if (counter) {
+        const shown = [...cards].filter((card) => !card.hidden).length;
+        counter.textContent = `${shown} shown`;
+      }
     };
 
     buttons.forEach((button) => {

@@ -27,4 +27,4 @@ A scan result is a starting point, not a finding you can publish. Verify what a 
 
 ## Where this leads
 
-My certifications — Cybersecurity for Businesses (EC-Council) and Ethical Hacking (Netcad) — gave me the vocabulary and method; regular practice with these tools is what makes the vocabulary useful. I use the same habit on web work: a basic security pass before launch, with findings written in plain language.
+My certifications — Cybersecurity for Businesses (EC-Council) and Ethical Hacking (Cisco NetAcad) — gave me the vocabulary and method; regular practice with these tools is what makes the vocabulary useful. I use the same habit on web work: a basic security pass before launch, with findings written in plain language.

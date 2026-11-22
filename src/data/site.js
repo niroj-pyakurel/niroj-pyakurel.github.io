@@ -67,7 +67,7 @@ export const site = {
     tools: ['Nessus', 'Nmap', 'Wireshark', 'Burp Suite'],
     certifications: [
       'Cybersecurity for Businesses — EC-Council',
-      'Ethical Hacking — Netcad',
+      'Ethical Hacking — Cisco NetAcad',
     ],
     note: 'Every web project gets a basic security pass before launch.',
   },
@@ -87,7 +87,7 @@ export const site = {
 
   certifications: [
     { title: 'Cybersecurity for Businesses', issuer: 'EC-Council', date: 'Nov 2025' },
-    { title: 'Ethical Hacking', issuer: 'Netcad', date: 'Mar 2026' },
+    { title: 'Ethical Hacking', issuer: 'Cisco NetAcad', date: 'Mar 2026' },
   ],
 
   // Migrated to a Markdown content collection in Phase 2.

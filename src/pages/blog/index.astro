@@ -1,0 +1,286 @@
+---
+import { getCollection } from 'astro:content';
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import NoteCard from '../../components/NoteCard.astro';
+import { site } from '../../data/site.js';
+
+const description = 'Articles, technical write-ups, and practical notes on design, web development, and security.';
+const notes = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const tagOrder = ['design', 'web', 'security'];
+const usedTags = tagOrder.filter((tag) =>
+  notes.some((note) => note.data.tags?.includes(tag)),
+);
+const filters = ['all', ...usedTags];
+const latest = notes[0];
+---
+
+<BaseLayout title="Blog" description={description}>
+  <div class="container page">
+    <header class="blog-hero panel">
+      <div class="hero-copy">
+        <SectionHeading as="h1" eyebrow="Blog" title="Blog" index="02">
+          <p>{description}</p>
+        </SectionHeading>
+
+        <a class="latest-link" href={`/blog/${latest.id}/`}>
+          <span class="latest-label">Latest post</span>
+          <strong>{latest.data.title}</strong>
+          <span class="latest-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+      <div class="hero-mark" aria-hidden="true">{'✎'}</div>
+    </header>
+
+    <div class="toolbar panel" role="group" aria-label="Filter posts by tag">
+      <span class="toolbar-label">Filter by</span>
+      <div class="filter-bar" data-tag-filter=".note-card">
+        {filters.map((filter) => (
+          <button type="button" data-filter={filter} aria-pressed={filter === 'all'}>{filter}</button>
+        ))}
+      </div>
+      <span class="toolbar-count" data-filter-count>{notes.length} shown</span>
+    </div>
+
+    <div class="blog-layout">
+      <div class="note-list">
+        {notes.map((note) => (
+          <NoteCard
+            title={note.data.title}
+            description={note.data.description}
+            tags={note.data.tags}
+            date={note.data.date}
+            href={`/blog/${note.id}/`}
+          />
+        ))}
+      </div>
+
+      <aside class="blog-aside">
+        <section class="aside-panel panel">
+          <h2>Topics</h2>
+          <ul class="chip-list">
+            {usedTags.map((tag) => (
+              <li class:list={['chip', { 'chip-accent': tag === 'security' }]}>{tag}</li>
+            ))}
+          </ul>
+          <p>{site.security.note}</p>
+        </section>
+
+        <section class="aside-panel panel subscribe">
+          <span class="subscribe-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 6h16v12H4z" /><path d="m4 7 8 6 8-6" />
+            </svg>
+          </span>
+          <h2>Subscribe</h2>
+          <p>Add the feed to your reader — new posts appear there automatically.</p>
+          <a href="/rss.xml">Subscribe via RSS →</a>
+        </section>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { initTagFilters } from '../../scripts/filters.js';
+
+  initTagFilters();
+</script>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+
+  .blog-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: clamp(1.75rem, 5vw, 3rem);
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 100% 0%, var(--color-accent-soft), transparent 55%),
+      var(--color-surface);
+  }
+
+  .hero-copy {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-copy h1 {
+    max-width: 18ch;
+  }
+
+  .hero-mark {
+    position: absolute;
+    right: 0.1em;
+    bottom: -0.25em;
+    font-size: clamp(6rem, 16vw, 11rem);
+    line-height: 1;
+    color: var(--color-accent-soft);
+    pointer-events: none;
+  }
+
+  .latest-link {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    max-width: 42rem;
+    margin-top: 2rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--color-accent-line);
+    border-radius: var(--radius);
+    background: var(--color-accent-soft);
+    text-decoration: none;
+    transition: transform var(--transition), border-color var(--transition);
+  }
+
+  .latest-link:hover {
+    transform: translateX(3px);
+    border-color: var(--color-accent);
+  }
+
+  .latest-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-link);
+  }
+
+  .latest-link strong {
+    font-size: 1rem;
+  }
+
+  .latest-arrow {
+    margin-left: auto;
+    color: var(--color-link);
+  }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .toolbar-label,
+  .toolbar-count {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .toolbar-count {
+    margin-left: auto;
+  }
+
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filter-bar button {
+    padding: 0.4rem 0.85rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: border-color var(--transition), color var(--transition), background-color var(--transition);
+  }
+
+  .filter-bar button:hover,
+  .filter-bar button[aria-pressed='true'] {
+    border-color: var(--color-accent-line);
+    background: var(--color-accent-soft);
+    color: var(--color-link);
+  }
+
+  .blog-layout {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .note-list {
+    min-width: 0;
+  }
+
+  .blog-aside {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+  }
+
+  .aside-panel {
+    padding: 1.75rem;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .aside-panel h2 {
+    margin-bottom: 1.25rem;
+    font-size: 1.35rem;
+  }
+
+  .aside-panel > p {
+    margin-top: 1.25rem;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+  }
+
+  .subscribe {
+    background:
+      radial-gradient(circle at 100% 0%, var(--color-accent-soft), transparent 55%),
+      var(--color-surface);
+  }
+
+  .subscribe-icon {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 10px;
+    background: var(--color-accent-soft);
+    color: var(--color-link);
+  }
+
+  .subscribe-icon svg {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+  .aside-panel a {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  @media (min-width: 900px) {
+    .blog-layout {
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 3rem;
+    }
+  }
+</style>

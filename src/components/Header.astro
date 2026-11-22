@@ -61,7 +61,9 @@ const isActive = (href) => (href === '/' ? path === '/' : path === href.replace(
     top: 0;
     z-index: 50;
     border-bottom: 1px solid var(--color-border);
-    background: var(--color-bg);
+    background: var(--header-bg);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
   }
 
   .site-header::before {

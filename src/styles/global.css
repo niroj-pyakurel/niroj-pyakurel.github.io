@@ -13,9 +13,7 @@ body {
   margin: 0;
   min-height: 100vh;
   background-color: var(--color-bg);
-  background-image:
-    radial-gradient(ellipse 62% 42% at 88% -8%, var(--color-accent-soft), transparent 72%),
-    radial-gradient(ellipse 54% 38% at -12% 104%, var(--color-teal-soft), transparent 72%);
+  background-image: var(--page-wash);
   background-repeat: no-repeat;
   color: var(--color-text);
   font-family: var(--font-body);
@@ -57,6 +55,11 @@ a {
 
 a:hover {
   text-decoration-thickness: 2px;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
 }
 
 :focus-visible {

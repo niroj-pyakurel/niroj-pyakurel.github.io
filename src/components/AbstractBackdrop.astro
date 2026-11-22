@@ -74,7 +74,7 @@
     aspect-ratio: 1;
     border: 1px solid var(--color-accent-line);
     border-radius: 50%;
-    opacity: 0.35;
+    opacity: var(--halo-opacity);
   }
 
   .halo::after {
@@ -89,7 +89,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    opacity: 0.8;
+    opacity: var(--backdrop-opacity);
   }
 
   @media (max-width: 700px) {
@@ -111,7 +111,7 @@
     .abstract-backdrop svg {
       transform: scale(1.3);
       transform-origin: 70% 15%;
-      opacity: 0.5;
+      opacity: calc(var(--backdrop-opacity) * 0.7);
     }
   }
 </style>

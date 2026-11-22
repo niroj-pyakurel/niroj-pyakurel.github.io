@@ -184,12 +184,12 @@ p {
   border-radius: 50%;
   background: var(--color-accent);
   box-shadow: 0 0 0 4px var(--color-accent-soft);
-  animation: status-pulse 3s ease-in-out infinite;
+  animation: status-pulse 5.5s ease-in-out infinite;
 }
 
 @keyframes status-pulse {
   0%, 100% { box-shadow: 0 0 0 4px var(--color-accent-soft); }
-  50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-accent) 8%, transparent); }
+  50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-accent) 7%, transparent); }
 }
 
 .skip-link {

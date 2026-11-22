@@ -64,15 +64,10 @@ import { site } from '../data/site.js';
   if (hero && visual && finePointer.matches && !reducedMotion.matches) {
     hero.addEventListener('pointermove', (event) => {
       const rect = visual.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width - 0.5;
-      const y = (event.clientY - rect.top) / rect.height - 0.5;
-      visual.style.setProperty('--tilt-x', `${(-y * 4).toFixed(2)}deg`);
-      visual.style.setProperty('--tilt-y', `${(x * 6).toFixed(2)}deg`);
-    });
-
-    hero.addEventListener('pointerleave', () => {
-      visual.style.setProperty('--tilt-x', '0deg');
-      visual.style.setProperty('--tilt-y', '0deg');
+      const x = ((event.clientX - rect.left) / rect.width) * 100;
+      const y = ((event.clientY - rect.top) / rect.height) * 100;
+      visual.style.setProperty('--mx', `${x.toFixed(1)}%`);
+      visual.style.setProperty('--my', `${y.toFixed(1)}%`);
     });
   }
 </script>
@@ -83,8 +78,25 @@ import { site } from '../data/site.js';
     display: grid;
     gap: 1rem;
     isolation: isolate;
-    transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
-    transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .hero-visual::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -14%;
+    background: radial-gradient(
+      260px circle at var(--mx, 50%) var(--my, 40%),
+      color-mix(in srgb, var(--color-accent) 12%, transparent),
+      transparent 72%
+    );
+    opacity: 0;
+    transition: opacity 700ms ease;
+    pointer-events: none;
+  }
+
+  .hero-visual:hover::before {
+    opacity: 1;
   }
 
   .float {
@@ -92,17 +104,21 @@ import { site } from '../data/site.js';
   }
 
   .float-identity {
-    animation: float-soft 7s ease-in-out infinite;
+    animation:
+      fade-in 900ms ease both,
+      float-soft 17s ease-in-out 1.2s infinite;
   }
 
   .float-code {
-    animation: float-alt 8.5s ease-in-out infinite;
-    animation-delay: -2s;
+    animation:
+      fade-in 900ms ease 120ms both,
+      float-alt 21s ease-in-out -4s infinite;
   }
 
   .float-tools {
-    animation: float-soft 9.5s ease-in-out infinite;
-    animation-delay: -5s;
+    animation:
+      fade-in 900ms ease 240ms both,
+      float-soft 24s ease-in-out -9s infinite;
   }
 
   .orbit {
@@ -116,14 +132,14 @@ import { site } from '../data/site.js';
   .orbit-one {
     inset: -6% -4% 24% 10%;
     opacity: 0.5;
-    animation: orbit-spin 38s linear infinite;
+    animation: orbit-spin 110s linear infinite;
   }
 
   .orbit-two {
     inset: 28% 4% -8% -6%;
     border-color: var(--color-teal-line);
     opacity: 0.45;
-    animation: orbit-spin 52s linear infinite reverse;
+    animation: orbit-spin 150s linear infinite reverse;
   }
 
   .identity {
@@ -140,7 +156,7 @@ import { site } from '../data/site.js';
     border: 2px solid var(--color-accent);
     border-radius: 50%;
     box-shadow: 0 0 0 6px var(--color-accent-soft);
-    animation: portrait-glow 4.5s ease-in-out infinite;
+    animation: portrait-glow 9s ease-in-out infinite;
   }
 
   .portrait picture {
@@ -262,19 +278,24 @@ import { site } from '../data/site.js';
   }
 
   .visual-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
     border-color: var(--color-accent-line);
-    box-shadow: 0 28px 70px rgb(0 0 0 / 0.36);
+    box-shadow: 0 26px 64px rgb(0 0 0 / 0.34);
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   @keyframes float-soft {
     0%, 100% { transform: translate3d(0, 0, 0); }
-    50% { transform: translate3d(0, -13px, 0); }
+    50% { transform: translate3d(0, -6px, 0); }
   }
 
   @keyframes float-alt {
-    0%, 100% { transform: translate3d(0, -7px, 0); }
-    50% { transform: translate3d(0, 9px, 0); }
+    0%, 100% { transform: translate3d(0, -3px, 0); }
+    50% { transform: translate3d(0, 4px, 0); }
   }
 
   @keyframes orbit-spin {
@@ -283,7 +304,7 @@ import { site } from '../data/site.js';
 
   @keyframes portrait-glow {
     0%, 100% { box-shadow: 0 0 0 6px var(--color-accent-soft); }
-    50% { box-shadow: 0 0 0 10px color-mix(in srgb, var(--color-accent) 7%, transparent); }
+    50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-accent) 7%, transparent); }
   }
 
   @media (max-width: 900px) {

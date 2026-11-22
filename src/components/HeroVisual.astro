@@ -7,25 +7,29 @@ import { site } from '../data/site.js';
   <div class="orbit orbit-two"></div>
 
   <div class="float float-identity">
-    <div class="identity">
-      <div class="portrait">
-        <picture>
-          <source srcset="/niroj.webp?v=20261122c" type="image/webp" />
-          <img src="/niroj.png?v=20261122b" width="96" height="96" alt="" />
-        </picture>
-      </div>
-      <div class="identity-copy">
-        <span class="mini-label">Based in</span>
-        <strong>{site.location}</strong>
-        <span class="status"><span class="status-dot"></span>{site.availability}</span>
+    <div class="mini-card identity-card">
+      <span class="card-label">01 · BASE</span>
+      <div class="identity">
+        <div class="portrait">
+          <picture>
+            <source srcset="/niroj.webp?v=20261122c" type="image/webp" />
+            <img src="/niroj.png?v=20261122b" width="96" height="96" alt="" />
+          </picture>
+        </div>
+        <div class="identity-copy">
+          <span class="mini-label">Based in</span>
+          <strong>{site.location}</strong>
+          <span class="status"><span class="status-dot"></span>{site.availability}</span>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="float float-code">
-    <div class="visual-card code-card">
+    <div class="mini-card code-card">
       <div class="card-bar">
-        <span></span><span></span><span></span>
+        <span class="card-label">02 · FOCUS</span>
+        <span class="window-dots"><i></i><i></i><i></i></span>
         <em>niroj.py</em>
       </div>
       <div class="code-lines">
@@ -38,7 +42,8 @@ import { site } from '../data/site.js';
   </div>
 
   <div class="float float-tools">
-    <div class="visual-card tool-card">
+    <div class="mini-card tool-card">
+      <span class="card-label">03 · TOOLS</span>
       <div class="tool-group">
         <span class="mini-label">Security tools</span>
         <ul class="chip-list">
@@ -59,8 +64,26 @@ import { site } from '../data/site.js';
   .hero-visual {
     position: relative;
     display: grid;
-    gap: 2rem;
+    gap: 2.25rem;
     isolation: isolate;
+  }
+
+  .hero-visual::before {
+    content: '';
+    position: absolute;
+    top: 1.75rem;
+    bottom: 1.75rem;
+    left: -1.15rem;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--color-accent-line) 12%,
+      var(--color-accent-line) 88%,
+      transparent
+    );
+    opacity: 0.7;
+    pointer-events: none;
   }
 
   .float {
@@ -68,17 +91,17 @@ import { site } from '../data/site.js';
   }
 
   .float-identity {
-    animation: float-soft 7s ease-in-out infinite;
+    animation: float-soft 8s ease-in-out infinite;
   }
 
   .float-code {
-    animation: float-alt 8.5s ease-in-out infinite;
-    animation-delay: -2s;
+    animation: float-alt 10s ease-in-out infinite;
+    animation-delay: -2.5s;
   }
 
   .float-tools {
-    animation: float-soft 9.5s ease-in-out infinite;
-    animation-delay: -5s;
+    animation: float-soft 12s ease-in-out infinite;
+    animation-delay: -6s;
   }
 
   .orbit {
@@ -91,15 +114,51 @@ import { site } from '../data/site.js';
 
   .orbit-one {
     inset: -6% -4% 24% 10%;
-    opacity: 0.5;
-    animation: orbit-spin 38s linear infinite;
+    opacity: 0.3;
+    animation: orbit-spin 48s linear infinite;
   }
 
   .orbit-two {
     inset: 28% 4% -8% -6%;
+    border-style: dashed;
     border-color: var(--color-teal-line);
-    opacity: 0.45;
-    animation: orbit-spin 52s linear infinite reverse;
+    opacity: 0.22;
+    animation: orbit-spin 64s linear infinite reverse;
+  }
+
+  .mini-card {
+    position: relative;
+    z-index: 1;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-raised);
+    box-shadow: var(--shadow-card);
+    transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+  }
+
+  .mini-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-accent-line);
+    box-shadow: 0 26px 64px rgb(0 0 0 / 0.34);
+  }
+
+  .card-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    color: var(--color-link);
+  }
+
+  .identity-card {
+    padding: 1rem 1.15rem 1.2rem;
+    background:
+      linear-gradient(120deg, var(--color-accent-soft), transparent 70%),
+      var(--color-surface-raised);
+  }
+
+  .identity-card .card-label {
+    margin-bottom: 0.9rem;
   }
 
   .identity {
@@ -115,8 +174,7 @@ import { site } from '../data/site.js';
     overflow: hidden;
     border: 2px solid var(--color-accent);
     border-radius: 50%;
-    box-shadow: 0 0 0 6px var(--color-accent-soft);
-    animation: portrait-glow 4.5s ease-in-out infinite;
+    box-shadow: 0 0 0 5px var(--color-accent-soft);
   }
 
   .portrait picture {
@@ -159,21 +217,6 @@ import { site } from '../data/site.js';
     color: var(--color-muted);
   }
 
-  .visual-card {
-    width: 100%;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    background: var(--color-surface-raised);
-    box-shadow: var(--shadow-card);
-    transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
-  }
-
-  .visual-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--color-accent-line);
-    box-shadow: 0 28px 70px rgb(0 0 0 / 0.36);
-  }
-
   .code-card {
     overflow: hidden;
   }
@@ -181,25 +224,30 @@ import { site } from '../data/site.js';
   .card-bar {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.75rem;
     padding: 0.75rem 0.95rem;
     border-bottom: 1px solid var(--color-border);
     background: var(--color-surface);
   }
 
-  .card-bar span {
-    width: 0.5rem;
-    height: 0.5rem;
+  .window-dots {
+    display: flex;
+    gap: 0.35rem;
+    margin-left: auto;
+  }
+
+  .window-dots i {
+    width: 0.45rem;
+    height: 0.45rem;
     border-radius: 50%;
     background: var(--color-border);
   }
 
-  .card-bar span:first-child {
+  .window-dots i:first-child {
     background: var(--color-accent-2);
   }
 
   .card-bar em {
-    margin-left: auto;
     font-family: var(--font-mono);
     font-size: 0.7rem;
     font-style: normal;
@@ -209,7 +257,7 @@ import { site } from '../data/site.js';
   .code-lines {
     display: grid;
     gap: 0.6rem;
-    padding: 1.25rem;
+    padding: 1.15rem;
     font-family: var(--font-mono);
     font-size: clamp(0.6rem, 1.1vw, 0.78rem);
     line-height: 1.5;
@@ -232,34 +280,34 @@ import { site } from '../data/site.js';
   .tool-card {
     display: grid;
     gap: 1rem;
-    padding: 1.25rem;
+    padding: 1.2rem 1.25rem 1.3rem;
+  }
+
+  .tool-card > .card-label {
+    margin-bottom: 0.2rem;
   }
 
   .tool-group .mini-label {
     display: block;
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.6rem;
   }
 
   @keyframes float-soft {
     0%, 100% { transform: translate3d(0, 0, 0); }
-    50% { transform: translate3d(0, -13px, 0); }
+    50% { transform: translate3d(0, -5px, 0); }
   }
 
   @keyframes float-alt {
-    0%, 100% { transform: translate3d(0, -7px, 0); }
-    50% { transform: translate3d(0, 9px, 0); }
+    0%, 100% { transform: translate3d(0, -2px, 0); }
+    50% { transform: translate3d(0, 4px, 0); }
   }
 
   @keyframes orbit-spin {
     to { transform: rotate(1turn); }
   }
 
-  @keyframes portrait-glow {
-    0%, 100% { box-shadow: 0 0 0 6px var(--color-accent-soft); }
-    50% { box-shadow: 0 0 0 10px color-mix(in srgb, var(--color-accent) 7%, transparent); }
-  }
-
   @media (max-width: 900px) {
+    .hero-visual::before,
     .orbit {
       display: none;
     }

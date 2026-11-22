@@ -30,9 +30,9 @@ import { site } from '../data/site.js';
       </ul>
     </div>
     <div class="tool-group">
-      <span class="mini-label">Creative</span>
+      <span class="mini-label">Creative tools</span>
       <ul class="chip-list">
-        {site.designTools.map((tool) => <li class="chip chip-teal">{tool}</li>)}
+        {site.designTools.map((tool) => <li class="chip chip-amber">{tool}</li>)}
       </ul>
     </div>
   </div>
@@ -58,7 +58,7 @@ import { site } from '../data/site.js';
   .orbit {
     position: absolute;
     border: 1px solid var(--color-accent-line);
-    border-radius: 26px;
+    border-radius: 50%;
   }
 
   .orbit-one {
@@ -118,7 +118,7 @@ import { site } from '../data/site.js';
   }
 
   .card-bar span:first-child {
-    background: var(--color-accent);
+    background: var(--color-accent-2);
   }
 
   .card-bar em {

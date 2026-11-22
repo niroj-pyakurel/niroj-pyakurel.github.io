@@ -19,10 +19,18 @@ import { site } from '../data/site.js';
 
   <dl>
     <div>
-      <dt>Toolbox</dt>
+      <dt>Security tools</dt>
       <dd>
         <ul class="chip-list">
           {site.security.tools.map((tool) => <li class="chip chip-accent">{tool}</li>)}
+        </ul>
+      </dd>
+    </div>
+    <div>
+      <dt>Creative tools</dt>
+      <dd>
+        <ul class="chip-list">
+          {site.designTools.map((tool) => <li class="chip chip-amber">{tool}</li>)}
         </ul>
       </dd>
     </div>
@@ -119,6 +127,10 @@ import { site } from '../data/site.js';
       grid-template-columns: 0.9fr 1.1fr;
       gap: 3rem;
       align-items: center;
+    }
+
+    dl {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 </style>

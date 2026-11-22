@@ -15,7 +15,7 @@ const socialIconPaths = {
 ---
 
 <footer class="site-footer">
-  <div class="container footer-main">
+  <div class="footer-container footer-main">
     <div class="footer-brand">
       <picture>
         <source srcset="/niroj.webp?v=20261122c" type="image/webp" />
@@ -58,7 +58,7 @@ const socialIconPaths = {
     </div>
   </div>
 
-  <div class="container footer-bottom">
+  <div class="footer-container footer-bottom">
     <p>© {new Date().getFullYear()} {site.name}</p>
     <a href="#main">Back to top ↑</a>
   </div>
@@ -70,9 +70,17 @@ const socialIconPaths = {
     background: linear-gradient(0deg, var(--color-accent-soft), transparent 65%);
   }
 
+  .footer-container {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
   .footer-main {
     position: relative;
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
     padding-block: 2.25rem 1.5rem;
   }
@@ -81,8 +89,8 @@ const socialIconPaths = {
     content: '';
     position: absolute;
     top: 0;
-    right: var(--gutter);
-    left: var(--gutter);
+    right: 1.25rem;
+    left: 1.25rem;
     height: 1px;
     background: var(--color-border);
   }
@@ -128,8 +136,8 @@ const socialIconPaths = {
   }
 
   .footer-columns {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
   }
 
@@ -147,10 +155,16 @@ const socialIconPaths = {
   }
 
   .footer-links {
-    display: grid;
-    gap: 0.65rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.625rem 1.25rem;
     padding: 0;
     list-style: none;
+  }
+
+  .footer-nav:last-child .footer-links {
+    gap: 0.625rem 1rem;
   }
 
   .footer-links a {
@@ -159,8 +173,9 @@ const socialIconPaths = {
     gap: 0.5rem;
     width: fit-content;
     color: var(--color-muted);
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     text-decoration: none;
+    white-space: nowrap;
     transition: color var(--transition), transform var(--transition);
   }
 
@@ -192,8 +207,8 @@ const socialIconPaths = {
     content: '';
     position: absolute;
     top: 0;
-    right: var(--gutter);
-    left: var(--gutter);
+    right: 1.25rem;
+    left: 1.25rem;
     height: 1px;
     background: var(--color-border);
   }
@@ -201,6 +216,7 @@ const socialIconPaths = {
   .footer-bottom p,
   .footer-bottom a {
     margin: 0;
+    white-space: nowrap;
     transition: color var(--transition), transform var(--transition);
   }
 
@@ -215,9 +231,21 @@ const socialIconPaths = {
     transform: translateY(-1px);
   }
 
+  @media (min-width: 640px) {
+    .footer-container {
+      padding-inline: 2rem;
+    }
+
+    .footer-main::before,
+    .footer-bottom::before {
+      right: 2rem;
+      left: 2rem;
+    }
+  }
+
   @media (min-width: 768px) {
     .footer-main {
-      display: flex;
+      flex-direction: row;
       align-items: flex-start;
       justify-content: space-between;
       gap: 3rem;
@@ -229,12 +257,13 @@ const socialIconPaths = {
     }
 
     .footer-columns {
-      display: flex;
+      flex-direction: row;
       gap: clamp(3rem, 6vw, 5rem);
     }
 
-    .footer-links {
-      gap: 0.6rem;
+    .footer-links,
+    .footer-nav:last-child .footer-links {
+      gap: 0.625rem 1.25rem;
     }
   }
 </style>

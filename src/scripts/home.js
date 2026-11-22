@@ -203,33 +203,6 @@ function initHeroWords(root) {
   });
 }
 
-function initDesignLayers(root) {
-  const card = root.querySelector('[data-design-artboard]');
-  if (!card) return;
-
-  const buttons = [...root.querySelectorAll('[data-layer]')];
-  const panels = [...card.querySelectorAll('[data-artboard-panel]')];
-  const label = card.querySelector('[data-artboard-label]');
-
-  buttons.forEach((button) => {
-    button.addEventListener('click', () => {
-      const key = button.dataset.layer;
-
-      buttons.forEach((item) => {
-        const active = item === button;
-        item.classList.toggle('is-selected', active);
-        item.setAttribute('aria-pressed', String(active));
-      });
-
-      panels.forEach((panel) => {
-        panel.classList.toggle('is-active', panel.dataset.artboardPanel === key);
-      });
-
-      if (label) label.textContent = button.querySelector('span')?.textContent.trim() || '';
-    });
-  });
-}
-
 function legacyCopy(text) {
   const area = document.createElement('textarea');
   area.value = text;
@@ -321,6 +294,5 @@ export function initHome() {
   initMagneticButtons(root);
   initTilt(root);
   initHeroWords(root);
-  initDesignLayers(root);
   initCopyEmail(root);
 }

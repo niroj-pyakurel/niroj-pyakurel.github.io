@@ -18,11 +18,6 @@ const stats = [
   { value: String(site.certifications.length).padStart(2, '0'), label: 'Certifications' },
 ];
 
-const serviceFor = (icon) => site.services.find((service) => service.icon === icon);
-const designService = serviceFor('design');
-const codeService = serviceFor('code');
-const securityService = serviceFor('shield');
-
 const languages = site.skills.find((group) => group.label === 'Languages')?.items.slice(0, 3) || [];
 
 const disciplineHints = {
@@ -38,88 +33,45 @@ const marqueeTools = [
   ...securityOrder.map((name) => site.security.tools.find((tool) => tool === name)).filter(Boolean),
 ];
 
-const ideLines = [
+const codeLines = [
   [
-    { tone: 'kw', text: 'import' },
-    { tone: 'punc', text: ' { ' },
-    { tone: 'obj', text: 'useState' },
-    { tone: 'punc', text: ' } ' },
-    { tone: 'kw', text: 'from' },
-    { tone: 'str', text: " 'react';" },
+    { tone: 'kw', text: 'from ' },
+    { tone: 'obj', text: 'flask' },
+    { tone: 'kw', text: ' import ' },
+    { tone: 'fn', text: 'Flask' },
   ],
   [
-    { tone: 'kw', text: 'import ' },
-    { tone: 'obj', text: 'Link' },
-    { tone: 'kw', text: ' from ' },
-    { tone: 'str', text: "'next/link';" },
-  ],
-  [],
-  [
-    { tone: 'kw', text: 'export default ' },
-    { tone: 'kw', text: 'function ' },
-    { tone: 'fn', text: 'CraftCard' },
-    { tone: 'punc', text: '() {' },
-  ],
-  [
-    { tone: 'punc', text: '  const ' },
-    { tone: 'punc', text: '[' },
-    { tone: 'obj', text: 'ready, setReady' },
-    { tone: 'punc', text: '] = ' },
-    { tone: 'fn', text: 'useState' },
-    { tone: 'punc', text: '(true);' },
-  ],
-  [],
-  [
-    { tone: 'kw', text: '  return ' },
+    { tone: 'obj', text: 'app' },
+    { tone: 'punc', text: ' = ' },
+    { tone: 'fn', text: 'Flask' },
     { tone: 'punc', text: '(' },
+    { tone: 'obj', text: '__name__' },
+    { tone: 'punc', text: ')' },
+  ],
+  [],
+  [
+    { tone: 'obj', text: '@app' },
+    { tone: 'punc', text: '.' },
+    { tone: 'fn', text: 'route' },
+    { tone: 'punc', text: '(' },
+    { tone: 'str', text: '"/"' },
+    { tone: 'punc', text: ')' },
   ],
   [
-    { tone: 'punc', text: '    <' },
-    { tone: 'tag', text: 'article' },
-    { tone: 'attr', text: ' className' },
-    { tone: 'punc', text: '=' },
-    { tone: 'str', text: '"rounded-2xl border-emerald-400/30 bg-slate-950 p-6"' },
-    { tone: 'punc', text: '>' },
+    { tone: 'kw', text: 'def ' },
+    { tone: 'fn', text: 'home' },
+    { tone: 'punc', text: '():' },
   ],
   [
-    { tone: 'punc', text: '      <' },
-    { tone: 'tag', text: 'p' },
-    { tone: 'attr', text: ' className' },
-    { tone: 'punc', text: '=' },
-    { tone: 'str', text: '"text-emerald-300"' },
-    { tone: 'punc', text: '>Secure by default</' },
-    { tone: 'tag', text: 'p' },
-    { tone: 'punc', text: '>' },
-  ],
-  [
-    { tone: 'punc', text: '      <' },
-    { tone: 'tag', text: 'Link' },
-    { tone: 'attr', text: ' href' },
-    { tone: 'punc', text: '=' },
-    { tone: 'str', text: '"/projects"' },
-    { tone: 'attr', text: ' className' },
-    { tone: 'punc', text: '=' },
-    { tone: 'str', text: '"inline-flex text-emerald-300"' },
-    { tone: 'punc', text: '>View work →</' },
-    { tone: 'tag', text: 'Link' },
-    { tone: 'punc', text: '>' },
-  ],
-  [
-    { tone: 'punc', text: '    </' },
-    { tone: 'tag', text: 'article' },
-    { tone: 'punc', text: '>' },
-  ],
-  [
-    { tone: 'punc', text: '  );' },
-  ],
-  [
-    { tone: 'punc', text: '}' },
+    { tone: 'punc', text: '    ' },
+    { tone: 'kw', text: 'return ' },
+    { tone: 'str', text: '"Hello, Niroj"' },
   ],
 ];
 
-const designStack = ['Photoshop', 'Figma', 'Illustrator'];
-const webStack = ['React', 'Tailwind CSS', 'TypeScript', 'Python'];
-const securityStack = ['Burp Suite', 'Nmap', 'Wireshark', 'Penetration Testing'];
+const designStack = ['Photoshop', 'Canva', 'Illustrator'];
+const webStack = ['HTML', 'CSS', 'Python', 'JavaScript'];
+const securityStack = ['Burp Suite', 'Nmap', 'Wireshark', 'Nessus'];
 
 const skillSample = site.skills.slice(0, 4);
 
@@ -283,86 +235,39 @@ const formatNoteDate = (date) =>
           <div class="pillar-top">
             <span class="pillar-index">01</span>
             <div class="pillar-content">
-              <h3>UI/UX &amp; Brand Design</h3>
-              <p>{designService?.description}</p>
+              <h3>Brand &amp; Visual Design</h3>
+              <p>Brand graphics, social campaigns, and visual assets crafted from real work in travel media and live television.</p>
             </div>
           </div>
 
-          <div class="glass-panel figma-panel" data-design-artboard>
+          <div class="glass-panel artwork-panel">
             <div class="window-bar">
               <span class="window-dots panel-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-              <span class="window-name">❖ Figma</span>
-              <span class="window-meta">100%</span>
+              <span class="window-name">brand-identity.psd</span>
+              <span class="window-meta">PSD</span>
             </div>
 
-            <div class="figma-body">
-              <div class="figma-canvas">
-                <div class="canvas-head">
-                  <span data-artboard-label>Hero UI</span>
-                  <span>frame 01 · 100%</span>
+            <div class="artwork-body">
+              <div class="artwork-frame">
+                <div class="artwork-head">
+                  <span class="ps-badge" aria-label="Adobe Photoshop">Ps</span>
+                  <span class="artwork-file">Adobe Photoshop</span>
                 </div>
 
-                <div class="canvas-stage">
-                  <div class="design-preview is-active" data-artboard-panel="hero">
-                    <div class="preview-hero">
-                      <span class="preview-avatar">NP</span>
-                      <div class="preview-copy">
-                        <span class="preview-kicker">FREELANCE · KATHMANDU</span>
-                        <strong>Crafted with clarity.</strong>
-                        <i></i><i></i>
-                      </div>
-                      <span class="preview-badge">ACTIVE</span>
-                    </div>
-                    <div class="preview-tags">
-                      <span>UI</span><span>HERO</span><span>GRID</span>
-                    </div>
-                  </div>
-
-                  <div class="design-preview" data-artboard-panel="system">
-                    <div class="preview-lockup">
-                      <span class="monogram-mark">NP</span>
-                      <div class="lockup-lines"><i></i><i></i><i></i></div>
-                    </div>
-                    <div class="system-grid">
-                      <i></i><i></i><i></i><i></i>
-                    </div>
-                    <span class="preview-badge">TOKENS</span>
-                  </div>
-
-                  <div class="design-preview" data-artboard-panel="assets">
-                    <div class="asset-row">
-                      <div class="asset-card"><i></i><span>cover</span></div>
-                      <div class="asset-card"><i></i><span>post</span></div>
-                      <div class="asset-card"><i></i><span>story</span></div>
-                    </div>
-                    <div class="asset-bars"><i></i><i></i></div>
-                    <span class="preview-badge">EXPORT</span>
+                <div class="brand-lockup">
+                  <span class="brand-mark">NP</span>
+                  <div class="brand-type">
+                    <strong>Brand Kit</strong>
+                    <span>Visual identity</span>
                   </div>
                 </div>
 
-                <div class="design-specimen">
-                  <div class="type-specimen">
-                    <span>Aa</span>
-                    <div><strong>Satoshi</strong><small>Display / body pairing</small></div>
-                  </div>
-                  <div class="hex-palette" aria-label="Palette: #4ADE80, #0B1516, #F8FAFC">
-                    <span><i style="--swatch: #4ade80"></i>#4ADE80</span>
-                    <span><i style="--swatch: #0b1516"></i>#0B1516</span>
-                    <span><i style="--swatch: #f8fafc"></i>#F8FAFC</span>
-                  </div>
+                <div class="palette-bar" role="img" aria-label="Brand palette: forest, mint, mist, ink">
+                  <i style="--swatch: #0d7a5f" title="Forest #0D7A5F"></i>
+                  <i style="--swatch: #4ade80" title="Mint #4ADE80"></i>
+                  <i style="--swatch: #e8f3ee" title="Mist #E8F3EE"></i>
+                  <i style="--swatch: #0b1f1d" title="Ink #0B1F1D"></i>
                 </div>
-              </div>
-
-              <div class="layer-timeline" role="group" aria-label="Design layers">
-                <button type="button" class="timeline-item is-selected" data-layer="hero" aria-pressed="true">
-                  <span>❖ Hero UI</span>
-                </button>
-                <button type="button" class="timeline-item" data-layer="system" aria-pressed="false">
-                  <span>❖ Design System</span>
-                </button>
-                <button type="button" class="timeline-item" data-layer="assets" aria-pressed="false">
-                  <span>❖ Brand Assets</span>
-                </button>
               </div>
             </div>
           </div>
@@ -375,40 +280,23 @@ const formatNoteDate = (date) =>
             <span class="pillar-index">02</span>
             <div class="pillar-content">
               <h3>Full-Stack Web Development</h3>
-              <p>{codeService?.description}</p>
+              <p>Clean HTML, CSS, and Python foundations built with performance and security in mind from the start.</p>
             </div>
           </div>
 
           <div class="glass-panel ide-panel">
             <div class="window-bar">
               <span class="window-dots panel-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-              <span class="window-name">craft.ts</span>
-              <span class="window-meta">TSX</span>
+              <span class="window-name">app.py</span>
+              <span class="window-meta">PY</span>
             </div>
 
-            <div class="ide-body">
-              <pre class="code-mini"><code>{ideLines.map((segments, index) => (
-                <span class="code-line">
-                  <span class="line-no" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-                  <span>{segments.map((segment) => (
-                    <span class={`tok-${segment.tone}`}>{segment.text}</span>
-                  ))}</span>
-                </span>
+            <div class="code-body">
+              <pre class="code-block"><code>{codeLines.map((segments) => (
+                <span class="code-row">{segments.map((segment) => (
+                  <span class={`tok-${segment.tone}`}>{segment.text}</span>
+                ))}</span>
               ))}</code></pre>
-
-              <div class="browser-preview" aria-hidden="true">
-                <div class="browser-bar">
-                  <span class="browser-dots"><i></i><i></i><i></i></span>
-                  <span>localhost:3000</span>
-                  <span class="http-status">200 OK</span>
-                </div>
-                <div class="browser-body">
-                  <div class="preview-nav"><span>NP.</span><span>Work →</span></div>
-                  <div class="preview-headline">Secure by default.</div>
-                  <div class="preview-placeholder"><i></i><i></i></div>
-                  <span class="preview-status">Live Preview → 200 OK</span>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -420,48 +308,32 @@ const formatNoteDate = (date) =>
             <span class="pillar-index">03</span>
             <div class="pillar-content">
               <h3>Practical Security Audits</h3>
-              <p>{securityService?.description}</p>
+              <p>Practical vulnerability checks with Nmap, Burp Suite, and Wireshark — findings prioritized in plain language.</p>
             </div>
           </div>
 
           <div class="glass-panel audit-panel">
             <div class="window-bar">
               <span class="window-dots panel-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-              <span class="window-name">niroj@sec:~/audit</span>
-              <span class="audit-ready"><i></i> AUDIT READY</span>
+              <span class="window-name">audit-status.txt</span>
+              <span class="window-meta">3 / 3</span>
             </div>
 
             <div class="audit-body">
-              <p class="audit-command"><span>$</span> scan --target localhost --depth basic</p>
-              <p class="audit-muted">→ mapping target surface and active services</p>
-
-              <div class="audit-checks">
-                <div>
-                  <span class="check">✓</span>
-                  <strong>Nmap</strong>
-                  <small>ports / services</small>
-                  <span class="check-state">RUNNING</span>
-                </div>
-                <div>
-                  <span class="check">✓</span>
-                  <strong>Burp Suite</strong>
-                  <small>web requests</small>
-                  <span class="check-state">RUNNING</span>
-                </div>
-                <div>
-                  <span class="check">✓</span>
-                  <strong>Wireshark</strong>
-                  <small>traffic capture</small>
-                  <span class="check-state">RUNNING</span>
-                </div>
-              </div>
-
-              <div class="audit-results">
-                <span class="result-pass">[PASS] SSL/TLS</span>
-                <span class="result-secure">[SECURE] OWASP Top 10</span>
-              </div>
-
-              <div class="audit-progress"><i></i></div>
+              <ul class="audit-rows">
+                <li>
+                  <span class="check">[PASS]</span>
+                  <span>Port &amp; Service Scan <em>— Nmap</em></span>
+                </li>
+                <li>
+                  <span class="check">[PASS]</span>
+                  <span>HTTP Traffic &amp; Auth <em>— Burp Suite</em></span>
+                </li>
+                <li>
+                  <span class="check">[PASS]</span>
+                  <span>Packet Inspection <em>— Wireshark</em></span>
+                </li>
+              </ul>
             </div>
           </div>
 
@@ -1152,25 +1024,60 @@ const formatNoteDate = (date) =>
     --ry: 0deg;
     --tilt-x: 50%;
     --tilt-y: 50%;
+    --panel-surface: linear-gradient(155deg, #0e1c1e, #0b1516);
+    --panel-inner: #0e1c1e;
+    --panel-canvas: #0a181a;
+    --panel-bar: rgb(255 255 255 / 0.025);
+    --panel-highlight: rgb(255 255 255 / 0.035);
     --panel-text: #e8f4f0;
     --panel-muted: #8fa9a5;
-    --panel-line: rgb(148 184 176 / 0.13);
+    --panel-line: rgb(148 184 176 / 0.16);
     --panel-accent: #4ade80;
+    --panel-accent-soft: rgb(74 222 128 / 0.1);
+    --panel-glow: rgb(74 222 128 / 0.12);
+    --panel-shadow: 0 18px 44px rgb(0 0 0 / 0.26), inset 0 1px 0 rgb(255 255 255 / 0.035);
+    --panel-hover-shadow: 0 24px 60px rgb(0 0 0 / 0.32), 0 0 32px rgb(74 222 128 / 0.1);
+    --code-kw: #c792ea;
+    --code-str: #a5e88a;
+    --code-fn: #7dd3fc;
+    --code-obj: #ffd580;
+    --code-punc: #89a5a2;
     position: relative;
     isolation: isolate;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    min-height: 34rem;
+    gap: 1.15rem;
+    min-height: 30rem;
     padding: clamp(1.25rem, 2.2vw, 1.6rem);
-    border: 1px solid rgb(148 184 176 / 0.16);
+    border: 1px solid var(--panel-line);
     border-radius: var(--radius-lg);
-    background: linear-gradient(155deg, rgb(13 27 29 / 0.94), rgb(6 17 19 / 0.97));
-    box-shadow: 0 18px 44px rgb(0 0 0 / 0.26), inset 0 1px 0 rgb(255 255 255 / 0.035);
+    background: var(--panel-surface);
+    box-shadow: var(--panel-shadow);
     color: var(--panel-text);
     transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
     transition: transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease;
+  }
+
+  :root[data-theme="light"] .pillar {
+    --panel-surface: linear-gradient(180deg, #ffffff 0%, #f4f9f7 100%);
+    --panel-inner: #f4f9f7;
+    --panel-canvas: #ffffff;
+    --panel-bar: rgb(13 122 95 / 0.035);
+    --panel-highlight: rgb(13 122 95 / 0.035);
+    --panel-text: #0b1f1d;
+    --panel-muted: #52666b;
+    --panel-line: rgb(6 78 59 / 0.1);
+    --panel-accent: #0d7a5f;
+    --panel-accent-soft: rgb(13 122 95 / 0.08);
+    --panel-glow: rgb(13 122 95 / 0.08);
+    --panel-shadow: 0 12px 32px rgb(16 52 45 / 0.08), 0 1px 2px rgb(16 52 45 / 0.04);
+    --panel-hover-shadow: 0 18px 42px rgb(16 52 45 / 0.12), 0 0 0 1px rgb(13 122 95 / 0.08);
+    --code-kw: #7c3aed;
+    --code-str: #0d7a5f;
+    --code-fn: #075985;
+    --code-obj: #9a5b00;
+    --code-punc: #52666b;
   }
 
   .pillar::after {
@@ -1181,7 +1088,7 @@ const formatNoteDate = (date) =>
     pointer-events: none;
     background: radial-gradient(
       420px circle at var(--tilt-x) var(--tilt-y),
-      rgb(74 222 128 / 0.14),
+      var(--panel-glow),
       transparent 68%
     );
     opacity: 0;
@@ -1189,8 +1096,8 @@ const formatNoteDate = (date) =>
   }
 
   .pillar:hover {
-    border-color: rgb(74 222 128 / 0.42);
-    box-shadow: 0 24px 60px rgb(0 0 0 / 0.32), 0 0 32px rgb(74 222 128 / 0.1);
+    border-color: color-mix(in srgb, var(--panel-accent) 45%, transparent);
+    box-shadow: var(--panel-hover-shadow);
   }
 
   .pillar:hover::after {
@@ -1209,9 +1116,9 @@ const formatNoteDate = (date) =>
     width: 2rem;
     height: 2rem;
     flex: none;
-    border: 1px solid rgb(74 222 128 / 0.34);
+    border: 1px solid color-mix(in srgb, var(--panel-accent) 40%, transparent);
     border-radius: 9px;
-    background: rgb(74 222 128 / 0.1);
+    background: var(--panel-accent-soft);
     color: var(--panel-accent);
     font-family: var(--font-mono);
     font-size: 0.7rem;
@@ -1219,55 +1126,55 @@ const formatNoteDate = (date) =>
   }
 
   .pillar-content h3 {
-    font-size: clamp(1.15rem, 1.7vw, 1.45rem);
+    font-size: clamp(1.15rem, 1.7vw, 1.35rem);
+    line-height: 1.2;
   }
 
   .pillar-content p {
-    margin-top: 0.4rem;
+    margin-top: 0.45rem;
     color: var(--panel-muted);
-    font-size: 0.82rem;
-    line-height: 1.5;
+    font-size: 0.84rem;
+    line-height: 1.55;
   }
 
   .glass-panel {
+    display: flex;
     flex: 1;
+    flex-direction: column;
     min-height: 0;
     overflow: hidden;
     border: 1px solid var(--panel-line);
-    border-radius: 12px;
-    background: linear-gradient(180deg, rgb(13 29 31 / 0.92), rgb(5 16 18 / 0.96));
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
+    border-radius: 14px;
+    background: var(--panel-inner);
+    box-shadow: inset 0 1px 0 var(--panel-highlight);
   }
 
   .window-bar {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    min-height: 2rem;
-    padding: 0.45rem 0.6rem;
+    min-height: 2.35rem;
+    padding: 0.5rem 0.7rem;
     border-bottom: 1px solid var(--panel-line);
-    background: rgb(255 255 255 / 0.02);
+    background: var(--panel-bar);
     font-family: var(--font-mono);
-    font-size: 0.55rem;
+    font-size: 0.68rem;
   }
 
-  .window-dots,
-  .browser-dots {
+  .pillar .window-dots {
     display: flex;
-    gap: 0.22rem;
+    gap: 0.24rem;
     flex: none;
   }
 
-  .window-dots i,
-  .browser-dots i {
-    width: 0.4rem;
-    height: 0.4rem;
+  .pillar .window-dots i {
+    width: 0.42rem;
+    height: 0.42rem;
     border-radius: 50%;
-    background: #3d5c5b;
+    background: color-mix(in srgb, var(--panel-text) 18%, transparent);
   }
 
-  .window-dots i:first-child,
-  .browser-dots i:first-child {
+  .pillar .window-dots i:first-child {
     background: var(--panel-accent);
   }
 
@@ -1284,555 +1191,193 @@ const formatNoteDate = (date) =>
     white-space: nowrap;
   }
 
-  /* Card 01 — Figma-inspired artboard */
-  .figma-body {
+  /* Card 01 — Photoshop artboard */
+  .artwork-body,
+  .code-body,
+  .audit-body {
     display: flex;
+    flex: 1;
+    min-height: 0;
+    padding: clamp(0.9rem, 2vw, 1.2rem);
+  }
+
+  .artwork-frame {
+    display: flex;
+    flex: 1;
     flex-direction: column;
-    gap: 0.55rem;
-    height: calc(100% - 2rem);
-    padding: 0.6rem;
-  }
-
-  .figma-canvas {
-    overflow: hidden;
+    justify-content: center;
+    gap: 1.35rem;
+    min-height: 0;
+    padding: clamp(1.2rem, 3vw, 1.75rem);
     border: 1px solid var(--panel-line);
-    border-radius: 10px;
-    background: #071416;
+    border-radius: 12px;
+    background: var(--panel-canvas);
   }
 
-  .canvas-head {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.5rem;
-    padding: 0.4rem 0.6rem;
-    border-bottom: 1px solid var(--panel-line);
-    color: var(--panel-muted);
-    font-family: var(--font-mono);
-    font-size: 0.5rem;
-  }
-
-  .canvas-head span:first-child {
-    color: var(--panel-accent);
-  }
-
-  .canvas-stage {
-    position: relative;
-    min-height: 9.6rem;
-    padding: 0.6rem;
-  }
-
-  .design-preview {
-    display: none;
-    position: relative;
-    min-height: 8.4rem;
-  }
-
-  .design-preview.is-active {
-    display: block;
-    animation: line-in 260ms ease both;
-  }
-
-  .preview-hero {
+  .artwork-head {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    padding: 0.65rem;
-    border: 1px solid var(--panel-line);
-    border-radius: 10px;
-    background: #0b1d20;
+    gap: 0.65rem;
   }
 
-  .preview-avatar,
-  .monogram-mark {
+  .ps-badge {
     display: grid;
     place-items: center;
-    width: 2.4rem;
-    height: 2.4rem;
+    width: 2.25rem;
+    height: 2.25rem;
     flex: none;
+    border: 1px solid rgb(49 168 255 / 0.35);
     border-radius: 8px;
-    background: var(--panel-accent);
-    color: #03110f;
+    background: #001e36;
+    color: #31a8ff;
     font-family: var(--font-display);
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     font-weight: 700;
   }
 
-  .preview-copy {
-    min-width: 0;
+  .artwork-file {
+    color: var(--panel-muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
   }
 
-  .preview-kicker {
-    display: block;
+  .brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    flex: none;
+    border: 1px solid color-mix(in srgb, var(--panel-accent) 40%, transparent);
+    border-radius: 12px;
+    background: var(--panel-accent-soft);
     color: var(--panel-accent);
-    font-size: 0.43rem;
-    letter-spacing: 0.08em;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
   }
 
-  .preview-copy strong {
+  .brand-type strong,
+  .brand-type span {
     display: block;
-    margin-top: 0.2rem;
+  }
+
+  .brand-type strong {
     font-family: var(--font-display);
-    font-size: 0.92rem;
+    font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+    letter-spacing: -0.03em;
     line-height: 1.1;
   }
 
-  .preview-copy i {
-    display: block;
-    width: 82%;
-    height: 0.22rem;
-    margin-top: 0.38rem;
-    border-radius: 999px;
-    background: #2b464b;
-  }
-
-  .preview-copy i + i {
-    width: 54%;
-    margin-top: 0.25rem;
-  }
-
-  .preview-badge {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.55rem;
-    padding: 0.16rem 0.4rem;
-    border-radius: 999px;
-    background: rgb(74 222 128 / 0.14);
-    color: var(--panel-accent);
-    font-size: 0.43rem;
+  .brand-type span {
+    margin-top: 0.3rem;
+    color: var(--panel-muted);
+    font-size: 0.75rem;
     letter-spacing: 0.08em;
   }
 
-  .preview-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
-    margin-top: 0.5rem;
-  }
-
-  .preview-tags span {
-    padding: 0.18rem 0.42rem;
-    border: 1px solid var(--panel-line);
-    border-radius: 999px;
-    color: var(--panel-muted);
-    font-size: 0.44rem;
-  }
-
-  .preview-lockup {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    padding: 0.75rem;
-    border: 1px solid var(--panel-line);
-    border-radius: 10px;
-    background: #0b1d20;
-  }
-
-  .lockup-lines {
-    display: grid;
-    flex: 1;
-    gap: 0.35rem;
-  }
-
-  .lockup-lines i,
-  .asset-bars i {
-    height: 0.34rem;
-    border-radius: 999px;
-    background: #2b464b;
-  }
-
-  .lockup-lines i:nth-child(2) { width: 72%; }
-  .lockup-lines i:nth-child(3) { width: 48%; }
-
-  .system-grid {
+  .palette-bar {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.35rem;
-    margin-top: 0.55rem;
-  }
-
-  .system-grid i {
-    height: 2.4rem;
-    border: 1px solid var(--panel-line);
-    border-radius: 7px;
-    background: rgb(255 255 255 / 0.025);
-  }
-
-  .system-grid i:nth-child(2) { background: rgb(74 222 128 / 0.12); }
-  .system-grid i:nth-child(3) { background: rgb(45 212 191 / 0.1); }
-
-  .asset-row {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.4rem;
   }
 
-  .asset-card {
-    padding: 0.45rem;
-    border: 1px solid var(--panel-line);
+  .palette-bar i {
+    display: block;
+    height: 2.5rem;
+    border: 1px solid color-mix(in srgb, var(--panel-text) 12%, transparent);
     border-radius: 8px;
-    background: #0b1d20;
-    text-align: center;
-  }
-
-  .asset-card i {
-    display: block;
-    height: 2.2rem;
-    border-radius: 5px;
-    background: linear-gradient(150deg, rgb(74 222 128 / 0.3), rgb(45 212 191 / 0.08));
-  }
-
-  .asset-card span {
-    display: block;
-    margin-top: 0.35rem;
-    color: var(--panel-muted);
-    font-size: 0.43rem;
-  }
-
-  .asset-bars {
-    display: grid;
-    gap: 0.3rem;
-    margin-top: 0.5rem;
-  }
-
-  .design-specimen {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.6rem;
-    padding: 0.55rem 0.65rem;
-    border-top: 1px solid var(--panel-line);
-    background: #081518;
-  }
-
-  .type-specimen {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .type-specimen > span {
-    color: var(--panel-accent);
-    font-family: var(--font-display);
-    font-size: 1.35rem;
-    font-weight: 700;
-    line-height: 1;
-  }
-
-  .type-specimen strong,
-  .type-specimen small {
-    display: block;
-    white-space: nowrap;
-  }
-
-  .type-specimen strong { font-size: 0.6rem; }
-  .type-specimen small { color: var(--panel-muted); font-size: 0.43rem; }
-
-  .hex-palette {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0.45rem;
-  }
-
-  .hex-palette span {
-    display: flex;
-    align-items: center;
-    gap: 0.22rem;
-    color: var(--panel-muted);
-    font-size: 0.42rem;
-    white-space: nowrap;
-  }
-
-  .hex-palette i {
-    width: 0.55rem;
-    height: 0.55rem;
-    border: 1px solid rgb(255 255 255 / 0.18);
-    border-radius: 50%;
     background: var(--swatch);
   }
 
-  .layer-timeline {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.35rem;
+  /* Card 02 — readable code block */
+  .code-body {
+    align-items: center;
   }
 
-  .timeline-item {
-    padding: 0.42rem 0.28rem;
-    border: 1px solid var(--panel-line);
-    border-radius: 8px;
-    background: rgb(255 255 255 / 0.02);
-    color: var(--panel-muted);
-    font-family: var(--font-mono);
-    font-size: 0.5rem;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 200ms ease, background-color 200ms ease, color 200ms ease;
-  }
-
-  .timeline-item:hover {
-    border-color: rgb(74 222 128 / 0.34);
-    color: var(--panel-text);
-  }
-
-  .timeline-item.is-selected {
-    border-color: rgb(74 222 128 / 0.55);
-    background: rgb(74 222 128 / 0.12);
-    color: var(--panel-accent);
-  }
-
-  /* Card 02 — IDE and live browser preview */
-  .ide-body {
-    display: flex;
-    flex-direction: column;
-    height: calc(100% - 2rem);
-    min-height: 0;
-    padding: 0.55rem;
-  }
-
-  .code-mini {
-    flex: 1;
-    min-height: 10.5rem;
+  .code-block {
+    width: 100%;
     margin: 0;
-    padding: 0.55rem 0.65rem;
-    overflow: auto;
-    color: var(--panel-text);
-    font-family: var(--font-mono);
-    font-size: 0.61rem;
-    line-height: 1.65;
-    scrollbar-width: thin;
-  }
-
-  .code-line {
-    display: flex;
-    gap: 0.65rem;
-    min-height: 1.05rem;
-    white-space: pre;
-  }
-
-  .line-no {
-    color: #44615f;
-    user-select: none;
-  }
-
-  .tok-kw { color: #c792ea; }
-  .tok-str { color: #a5e88a; }
-  .tok-fn { color: #7dd3fc; }
-  .tok-obj { color: #ffd580; }
-  .tok-punc { color: #89a5a2; }
-  .tok-tag { color: #67e8f9; }
-  .tok-attr { color: #c4b5fd; }
-
-  .browser-preview {
-    flex: none;
+    padding: clamp(0.95rem, 2vw, 1.25rem);
     overflow: hidden;
-    margin-top: 0.5rem;
     border: 1px solid var(--panel-line);
-    border-radius: 9px;
-    background: #08191b;
-  }
-
-  .browser-bar {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.35rem 0.5rem;
-    border-bottom: 1px solid var(--panel-line);
-    color: var(--panel-muted);
-    font-size: 0.48rem;
-  }
-
-  .http-status {
-    margin-left: auto;
-    color: var(--panel-accent);
-  }
-
-  .browser-body {
-    padding: 0.6rem;
-  }
-
-  .preview-nav {
-    display: flex;
-    justify-content: space-between;
-    color: var(--panel-accent);
-    font-size: 0.52rem;
-  }
-
-  .preview-headline {
-    margin-top: 0.45rem;
-    font-family: var(--font-display);
-    font-size: 0.92rem;
-    font-weight: 700;
-  }
-
-  .preview-placeholder {
-    display: flex;
-    gap: 0.35rem;
-    margin-top: 0.4rem;
-  }
-
-  .preview-placeholder i {
-    flex: 1;
-    height: 0.27rem;
-    border-radius: 999px;
-    background: #254047;
-  }
-
-  .preview-placeholder i:last-child { flex: 0.6; }
-
-  .preview-status {
-    display: inline-block;
-    margin-top: 0.55rem;
-    padding: 0.24rem 0.48rem;
-    border: 1px solid rgb(74 222 128 / 0.28);
-    border-radius: 999px;
-    background: rgb(74 222 128 / 0.08);
-    color: var(--panel-accent);
-    font-size: 0.48rem;
-  }
-
-  /* Card 03 — Security audit terminal */
-  .audit-panel .window-bar {
-    border-bottom-color: rgb(74 222 128 / 0.2);
-  }
-
-  .audit-ready {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.28rem;
-    margin-left: auto;
-    color: var(--panel-accent);
-    font-size: 0.47rem;
-    letter-spacing: 0.06em;
-    white-space: nowrap;
-  }
-
-  .audit-ready i {
-    width: 0.38rem;
-    height: 0.38rem;
-    border-radius: 50%;
-    background: var(--panel-accent);
-    box-shadow: 0 0 0 3px rgb(74 222 128 / 0.12);
-    animation: live-pulse 3s ease-in-out infinite;
-  }
-
-  .audit-body {
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
-    height: calc(100% - 2rem);
-    padding: 0.7rem;
+    border-radius: 12px;
+    background: var(--panel-canvas);
+    color: var(--panel-text);
     font-family: var(--font-mono);
-    font-size: 0.58rem;
+    font-size: clamp(0.7rem, 1.35vw, 0.78rem);
+    line-height: 1.9;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    tab-size: 2;
   }
 
-  .audit-command,
-  .audit-muted {
-    margin: 0;
+  .code-row {
+    display: block;
+    min-height: 1.5em;
   }
 
-  .audit-command { color: var(--panel-text); }
-  .audit-command span { color: var(--panel-accent); }
-  .audit-muted { color: #6f8c89; }
+  .tok-kw { color: var(--code-kw); }
+  .tok-str { color: var(--code-str); }
+  .tok-fn { color: var(--code-fn); }
+  .tok-obj { color: var(--code-obj); }
+  .tok-punc { color: var(--code-punc); }
 
-  .audit-checks {
-    display: grid;
-    gap: 0.35rem;
-  }
-
-  .audit-checks > div {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+  /* Card 03 — three scannable audit results */
+  .audit-body {
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.5rem;
+  }
+
+  .audit-rows {
+    display: grid;
+    gap: 0.75rem;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .audit-rows li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.7rem;
+    padding: 0.8rem 0.9rem;
     border: 1px solid var(--panel-line);
-    border-radius: 8px;
-    background: rgb(255 255 255 / 0.02);
+    border-radius: 12px;
+    background: var(--panel-canvas);
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    line-height: 1.5;
   }
 
   .check {
-    grid-row: 1 / span 2;
     color: var(--panel-accent);
     font-weight: 700;
+    white-space: nowrap;
   }
 
-  .audit-checks strong {
-    color: var(--panel-text);
-    font-size: 0.56rem;
-  }
-
-  .audit-checks small {
-    grid-column: 2;
-    color: #6f8c89;
-    font-size: 0.44rem;
-  }
-
-  .check-state {
-    grid-row: 1 / span 2;
-    grid-column: 3;
-    color: var(--panel-accent);
-    font-size: 0.42rem;
-  }
-
-  .audit-results {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-
-  .audit-results span {
-    padding: 0.3rem 0.45rem;
-    border-radius: 6px;
-    font-size: 0.48rem;
-  }
-
-  .result-pass {
-    border: 1px solid rgb(74 222 128 / 0.3);
-    background: rgb(74 222 128 / 0.12);
-    color: var(--panel-accent);
-  }
-
-  .result-secure {
-    border: 1px solid rgb(45 212 191 / 0.26);
-    background: rgb(45 212 191 / 0.1);
-    color: #5eead4;
-  }
-
-  .audit-progress {
-    overflow: hidden;
-    height: 0.3rem;
-    margin-top: auto;
-    border-radius: 999px;
-    background: #20373a;
-  }
-
-  .audit-progress i {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, #4ade80, #2dd4bf);
-    transform: scaleX(0.82);
-    transform-origin: left center;
-    animation: audit-progress 3.2s ease-in-out infinite alternate;
+  .audit-rows em {
+    color: var(--panel-muted);
+    font-style: normal;
   }
 
   .tool-pill {
     margin-top: auto;
-    padding: 0.48rem 0.65rem;
+    padding: 0.55rem 0.75rem;
     border: 1px solid var(--panel-line);
     border-radius: 999px;
-    background: rgb(255 255 255 / 0.03);
-    color: #a9c1bd;
+    background: var(--panel-accent-soft);
+    color: var(--panel-muted);
     font-family: var(--font-mono);
-    font-size: 0.56rem;
+    font-size: 0.66rem;
+    line-height: 1.4;
     text-align: center;
-  }
-
-  @keyframes audit-progress {
-    from { transform: scaleX(0.62); }
-    to { transform: scaleX(0.92); }
   }
 
   .spotlight {
@@ -2520,8 +2065,6 @@ const formatNoteDate = (date) =>
     }
 
     .marquee-track,
-    .audit-progress i,
-    .audit-ready i,
     .live-dot {
       animation: none;
     }

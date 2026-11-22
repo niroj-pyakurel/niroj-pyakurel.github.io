@@ -9,7 +9,7 @@ import { experience } from '../data/experience.js';
 
 const inquiryHref = `mailto:${site.email}?subject=${encodeURIComponent('Project inquiry')}`;
 const byDate = (a, b) => b.data.date.getTime() - a.data.date.getTime();
-const projects = (await getCollection('projects')).sort(byDate).slice(0, 2);
+const projects = (await getCollection('projects')).sort(byDate).slice(0, 3);
 const notes = (await getCollection('writing')).sort(byDate).slice(0, 1);
 
 const stats = [
@@ -18,59 +18,166 @@ const stats = [
   { value: String(site.certifications.length).padStart(2, '0'), label: 'Certifications' },
 ];
 
+const serviceFor = (icon) => site.services.find((service) => service.icon === icon);
+const designService = serviceFor('design');
+const codeService = serviceFor('code');
+const securityService = serviceFor('shield');
+
+const languages = site.skills.find((group) => group.label === 'Languages')?.items.slice(0, 3) || [];
+
+const disciplineHints = {
+  design: site.designTools.join(' · '),
+  web: languages.join(' · '),
+  security: site.security.tools.slice(0, 3).join(' · '),
+};
+
+const designOrder = ['Figma', 'Photoshop', 'Canva'];
+const securityOrder = ['Burp Suite', 'Nmap', 'Wireshark', 'Nessus'];
+const marqueeTools = [
+  ...designOrder.map((name) => site.designTools.find((tool) => tool === name)).filter(Boolean),
+  ...securityOrder.map((name) => site.security.tools.find((tool) => tool === name)).filter(Boolean),
+];
+
+const codeLines = [
+  { text: 'const craft = {', tone: 'kw' },
+  { text: `  design: '${designService?.title ?? 'Design'}',`, tone: 'str' },
+  { text: `  web: '${codeService?.title ?? 'Web'}',`, tone: 'str' },
+  { text: '  security: true', tone: 'bool' },
+  { text: '};', tone: 'kw' },
+];
+
+const skillSample = site.skills.slice(0, 4);
+
+const commands = {
+  whoami: [
+    { text: `${site.name} — ${site.hero.eyebrow.toLowerCase()}`, tone: 'ok' },
+    { text: `focus: ${site.services.map((service) => service.title).join(' / ')}`, tone: 'value' },
+    { text: `tools: ${[...site.designTools, ...site.security.tools].join(', ')}`, tone: 'muted' },
+    { text: `status: ${site.availability}`, tone: 'ok' },
+  ],
+  'ls projects/': [
+    { text: `${projects.length} case study available`, tone: 'muted' },
+    ...projects.map((project) => ({
+      text: `drwxr-xr-x  ${project.id}/  ${project.data.title}`,
+      tone: 'file',
+    })),
+    { text: "run 'open projects/' to browse the full index", tone: 'hint' },
+  ],
+  'cat skills.json': [
+    { text: '{', tone: 'punc' },
+    ...skillSample.map((group, index) => ({
+      text: `  "${group.label}": [${group.items.map((item) => `"${item}"`).join(', ')}]${
+        index < skillSample.length - 1 ? ',' : ''
+      }`,
+      tone: 'str',
+    })),
+    { text: '}', tone: 'punc' },
+    { text: `// ${site.skills.length} groups in total`, tone: 'comment' },
+  ],
+  'scan --security': [
+    { text: `target: ${site.location} · remote`, tone: 'muted' },
+    ...site.security.tools.map((tool) => ({ text: `  ✓ ${tool}  ready`, tone: 'ok' })),
+    { text: site.security.note, tone: 'hint' },
+    { text: site.security.certifications[0], tone: 'comment' },
+  ],
+  contact: [
+    { text: `email: ${site.email}`, tone: 'ok' },
+    { text: "run 'open mail' to start a project", tone: 'hint' },
+  ],
+  help: [
+    { text: 'available commands:', tone: 'ok' },
+    { text: '  whoami            profile snapshot', tone: 'muted' },
+    { text: '  ls projects/      case studies', tone: 'muted' },
+    { text: '  cat skills.json   skill groups', tone: 'muted' },
+    { text: '  scan --security   toolchain check', tone: 'muted' },
+    { text: '  contact           email address', tone: 'muted' },
+    { text: '  open projects/    visit /projects/', tone: 'muted' },
+    { text: '  clear             wipe the screen', tone: 'muted' },
+  ],
+};
+
 const formatNoteDate = (date) =>
   new Date(date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
-
-const creativeList = site.designTools.map((tool) => `"${tool}"`).join(', ');
-const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
 ---
 
 <BaseLayout>
-  <div class="terminal-home">
+  <div class="home" data-home>
     <section class="hero container" aria-labelledby="hero-title">
-      <div class="terminal-window">
-        <div class="window-bar">
-          <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="window-path">~/niroj/portfolio</span>
-          <span class="window-live"><span class="live-dot" aria-hidden="true"></span>online</span>
+      <div class="hero-copy">
+        <p class="hero-kicker">{site.hero.eyebrow}</p>
+
+        <p class="status-pill">
+          <span class="live-dot" aria-hidden="true"></span>
+          {site.availability}
+          <span class="status-divider" aria-hidden="true">/</span>
+          {site.location}
+        </p>
+
+        <h1 id="hero-title" class="hero-title">
+          <span class="hero-word" data-discipline="design" style="--i: 0" tabindex="0">Design.</span>
+          <span class="hero-word" data-discipline="web" style="--i: 1" tabindex="0">Build.</span>
+          <span class="hero-word hero-word-accent" data-discipline="security" style="--i: 2" tabindex="0">Secure.</span>
+        </h1>
+
+        <p class="hero-hint" data-hero-hint aria-live="polite">hover a word to peek</p>
+        <script type="application/json" data-discipline-hints set:html={JSON.stringify(disciplineHints)}></script>
+
+        <p class="lede">{site.hero.lede}</p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href={inquiryHref} data-magnetic>
+            <span>Start a project</span><span aria-hidden="true">→</span>
+          </a>
+          <a class="btn btn-ghost" href="/projects/" data-magnetic>
+            <span>View work</span><span aria-hidden="true">↗</span>
+          </a>
         </div>
+      </div>
 
-        <div class="hero-grid">
-          <div class="hero-copy">
-            <p class="cmd-line"><span class="prompt">$</span> whoami <span class="cursor" aria-hidden="true">_</span></p>
-            <h1 id="hero-title">Design. Build.<br /><span>Secure.</span></h1>
-            <p class="lede">{site.hero.lede}</p>
-
-            <div class="hero-actions">
-              <a class="btn btn-primary" href={inquiryHref}>start a project <span aria-hidden="true">→</span></a>
-              <a class="btn btn-ghost" href="/projects/">view work <span aria-hidden="true">↗</span></a>
-            </div>
-
-            <p class="availability"><span class="live-dot" aria-hidden="true"></span>{site.availability}</p>
+      <div class="terminal-shell">
+        <div
+          class="terminal-card"
+          data-terminal
+          data-commands={JSON.stringify(commands)}
+          data-mail-href={inquiryHref}
+        >
+          <div class="term-bar">
+            <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="term-title">niroj@kathmandu:~</span>
+            <span class="term-live"><span class="live-dot" aria-hidden="true"></span>live</span>
           </div>
 
-          <aside class="console" aria-label="Profile snapshot">
-            <div class="console-top">
-              <div class="console-identity">
-                <picture>
-                  <source srcset="/niroj.webp?v=20261122c" type="image/webp" />
-                  <img src="/niroj.png?v=20261122b" width="56" height="56" alt="" />
-                </picture>
-                <div>
-                  <strong>{site.name}</strong>
-                  <span>{site.location}</span>
-                </div>
+          <div class="term-body">
+            <div class="term-history" data-term-output aria-live="polite" aria-label="Terminal output">
+              <div class="term-line">
+                <span class="term-prompt">guest@niroj:~$</span>
+                <span class="term-text tone-hint">Welcome. Try a command below.</span>
               </div>
-              <span class="console-tag">PROFILE.SNAPSHOT</span>
             </div>
 
-            <pre><code><span class="c-comment">// live profile data</span>
-<span class="c-key">role</span>     = <span class="c-str">"Freelance designer / CS student"</span>
-<span class="c-key">focus</span>    = [<span class="c-str">"design"</span>, <span class="c-str">"web"</span>, <span class="c-str">"security"</span>]
-<span class="c-key">creative</span> = [<span class="c-str">{creativeList}</span>]
-<span class="c-key">security</span>  = [<span class="c-str">{securityList}</span>]
-<span class="c-key">status</span>   = <span class="c-ok">● {site.availability}</span></code></pre>
-          </aside>
+            <form class="term-form" data-term-form>
+              <label class="sr-only" for="term-command">Terminal command</label>
+              <span class="term-prompt" aria-hidden="true">guest@niroj:~$</span>
+              <input
+                id="term-command"
+                data-term-input
+                type="text"
+                autocomplete="off"
+                autocapitalize="off"
+                spellcheck="false"
+                maxlength="48"
+                placeholder="whoami"
+              />
+              <button type="submit" aria-label="Run command">↵</button>
+            </form>
+
+            <div class="term-chips" role="group" aria-label="Try a command">
+              <button type="button" class="term-chip" data-command="whoami">whoami</button>
+              <button type="button" class="term-chip" data-command="ls projects/">ls projects/</button>
+              <button type="button" class="term-chip" data-command="cat skills.json">cat skills.json</button>
+              <button type="button" class="term-chip" data-command="scan --security">scan --security</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -85,122 +192,184 @@ const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
     </section>
 
     <section class="section container" id="services" aria-labelledby="services-title">
-      <header class="section-head">
-        <p class="section-kicker">// 01 — capabilities</p>
-        <h2 id="services-title">What I bring to the table</h2>
-        <p>Three practical lanes, one consistent approach: clear thinking, clean execution, and security considered from the start.</p>
+      <header class="section-head section-head--split">
+        <div>
+          <p class="section-kicker">// 01 — what I do</p>
+          <h2 id="services-title">Three ways I help.</h2>
+        </div>
+        <p>Design, code and security working together — not three separate checkboxes.</p>
       </header>
 
-      <div class="module-list">
-        {site.services.map((service, index) => (
-          <article class="module">
-            <span class="module-index">0{index + 1}</span>
-            <span class="module-icon" aria-hidden="true">
-              {service.icon === 'design' && (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 16.5 11 9l4 4 5-5" /><path d="M15 8h5v5" /><path d="M3 20h18" />
-                </svg>
-              )}
-              {service.icon === 'shield' && (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 3 5 6v5c0 4.5 2.8 8.4 7 10 4.2-1.6 7-5.5 7-10V6l-7-3Z" /><path d="m9 12 2 2 4-4" />
-                </svg>
-              )}
-              {service.icon === 'code' && (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="m8 7-5 5 5 5" /><path d="m16 7 5 5-5 5" /><path d="m14 4-4 16" />
-                </svg>
-              )}
-            </span>
-            <div class="module-copy">
-              <h3>{service.title}</h3>
-              <p>{service.description}</p>
-            </div>
-            <span class="module-arrow" aria-hidden="true">→</span>
-          </article>
-        ))}
-      </div>
+      <div class="bento">
+        <article class="pillar pillar-design" data-tilt>
+          <div class="pillar-bar">
+            <span>01</span>
+            <span>UI/UX &amp; Brand Design</span>
+          </div>
+          <div class="pillar-content">
+            <h3>UI/UX &amp; Brand Design</h3>
+            <p>{designService?.description}</p>
+          </div>
+          <div class="figma-mini" aria-hidden="true">
+            <div class="mini-head"><span>layers</span><span>03</span></div>
+            <ul>
+              <li class="is-selected"><i class="swatch swatch-mint"></i><span>Hero / cover</span></li>
+              <li><i class="swatch swatch-ink"></i><span>Brand kit</span></li>
+              <li><i class="swatch swatch-amber"></i><span>Campaign set</span></li>
+            </ul>
+            <div class="mini-foot">{site.designTools.join(' · ')}</div>
+          </div>
+        </article>
 
-      <aside class="security-console" aria-labelledby="security-title">
-        <div class="security-head">
-          <span class="security-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3 5 6v5c0 4.5 2.8 8.4 7 10 4.2-1.6 7-5.5 7-10V6l-7-3Z" /><path d="m9 12 2 2 4-4" />
-            </svg>
-          </span>
-          <div>
-            <p class="section-kicker">{site.security.label}</p>
-            <h3 id="security-title">Security is part of the build, not an afterthought.</h3>
+        <article class="pillar pillar-code" data-tilt>
+          <div class="pillar-bar">
+            <span>02</span>
+            <span>Full-Stack Web Development</span>
           </div>
-        </div>
-        <p class="security-note">{site.security.note}</p>
-        <div class="security-meta">
-          <div>
-            <span class="meta-label">toolkit</span>
-            <ul class="chip-list">
-              {site.security.tools.map((tool) => <li class="chip chip-accent">{tool}</li>)}
+          <div class="pillar-content">
+            <h3>Full-Stack Web Development</h3>
+            <p>{codeService?.description}</p>
+          </div>
+          <div class="code-wrap" aria-hidden="true">
+            <pre class="code-mini"><code>{codeLines.map((line) => (
+              <span class={`code-line tone-${line.tone}`}>{line.text}</span>
+            ))}</code></pre>
+            <div class="code-status"><span>✓</span> {languages.join(' / ')}</div>
+          </div>
+        </article>
+
+        <article class="pillar pillar-security" data-tilt>
+          <div class="pillar-bar">
+            <span>03</span>
+            <span>Practical Security Audits</span>
+          </div>
+          <div class="pillar-content">
+            <h3>Practical Security Audits</h3>
+            <p>{securityService?.description}</p>
+          </div>
+          <div class="scan-mini" aria-hidden="true">
+            <div class="scan-head"><span class="scan-light"></span> toolchain check</div>
+            <ul>
+              {site.security.tools.map((tool) => (
+                <li><span class="check">✓</span>{tool}</li>
+              ))}
             </ul>
+            <div class="scan-foot">{site.security.label} · {site.location}</div>
           </div>
-          <div>
-            <span class="meta-label">certifications</span>
-            <ul class="chip-list">
-              {site.security.certifications.map((cert) => <li class="chip">{cert}</li>)}
-            </ul>
-          </div>
-        </div>
-      </aside>
+        </article>
+      </div>
     </section>
 
     <section class="section container" id="work" aria-labelledby="work-title">
-      <header class="section-head">
-        <p class="section-kicker">// 02 — shipped work</p>
-        <h2 id="work-title">Things I have built</h2>
-        <p>Real projects with real constraints. The first one is local-first by design, so the data stays with the person using it.</p>
+      <header class="section-head section-head--split">
+        <div>
+          <p class="section-kicker">// 02 — featured work</p>
+          <h2 id="work-title">Built, tested, shipped.</h2>
+        </div>
+        <p>Real constraints, real deliverables. Every project gets a plain-language security note.</p>
       </header>
 
-      <div class="work-list">
+      <div class="spotlight">
         {projects.map((project, index) => (
-          <article class:list={['work-card', { featured: index === 0 }]}>
-            {index === 0 && (
-              <div class="work-media">
-                <ProjectPreview />
-              </div>
-            )}
-            <div class="work-body">
+          <article class="spotlight-card">
+            <a class="spotlight-preview" href={`/projects/${project.id}/`} aria-label={`Open ${project.data.title} case study`}>
+              <ProjectPreview />
+            </a>
+
+            <div class="spotlight-copy">
               <div class="work-meta">
                 <span class="work-index">0{index + 1}</span>
                 <span>{project.data.date.getFullYear()} · {project.data.stack?.join(' / ') || 'Project'}</span>
               </div>
+
               <h3><a href={`/projects/${project.id}/`}>{project.data.title}</a></h3>
-              <p>{project.data.description}</p>
+              <p class="work-description">{project.data.description}</p>
+
+              <div class="problem-impact">
+                <div>
+                  <span>PROBLEM</span>
+                  <p>Manual billing, repeated fields and arithmetic.</p>
+                </div>
+                <span class="flow-arrow" aria-hidden="true">→</span>
+                <div>
+                  <span>IMPACT</span>
+                  <p>One-click invoices with automatic tax and .docx export.</p>
+                </div>
+              </div>
+
+              <ul class="chip-list work-tags">
+                {project.data.stack?.map((tool) => <li class="chip chip-accent">{tool}</li>)}
+                {project.data.tags.map((tag) => <li><Tag label={tag} /></li>)}
+              </ul>
+
               {project.data.securityNotes && (
                 <p class="work-security">
                   <strong>SECURITY NOTE</strong>
                   {project.data.securityNotes}
                 </p>
               )}
-              <ul class="chip-list work-tags">
-                {project.data.tags.map((tag) => <li><Tag label={tag} /></li>)}
-              </ul>
-              <a class="work-link" href={`/projects/${project.id}/`}>open case study <span aria-hidden="true">→</span></a>
+
+              <a class="text-link" href={`/projects/${project.id}/`}>open case study <span aria-hidden="true">→</span></a>
             </div>
           </article>
         ))}
+
+        <a class="spotlight-next" href={inquiryHref}>
+          <span class="next-index">0{projects.length + 1}</span>
+          <span class="section-kicker">next case study</span>
+          <h3>Your project could be here.</h3>
+          <p>Tell me what needs design, code or a security pass — I'll take it from there.</p>
+          <span class="next-arrow" aria-hidden="true">↗</span>
+        </a>
       </div>
 
-      <a class="text-link" href="/projects/">all projects <span aria-hidden="true">→</span></a>
+      <a class="text-link work-all" href="/projects/">all projects <span aria-hidden="true">→</span></a>
+    </section>
+
+    <section class="strip-section" aria-label="Toolchain and availability">
+      <div class="container">
+        <div class="tool-strip">
+          <div class="strip-head">
+            <span class="live-dot" aria-hidden="true"></span>
+            <div>
+              <p class="section-kicker">toolchain check</p>
+              <p>Design + security, ready to go.</p>
+            </div>
+          </div>
+
+          <div class="marquee" aria-label={`Tools: ${marqueeTools.join(', ')}`}>
+            <div class="marquee-track">
+              {[0, 1].map((copy) => (
+                <ul class="marquee-group" aria-hidden={copy === 1 ? 'true' : undefined}>
+                  {marqueeTools.map((tool, index) => (
+                    <li class:list={['chip', index % 2 === 0 ? 'chip-accent' : 'chip']}>{tool}</li>
+                  ))}
+                </ul>
+              ))}
+            </div>
+          </div>
+
+          <div class="strip-location">
+            <span>{site.location}</span>
+            <span>remote · worldwide</span>
+          </div>
+        </div>
+      </div>
     </section>
 
     {notes.length > 0 && (
-      <section class="section container" id="notes" aria-labelledby="notes-title">
-        <header class="section-head">
-          <p class="section-kicker">// 03 — log</p>
-          <h2 id="notes-title">Latest note</h2>
+      <section class="section container note-section" aria-labelledby="notes-title">
+        <header class="section-head section-head--split">
+          <div>
+            <p class="section-kicker">// 03 — log</p>
+            <h2 id="notes-title">Latest note.</h2>
+          </div>
+          <a class="text-link" href="/writing/">all notes <span aria-hidden="true">→</span></a>
         </header>
 
-        <div class="log-list">
+        <div class="note-row">
           {notes.map((note) => (
-            <article class="log-card">
+            <article class="note-card">
               <time datetime={note.data.date.toISOString()}>{formatNoteDate(note.data.date)}</time>
               <div>
                 <h3><a href={`/writing/${note.id}/`}>{note.data.title}</a></h3>
@@ -212,194 +381,237 @@ const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
             </article>
           ))}
         </div>
-
-        <a class="text-link" href="/writing/">all notes <span aria-hidden="true">→</span></a>
       </section>
     )}
 
     <section class="section container" aria-labelledby="cta-title">
-      <div class="command-cta">
-        <p class="cmd-line"><span class="prompt">$</span> start-project --with niroj <span class="cursor" aria-hidden="true">_</span></p>
-        <div class="cta-grid">
-          <div>
-            <h2 id="cta-title">Let's make it happen.</h2>
-            <p>Design, web work or a practical security pass — tell me what you need and I'll get back to you.</p>
-          </div>
-          <a class="btn btn-primary" href={inquiryHref}>open email <span aria-hidden="true">→</span></a>
+      <div class="final-cta">
+        <p class="section-kicker">// 04 — let's talk</p>
+        <h2 id="cta-title">Have an idea that needs clean design and solid security?</h2>
+        <p class="cta-copy">
+          Have something in mind? Send a note and let's shape the first step together.
+        </p>
+
+        <div class="final-actions">
+          <a class="btn btn-primary" href={inquiryHref} data-magnetic>
+            <span>Start a project</span><span aria-hidden="true">→</span>
+          </a>
+          <button
+            class="btn btn-ghost"
+            type="button"
+            data-magnetic
+            data-copy-email
+            data-email={site.email}
+          >
+            <span data-copy-label>Copy email</span><span aria-hidden="true">⧉</span>
+          </button>
         </div>
+
+        <p class="final-email">{site.email}</p>
+        <div class="toast" data-toast role="status" aria-live="polite">Copied to clipboard</div>
       </div>
     </section>
   </div>
 </BaseLayout>
 
+<script>
+  import { initHome } from '../scripts/home.js';
+
+  initHome();
+</script>
+
 <style>
-  .terminal-home {
+  .home {
+    --cursor-x: 50vw;
+    --cursor-y: 20vh;
+    --cursor-opacity: 0.55;
     position: relative;
     isolation: isolate;
   }
 
-  .terminal-home::before {
+  :global([data-theme='light']) .home {
+    --cursor-opacity: 0.3;
+  }
+
+  .home::before {
     content: '';
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: -2;
     pointer-events: none;
     background-image:
       linear-gradient(var(--grid-line) 1px, transparent 1px),
       linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
     background-size: 52px 52px;
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 78%);
-    mask-image: linear-gradient(to bottom, #000 0%, transparent 78%);
-    opacity: 0.55;
+    background-position: calc(var(--cursor-x) * -0.012) calc(var(--cursor-y) * -0.012);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
+  }
+
+  .home::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      340px circle at var(--cursor-x) var(--cursor-y),
+      color-mix(in srgb, var(--color-accent) 16%, transparent),
+      transparent 72%
+    );
+    opacity: var(--cursor-opacity);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .hero {
     display: grid;
-    gap: 1.25rem;
-    padding-block: clamp(2.5rem, 7vw, 5rem) clamp(2rem, 5vw, 3.5rem);
+    gap: clamp(2rem, 4vw, 3.5rem);
+    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem);
   }
 
-  .terminal-window {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    background:
-      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 92%, transparent), var(--color-surface)),
-      var(--color-surface);
-    box-shadow: var(--shadow-card);
+  .hero-copy {
+    min-width: 0;
   }
 
-  .terminal-window::after {
-    content: '';
-    position: absolute;
-    inset: 0 0 auto;
-    height: 38%;
-    pointer-events: none;
-    background: linear-gradient(to bottom, transparent, var(--color-accent-soft), transparent);
-    opacity: 0.5;
-    transform: translateY(-120%);
-    animation: scan 11s linear infinite;
-  }
-
-  .window-bar {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    padding: 0.7rem 1rem;
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-surface-raised);
-  }
-
-  .window-dots {
-    display: flex;
-    gap: 0.35rem;
-  }
-
-  .window-dots i {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: var(--color-border);
-  }
-
-  .window-dots i:first-child {
-    background: var(--color-accent-2);
-  }
-
-  .window-path {
+  .hero-kicker,
+  .section-kicker {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--color-muted);
-  }
-
-  .window-live {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    margin-left: auto;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--color-link);
   }
 
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 999px;
+    background: var(--color-accent-soft);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-text);
+  }
+
+  .status-divider {
+    color: var(--color-muted);
+  }
+
   .live-dot {
     display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.48rem;
+    height: 0.48rem;
     flex: none;
     border-radius: 50%;
     background: var(--color-accent);
     box-shadow: 0 0 0 4px var(--color-accent-soft);
-    animation: live-pulse 3.6s ease-in-out infinite;
+    animation: live-pulse 3.4s ease-in-out infinite;
   }
 
-  .hero-grid {
-    display: grid;
-    gap: 2.5rem;
-    padding: clamp(1.75rem, 5vw, 3.5rem);
+  .hero-title {
+    margin-top: 1.35rem;
+    font-size: clamp(3.1rem, 8.4vw, 6.3rem);
+    line-height: 0.92;
+    letter-spacing: -0.065em;
   }
 
-  .cmd-line {
+  .hero-word {
+    display: inline-block;
+    margin-right: 0.14em;
+    animation: word-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 110ms + 120ms);
+    transition: color 300ms ease, text-shadow 300ms ease, transform 300ms ease;
+  }
+
+  .hero-word:last-child {
+    margin-right: 0;
+  }
+
+  .hero-word-accent {
+    color: var(--color-accent);
+  }
+
+  .hero-word:hover,
+  .hero-word:focus-visible {
+    color: var(--color-accent);
+    text-shadow: 0 0 38px color-mix(in srgb, var(--color-accent) 38%, transparent);
+    transform: translateY(-3px);
+  }
+
+  .hero-hint {
+    min-height: 1.4em;
+    margin-top: 0.7rem;
     font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--color-muted);
-  }
-
-  .prompt {
-    margin-right: 0.5rem;
-    color: var(--color-accent);
-    font-weight: 700;
-  }
-
-  .cursor {
-    color: var(--color-accent);
-    animation: cursor-blink 1.2s steps(1) infinite;
-  }
-
-  h1 {
-    margin-top: 1.1rem;
-    font-size: clamp(3rem, 9vw, 6.2rem);
-    line-height: 0.94;
-    letter-spacing: -0.06em;
-  }
-
-  h1 span {
-    color: var(--color-accent);
+    font-size: 0.74rem;
+    color: var(--color-link);
   }
 
   .lede {
-    max-width: 56ch;
     margin-top: 1.5rem;
-    color: var(--color-muted);
-    font-size: 1.05rem;
+    font-size: clamp(1rem, 1.6vw, 1.1rem);
   }
 
   .hero-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.8rem;
     margin-top: 2rem;
   }
 
   .btn {
+    --mag-x: 0px;
+    --mag-y: 0px;
+    --btn-x: 50%;
+    --btn-y: 50%;
+    position: relative;
+    isolation: isolate;
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
-    padding: 0.85rem 1.25rem;
+    gap: 0.65rem;
+    padding: 0.9rem 1.35rem;
     border: 1px solid transparent;
     border-radius: var(--radius);
     font-family: var(--font-mono);
     font-size: 0.82rem;
     font-weight: 700;
     text-decoration: none;
-    transition: transform var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition);
+    transform: translate3d(var(--mag-x), var(--mag-y), 0);
+    transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 220ms ease,
+      border-color 220ms ease, box-shadow 220ms ease;
+    cursor: pointer;
   }
 
-  .btn:hover {
-    transform: translateY(-2px);
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(
+      180px circle at var(--btn-x) var(--btn-y),
+      color-mix(in srgb, var(--color-accent) 45%, transparent),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 260ms ease;
+  }
+
+  .btn:hover::after {
+    opacity: 0.55;
   }
 
   .btn-primary {
@@ -409,7 +621,7 @@ const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
 
   .btn-primary:hover {
     background: var(--accent-hover);
-    box-shadow: 0 12px 28px var(--color-accent-soft);
+    box-shadow: 0 14px 34px var(--color-accent-soft);
   }
 
   .btn-ghost {
@@ -423,99 +635,207 @@ const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
     color: var(--color-link);
   }
 
-  .availability {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.65rem;
-    margin-top: 1.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--color-muted);
-  }
-
-  .console {
-    align-self: stretch;
-    padding: 1.25rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    background:
-      repeating-linear-gradient(to bottom, transparent 0 1.6rem, var(--grid-line) 1.6rem 1.61rem),
-      var(--color-bg-deep);
-    box-shadow: inset 0 0 40px color-mix(in srgb, var(--color-text) 5%, transparent);
-  }
-
-  .console-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .console-identity {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
+  .terminal-shell {
+    position: relative;
     min-width: 0;
   }
 
-  .console-identity picture {
-    display: contents;
+  .terminal-shell::before {
+    content: '';
+    position: absolute;
+    inset: -18% -12% -14%;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at 58% 42%,
+      color-mix(in srgb, var(--color-accent) 20%, transparent),
+      transparent 68%
+    );
+    filter: blur(20px);
   }
 
-  .console-identity img {
-    width: 3.5rem;
-    height: 3.5rem;
+  .terminal-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .terminal-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-accent), transparent 60%);
+  }
+
+  .term-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface-raised);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+  }
+
+  .window-dots {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .window-dots i {
+    width: 0.48rem;
+    height: 0.48rem;
+    border-radius: 50%;
+    background: var(--color-border);
+  }
+
+  .window-dots i:first-child {
+    background: var(--color-accent);
+  }
+
+  .term-title {
+    color: var(--color-text);
+  }
+
+  .term-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-left: auto;
+    color: var(--color-link);
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .term-body {
+    padding: 1.1rem 1.2rem 1.25rem;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 1.7rem, var(--grid-line) 1.7rem 1.71rem),
+      var(--color-bg-deep);
+  }
+
+  .term-history {
+    min-height: 12.5rem;
+    max-height: 15.5rem;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    line-height: 1.75;
+  }
+
+  .term-line {
+    display: flex;
+    gap: 0.55rem;
+    animation: line-in 280ms ease both;
+  }
+
+  .term-line--output {
+    padding-left: 0.4rem;
+  }
+
+  .term-prompt {
     flex: none;
-    border: 2px solid var(--color-accent);
-    border-radius: 10px;
-    object-fit: cover;
+    color: var(--color-accent);
+    font-weight: 700;
   }
 
-  .console-identity strong,
-  .console-identity span {
-    display: block;
+  .term-text {
+    min-width: 0;
+    white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
 
-  .console-identity strong {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    letter-spacing: -0.02em;
+  .tone-ok { color: var(--color-accent); }
+  .tone-file { color: var(--color-link); }
+  .tone-value { color: var(--color-text); }
+  .tone-str { color: var(--color-accent-2); }
+  .tone-muted { color: var(--color-muted); }
+  .tone-hint { color: var(--color-link); }
+  .tone-comment { color: var(--color-muted); opacity: 0.8; }
+  .tone-punc,
+  .tone-kw { color: var(--color-text); }
+  .tone-bool { color: var(--color-accent-2); }
+
+  .term-form {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: 0.8rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--color-border);
+    font-family: var(--font-mono);
   }
 
-  .console-identity span {
-    margin-top: 0.2rem;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
+  .term-form input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    font-size: 0.78rem;
+    caret-color: var(--color-accent);
+  }
+
+  .term-form input::placeholder {
     color: var(--color-muted);
   }
 
-  .console-tag {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
+  .term-form button {
+    width: 2rem;
+    height: 2rem;
+    flex: none;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 8px;
+    background: var(--color-accent-soft);
     color: var(--color-link);
-    white-space: nowrap;
-  }
-
-  .console pre {
-    margin: 1.1rem 0 0;
-    overflow-x: auto;
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    line-height: 1.75;
-    color: var(--color-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 200ms ease, color 200ms ease;
   }
 
-  .c-comment { color: var(--color-link); opacity: 0.75; }
-  .c-key { color: var(--color-link); }
-  .c-str { color: var(--color-accent-2); }
-  .c-ok { color: var(--color-accent); }
+  .term-form button:hover {
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+
+  .term-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.9rem;
+  }
+
+  .term-chip {
+    padding: 0.35rem 0.65rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface-raised);
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    cursor: pointer;
+    transition: border-color 200ms ease, background-color 200ms ease, color 200ms ease;
+  }
+
+  .term-chip:hover {
+    border-color: var(--color-accent-line);
+    background: var(--color-accent-soft);
+    color: var(--color-link);
+  }
 
   .metrics {
     display: grid;
+    grid-column: 1 / -1;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.75rem;
   }
@@ -523,8 +843,8 @@ const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
   .metric {
     display: flex;
     align-items: baseline;
-    gap: 0.75rem;
-    padding: 1rem 1.15rem;
+    gap: 0.7rem;
+    padding: 0.95rem 1.1rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
     background: var(--color-surface);
@@ -533,7 +853,7 @@ const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
 
   .metric strong {
     font-family: var(--font-mono);
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     line-height: 1;
     color: var(--color-accent);
     font-variant-numeric: tabular-nums;
@@ -541,195 +861,270 @@ const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
 
   .metric span {
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: 0.64rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-muted);
   }
 
   .section-head {
-    max-width: 68ch;
-  }
-
-  .section-kicker {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--color-link);
+    display: grid;
+    gap: 0.9rem;
+    max-width: 70ch;
   }
 
   .section-head h2 {
-    margin-top: 0.8rem;
-    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    margin-top: 0.65rem;
+    font-size: clamp(1.9rem, 4vw, 2.9rem);
   }
 
   .section-head > p:last-child {
-    margin-top: 1rem;
     color: var(--color-muted);
   }
 
-  .module-list {
+  .bento {
     display: grid;
-    gap: 0.75rem;
-    margin-top: 2rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2.25rem;
   }
 
-  .module {
-    display: grid;
-    grid-template-columns: auto auto 1fr auto;
-    align-items: center;
-    gap: 1.1rem;
-    padding: 1.35rem 1.5rem;
+  .pillar {
+    --rx: 0deg;
+    --ry: 0deg;
+    --tilt-x: 50%;
+    --tilt-y: 50%;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    min-height: 21rem;
+    padding: clamp(1.4rem, 3vw, 2rem);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
     background: var(--color-surface);
     box-shadow: var(--shadow-soft);
-    transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+    transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+    transition: transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease;
   }
 
-  .module:hover {
-    transform: translateX(4px);
+  .pillar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      420px circle at var(--tilt-x) var(--tilt-y),
+      color-mix(in srgb, var(--color-accent) 12%, transparent),
+      transparent 68%
+    );
+    opacity: 0;
+    transition: opacity 260ms ease;
+  }
+
+  .pillar:hover {
     border-color: var(--color-accent-line);
     box-shadow: var(--shadow-card);
   }
 
-  .module-index {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--color-accent);
+  .pillar:hover::after {
+    opacity: 1;
   }
 
-  .module-icon {
-    display: grid;
-    place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    flex: none;
-    border: 1px solid var(--color-accent-line);
-    border-radius: 50%;
-    background: var(--color-accent-soft);
-    color: var(--color-link);
+  .pillar-design {
+    grid-column: span 7;
+    grid-row: span 2;
+    min-height: 30rem;
   }
 
-  .module-icon svg {
-    width: 1.3rem;
-    height: 1.3rem;
+  .pillar-code,
+  .pillar-security {
+    grid-column: span 5;
   }
 
-  .module-copy h3 {
-    font-size: 1.1rem;
-  }
-
-  .module-copy p {
-    margin-top: 0.4rem;
-    color: var(--color-muted);
-    font-size: 0.92rem;
-  }
-
-  .module-arrow {
-    color: var(--color-link);
-    font-size: 1.1rem;
-  }
-
-  .security-console {
-    margin-top: 1rem;
-    padding: clamp(1.5rem, 4vw, 2.25rem);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-xl);
-    background:
-      radial-gradient(circle at 100% 0%, var(--color-accent-soft), transparent 45%),
-      var(--color-surface);
-    box-shadow: var(--shadow-soft);
-  }
-
-  .security-head {
+  .pillar-bar {
     display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .security-icon {
-    display: grid;
-    place-items: center;
-    width: 3rem;
-    height: 3rem;
-    flex: none;
-    border: 1px solid var(--color-accent-line);
-    border-radius: 50%;
-    background: var(--color-accent-soft);
-    color: var(--color-link);
-  }
-
-  .security-icon svg {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-
-  .security-head h3 {
-    margin-top: 0.5rem;
-    font-size: 1.35rem;
-  }
-
-  .security-note {
-    max-width: 70ch;
-    margin-top: 1.25rem;
-    color: var(--color-muted);
-  }
-
-  .security-meta {
-    display: grid;
-    gap: 1.5rem;
-    margin-top: 1.75rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .meta-label {
-    display: block;
-    margin-bottom: 0.7rem;
+    align-items: center;
+    gap: 0.75rem;
     font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
+    font-size: 0.67rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--color-muted);
   }
 
-  .work-list {
-    display: grid;
-    gap: 1rem;
-    margin-top: 2rem;
+  .pillar-bar span:first-child {
+    color: var(--color-accent);
+    font-weight: 700;
   }
 
-  .work-card {
+  .pillar-content h3 {
+    font-size: clamp(1.35rem, 2.6vw, 1.85rem);
+  }
+
+  .pillar-content p {
+    margin-top: 0.7rem;
+    color: var(--color-muted);
+    font-size: 0.92rem;
+  }
+
+  .figma-mini,
+  .code-wrap,
+  .scan-mini {
+    margin-top: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg-deep);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+  }
+
+  .mini-head,
+  .scan-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 0.8rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .figma-mini ul,
+  .scan-mini ul {
+    padding: 0.55rem;
+    list-style: none;
+  }
+
+  .figma-mini li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 7px;
+    color: var(--color-muted);
+  }
+
+  .figma-mini li.is-selected {
+    background: var(--color-accent-soft);
+    color: var(--color-text);
+  }
+
+  .swatch {
+    width: 0.75rem;
+    height: 0.75rem;
+    flex: none;
+    border-radius: 4px;
+    border: 1px solid color-mix(in srgb, var(--color-text) 18%, transparent);
+  }
+
+  .swatch-mint { background: var(--color-accent); }
+  .swatch-ink { background: var(--color-surface-raised); }
+  .swatch-amber { background: var(--color-accent-2); }
+
+  .mini-foot,
+  .scan-foot {
+    padding: 0.6rem 0.8rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-link);
+  }
+
+  .code-mini {
+    margin: 0;
+    padding: 0.9rem;
+    overflow-x: auto;
+    line-height: 1.7;
+  }
+
+  .code-line {
+    display: block;
+  }
+
+  .code-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 0.9rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-muted);
+  }
+
+  .code-status span {
+    color: var(--color-accent);
+  }
+
+  .scan-mini .scan-head {
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  .scan-light {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--color-accent);
+    animation: live-pulse 3s ease-in-out infinite;
+  }
+
+  .scan-mini li {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.28rem 0.6rem;
+    color: var(--color-muted);
+  }
+
+  .check {
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .spotlight {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2.25rem;
+  }
+
+  .spotlight-card {
+    display: grid;
     overflow: hidden;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     background: var(--color-surface);
     box-shadow: var(--shadow-soft);
-    transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+    transition: border-color 250ms ease, box-shadow 250ms ease;
   }
 
-  .work-card:hover {
-    transform: translateY(-4px);
+  .spotlight-card:hover {
     border-color: var(--color-accent-line);
     box-shadow: var(--shadow-card);
   }
 
-  .work-card.featured {
-    display: grid;
-    align-items: stretch;
-  }
-
-  .work-media {
+  .spotlight-preview {
     display: grid;
     place-items: center;
-    padding: 1.5rem;
-    background: var(--color-bg-deep);
+    overflow: hidden;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    background: radial-gradient(circle at 50% 20%, var(--color-accent-soft), transparent 60%), var(--color-bg-deep);
+    text-decoration: none;
   }
 
-  .work-body {
-    padding: clamp(1.5rem, 4vw, 2.5rem);
+  .spotlight-preview > * {
+    width: 100%;
+    max-width: 26rem;
+    transition: transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .spotlight-card:hover .spotlight-preview > * {
+    transform: scale(1.05) translateY(-4px);
+  }
+
+  .spotlight-copy {
+    padding: clamp(1.6rem, 4vw, 2.5rem);
   }
 
   .work-meta {
@@ -737,8 +1132,8 @@ const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
     align-items: center;
     gap: 0.75rem;
     font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
+    font-size: 0.67rem;
+    letter-spacing: 0.09em;
     text-transform: uppercase;
     color: var(--color-muted);
   }
@@ -748,52 +1143,78 @@ const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
     font-weight: 700;
   }
 
-  .work-body h3 {
+  .spotlight-copy h3 {
     margin-top: 0.9rem;
     font-size: clamp(1.5rem, 3vw, 2.1rem);
   }
 
-  .work-body h3 a {
+  .spotlight-copy h3 a {
     color: var(--color-text);
     text-decoration: none;
   }
 
-  .work-body h3 a:hover {
+  .spotlight-copy h3 a:hover {
     color: var(--color-link);
   }
 
-  .work-body > p:not(.work-meta):not(.work-security) {
-    margin-top: 1rem;
+  .work-description {
+    margin-top: 0.8rem;
     color: var(--color-muted);
   }
 
-  .work-security {
-    margin-top: 1.5rem;
-    padding: 1rem 1.15rem;
-    border-left: 2px solid var(--color-accent);
-    border-radius: 0 var(--radius) var(--radius) 0;
-    background: var(--color-accent-soft);
-    font-size: 0.88rem;
+  .problem-impact {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0.9rem;
+    margin-top: 1.4rem;
   }
 
-  .work-security strong {
-    display: block;
-    margin-bottom: 0.4rem;
+  .problem-impact span:not(.flow-arrow) {
     font-family: var(--font-mono);
     font-size: 0.62rem;
     letter-spacing: 0.12em;
     color: var(--color-link);
   }
 
-  .work-tags {
-    margin-top: 1.25rem;
+  .problem-impact p {
+    margin-top: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--color-muted);
   }
 
-  .work-link,
+  .flow-arrow {
+    color: var(--color-accent);
+    font-size: 1.2rem;
+  }
+
+  .work-tags {
+    margin-top: 1.35rem;
+  }
+
+  .work-security {
+    margin-top: 1.35rem;
+    padding: 0.9rem 1rem;
+    border-left: 2px solid var(--color-accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: var(--color-accent-soft);
+    font-size: 0.85rem;
+  }
+
+  .work-security strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.61rem;
+    letter-spacing: 0.12em;
+    color: var(--color-link);
+  }
+
   .text-link {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    margin-top: 1.5rem;
     font-family: var(--font-mono);
     font-size: 0.78rem;
     font-weight: 700;
@@ -801,69 +1222,174 @@ const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
     text-decoration: none;
   }
 
-  .work-link {
-    margin-top: 1.5rem;
+  .text-link span {
+    transition: transform 200ms ease;
   }
 
-  .text-link {
-    margin-top: 1.75rem;
-  }
-
-  .work-link:hover span,
   .text-link:hover span {
     transform: translateX(4px);
   }
 
-  .work-link span,
-  .text-link span {
-    transition: transform var(--transition);
+  .work-all {
+    margin-top: 1.75rem;
   }
 
-  .log-list {
-    margin-top: 2rem;
+  .spotlight-next {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-height: 15rem;
+    padding: clamp(1.5rem, 3vw, 2.2rem);
+    border: 1px dashed var(--color-accent-line);
+    border-radius: var(--radius-lg);
+    background: var(--color-accent-soft);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: border-color 240ms ease, transform 240ms ease;
+  }
+
+  .spotlight-next:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-3px);
+  }
+
+  .next-index {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-accent);
+  }
+
+  .spotlight-next h3 {
+    font-size: clamp(1.35rem, 3vw, 1.9rem);
+  }
+
+  .spotlight-next p:not(.section-kicker) {
+    max-width: 46ch;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+  }
+
+  .next-arrow {
+    position: absolute;
+    right: 1.5rem;
+    bottom: 1.25rem;
+    color: var(--color-link);
+    font-size: 1.4rem;
+  }
+
+  .strip-section {
+    padding-block: 0 clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .tool-strip {
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .strip-head {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .strip-head p:last-child {
+    margin-top: 0.2rem;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+  }
+
+  .marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 28s linear infinite;
+  }
+
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  .marquee-group {
+    display: flex;
+    gap: 0.5rem;
+    padding-right: 0.5rem;
+    list-style: none;
+  }
+
+  .marquee-group li {
+    flex: none;
+  }
+
+  .strip-location {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-muted);
+    white-space: nowrap;
+  }
+
+  .strip-location span + span::before {
+    content: '·';
+    margin-right: 0.6rem;
+    color: var(--color-accent);
+  }
+
+  .note-section {
+    padding-top: 0;
+  }
+
+  .note-row {
+    margin-top: 1.5rem;
     border-top: 1px solid var(--color-border);
   }
 
-  .log-card {
+  .note-card {
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: 1.25rem;
-    padding: 1.5rem 0.5rem;
+    padding: 1.35rem 0.5rem;
     border-bottom: 1px solid var(--color-border);
-    transition: background-color var(--transition), padding-inline var(--transition);
   }
 
-  .log-card:hover {
-    padding-inline: 1rem;
-    background: var(--color-surface);
-  }
-
-  .log-card time {
+  .note-card time {
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    letter-spacing: 0.05em;
     color: var(--color-link);
     white-space: nowrap;
   }
 
-  .log-card h3 {
+  .note-card h3 {
     font-size: 1.15rem;
   }
 
-  .log-card h3 a {
+  .note-card h3 a {
     color: var(--color-text);
     text-decoration: none;
   }
 
-  .log-card h3 a:hover {
+  .note-card h3 a:hover {
     color: var(--color-link);
   }
 
-  .log-card p {
-    margin-top: 0.4rem;
+  .note-card p {
+    margin-top: 0.3rem;
     color: var(--color-muted);
-    font-size: 0.92rem;
+    font-size: 0.88rem;
   }
 
   .log-arrow {
@@ -875,7 +1401,7 @@ const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
     border-radius: 50%;
     color: var(--color-link);
     text-decoration: none;
-    transition: transform var(--transition), border-color var(--transition);
+    transition: transform 200ms ease, border-color 200ms ease;
   }
 
   .log-arrow:hover {
@@ -883,101 +1409,220 @@ const securityList = site.security.tools.map((tool) => `"${tool}"`).join(', ');
     border-color: var(--color-accent-line);
   }
 
-  .command-cta {
-    padding: clamp(1.75rem, 5vw, 3rem);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    background:
-      radial-gradient(circle at 90% 10%, var(--color-accent-soft), transparent 55%),
-      var(--color-surface);
+  .final-cta {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(2rem, 6vw, 4.25rem);
+    border-radius: var(--radius-xl);
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
     box-shadow: var(--shadow-card);
+    text-align: center;
   }
 
-  .cta-grid {
-    display: grid;
-    gap: 1.5rem;
-    align-items: end;
-    margin-top: 1.25rem;
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(circle at 85% 10%, rgb(255 255 255 / 0.22), transparent 55%);
   }
 
-  .cta-grid h2 {
-    font-size: clamp(1.8rem, 4vw, 2.7rem);
+  .final-cta .section-kicker,
+  .final-cta .cta-copy,
+  .final-cta .final-email {
+    color: color-mix(in srgb, var(--color-accent-ink) 78%, transparent);
   }
 
-  .cta-grid p {
-    max-width: 58ch;
-    margin-top: 0.85rem;
-    color: var(--color-muted);
+  .final-cta h2 {
+    max-width: 22ch;
+    margin: 1rem auto 0;
+    font-size: clamp(1.9rem, 4.6vw, 3.1rem);
   }
 
-  @keyframes cursor-blink {
-    0%, 49% { opacity: 1; }
-    50%, 100% { opacity: 0; }
+  .cta-copy {
+    max-width: 52ch;
+    margin: 1rem auto 0;
+  }
+
+  .final-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-top: 2rem;
+  }
+
+  .final-cta .btn-primary {
+    background: var(--color-accent-ink);
+    color: var(--color-accent);
+  }
+
+  .final-cta .btn-primary:hover {
+    background: color-mix(in srgb, var(--color-accent-ink) 86%, transparent);
+  }
+
+  .final-cta .btn-ghost {
+    border-color: color-mix(in srgb, var(--color-accent-ink) 45%, transparent);
+    background: transparent;
+    color: var(--color-accent-ink);
+  }
+
+  .final-cta .btn-ghost:hover {
+    border-color: var(--color-accent-ink);
+    color: var(--color-accent-ink);
+  }
+
+  .final-email {
+    margin-top: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .toast {
+    position: absolute;
+    left: 50%;
+    bottom: 1rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    background: var(--color-accent-ink);
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    opacity: 0;
+    transform: translate(-50%, 8px);
+    pointer-events: none;
+    transition: opacity 220ms ease, transform 220ms ease;
+  }
+
+  .toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  @keyframes word-in {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes line-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes live-pulse {
     0%, 100% { box-shadow: 0 0 0 4px var(--color-accent-soft); }
-    50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-accent) 8%, transparent); }
+    50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-accent) 10%, transparent); }
   }
 
-  @keyframes scan {
-    to { transform: translateY(360%); }
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
   }
 
-  @media (min-width: 860px) {
-    .hero-grid {
-      grid-template-columns: 1.05fr 0.95fr;
+  @media (min-width: 900px) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr);
       align-items: center;
     }
 
-    .security-meta {
-      grid-template-columns: 0.8fr 1.2fr;
+    .spotlight-card {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
     }
 
-    .work-card.featured {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  @media (min-width: 720px) {
-    .cta-grid {
-      grid-template-columns: 1fr auto;
+    .tool-strip {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
     }
   }
 
-  @media (max-width: 640px) {
-    .module {
-      grid-template-columns: auto 1fr;
-      align-items: start;
-      gap: 0.9rem;
+  @media (min-width: 760px) {
+    .section-head--split {
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: end;
     }
 
-    .module-index,
-    .module-arrow {
-      display: none;
+    .section-head--split > p:last-child {
+      justify-self: end;
+      text-align: right;
+    }
+  }
+
+  @media (max-width: 899px) {
+    .bento {
+      grid-template-columns: 1fr;
     }
 
-    .log-card {
+    .pillar,
+    .pillar-design,
+    .pillar-code,
+    .pillar-security {
+      grid-column: 1 / -1;
+      grid-row: auto;
+      min-height: 20rem;
+    }
+
+    .pillar-design {
+      min-height: 25rem;
+    }
+
+    .spotlight-preview {
+      min-height: 16rem;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .metrics {
+      grid-template-columns: 1fr;
+    }
+
+    .metric {
+      align-items: center;
+    }
+
+    .problem-impact {
+      grid-template-columns: 1fr;
+      gap: 0.7rem;
+    }
+
+    .flow-arrow {
+      transform: rotate(90deg);
+    }
+
+    .note-card {
       grid-template-columns: 1fr auto;
     }
 
-    .log-card time {
+    .note-card time {
       grid-column: 1 / -1;
     }
 
-    .window-path {
+    .term-history {
+      min-height: 11rem;
+    }
+
+    .term-form .term-prompt {
       display: none;
+    }
+
+    .strip-location {
+      white-space: normal;
     }
   }
 
-  @media (max-width: 420px) {
-    .metric {
-      flex-direction: column;
-      gap: 0.35rem;
+  @media (prefers-reduced-motion: reduce) {
+    .home::before,
+    .home::after {
+      background-position: center;
     }
 
-    .console pre {
-      font-size: 0.65rem;
+    .marquee-track {
+      animation: none;
+    }
+
+    .pillar,
+    .btn {
+      transform: none;
     }
   }
 </style>

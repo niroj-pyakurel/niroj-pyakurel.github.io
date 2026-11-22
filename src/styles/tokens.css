@@ -9,13 +9,13 @@
   --color-text: #eaf6f3;
   --color-muted: #93b0ae;
   --color-border: #23434a;
-  --color-accent: #6ee7b7;
+  --color-accent: #4ade80;
   --color-accent-2: #ffc078;
   --color-accent-ink: #07151a;
-  --color-link: #8df0c6;
-  --color-focus: #8df0c6;
-  --color-accent-soft: rgb(110 231 183 / 0.12);
-  --color-accent-line: rgb(110 231 183 / 0.38);
+  --color-link: #82f0aa;
+  --color-focus: #82f0aa;
+  --color-accent-soft: rgb(74 222 128 / 0.12);
+  --color-accent-line: rgb(74 222 128 / 0.38);
   --color-teal-soft: rgb(255 192 120 / 0.1);
   --color-teal-line: rgb(255 192 120 / 0.34);
   --grid-line: rgb(234 246 243 / 0.045);

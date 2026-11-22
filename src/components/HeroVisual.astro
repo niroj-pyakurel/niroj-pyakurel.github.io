@@ -6,46 +6,18 @@ import { site } from '../data/site.js';
   <div class="orbit orbit-one"></div>
   <div class="orbit orbit-two"></div>
 
-  <div class="float float-profile">
-    <div class="profile-panel">
-      <div class="panel-head">
-        <span class="panel-tag">NP / PROFILE</span>
-        <span class="panel-dots"><i></i><i></i><i></i></span>
-      </div>
-
-      <div class="portrait-wrap">
-        <span class="portrait-ring"></span>
+  <div class="float float-identity">
+    <div class="identity">
+      <div class="portrait">
         <picture>
           <source srcset="/niroj.webp?v=20261122c" type="image/webp" />
-          <img src="/niroj.png?v=20261122b" width="220" height="220" alt="" />
+          <img src="/niroj.png?v=20261122b" width="96" height="96" alt="" />
         </picture>
       </div>
-
-      <div class="profile-copy">
-        <span class="mini-label">Freelance · Kathmandu</span>
-        <strong>{site.name}</strong>
-        <div class="role-row">
-          <span>Design</span><span>Web</span><span>Security</span>
-        </div>
-        <div class="live-status">
-          <span class="signal"><i></i><i></i><i></i><i></i></span>
-          <span>{site.availability}</span>
-        </div>
-      </div>
-
-      <div class="toolkit">
-        <div class="tool-group">
-          <span class="mini-label">Security</span>
-          <ul class="chip-list">
-            {site.security.tools.map((tool) => <li class="chip chip-accent">{tool}</li>)}
-          </ul>
-        </div>
-        <div class="tool-group">
-          <span class="mini-label">Creative</span>
-          <ul class="chip-list">
-            {site.designTools.map((tool) => <li class="chip chip-amber">{tool}</li>)}
-          </ul>
-        </div>
+      <div class="identity-copy">
+        <span class="mini-label">Based in</span>
+        <strong>{site.location}</strong>
+        <span class="status"><span class="status-dot"></span>{site.availability}</span>
       </div>
     </div>
   </div>
@@ -60,70 +32,53 @@ import { site } from '../data/site.js';
         <p><span class="key">name</span> = <span class="str">'Niroj Pyakurel'</span></p>
         <p><span class="key">base</span> = <span class="str">'Kathmandu, NP'</span></p>
         <p><span class="key">focus</span> = [<span class="str">'design'</span>, <span class="str">'web'</span>, <span class="str">'security'</span>]</p>
-        <p><span class="key">status</span> = <span class="str">'available'</span><span class="cursor"></span></p>
+        <p><span class="key">status</span> = <span class="str">'available'</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="float float-tools">
+    <div class="visual-card tool-card">
+      <div class="tool-group">
+        <span class="mini-label">Security tools</span>
+        <ul class="chip-list">
+          {site.security.tools.map((tool) => <li class="chip chip-accent">{tool}</li>)}
+        </ul>
+      </div>
+      <div class="tool-group">
+        <span class="mini-label">Creative tools</span>
+        <ul class="chip-list">
+          {site.designTools.map((tool) => <li class="chip chip-amber">{tool}</li>)}
+        </ul>
       </div>
     </div>
   </div>
 </div>
 
-<script>
-  const visual = document.querySelector('.hero-visual');
-  const hero = visual?.closest('.hero');
-  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  if (hero && visual && finePointer.matches && !reducedMotion.matches) {
-    hero.addEventListener('pointermove', (event) => {
-      const rect = visual.getBoundingClientRect();
-      const x = ((event.clientX - rect.left) / rect.width) * 100;
-      const y = ((event.clientY - rect.top) / rect.height) * 100;
-      visual.style.setProperty('--mx', `${x.toFixed(1)}%`);
-      visual.style.setProperty('--my', `${y.toFixed(1)}%`);
-    });
-  }
-</script>
-
 <style>
   .hero-visual {
     position: relative;
     display: grid;
-    gap: 1.25rem;
+    gap: 2rem;
     isolation: isolate;
-  }
-
-  .hero-visual::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    inset: -14%;
-    background: radial-gradient(
-      260px circle at var(--mx, 50%) var(--my, 40%),
-      color-mix(in srgb, var(--color-accent) 14%, transparent),
-      transparent 72%
-    );
-    opacity: 0;
-    transition: opacity 700ms ease;
-    pointer-events: none;
-  }
-
-  .hero-visual:hover::before {
-    opacity: 1;
   }
 
   .float {
     will-change: transform;
   }
 
-  .float-profile {
-    animation:
-      fade-in 900ms ease both,
-      float-soft 20s ease-in-out 1.2s infinite;
+  .float-identity {
+    animation: float-soft 7s ease-in-out infinite;
   }
 
   .float-code {
-    animation:
-      fade-in 900ms ease 140ms both,
-      float-alt 24s ease-in-out -6s infinite;
+    animation: float-alt 8.5s ease-in-out infinite;
+    animation-delay: -2s;
+  }
+
+  .float-tools {
+    animation: float-soft 9.5s ease-in-out infinite;
+    animation-delay: -5s;
   }
 
   .orbit {
@@ -137,111 +92,47 @@ import { site } from '../data/site.js';
   .orbit-one {
     inset: -6% -4% 24% 10%;
     opacity: 0.5;
-    animation: orbit-spin 110s linear infinite;
+    animation: orbit-spin 38s linear infinite;
   }
 
   .orbit-two {
     inset: 28% 4% -8% -6%;
     border-color: var(--color-teal-line);
     opacity: 0.45;
-    animation: orbit-spin 150s linear infinite reverse;
+    animation: orbit-spin 52s linear infinite reverse;
   }
 
-  .profile-panel {
-    position: relative;
-    padding: 1.5rem;
-    overflow: hidden;
-    border: 1px solid var(--color-accent-line);
-    border-radius: var(--radius-xl);
-    background:
-      radial-gradient(circle at 50% 20%, var(--color-accent-soft), transparent 58%),
-      var(--color-surface-raised);
-    box-shadow: var(--shadow-card);
-    transition: border-color var(--transition), box-shadow var(--transition);
-  }
-
-  .profile-panel::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 40%);
-    pointer-events: none;
-  }
-
-  .profile-panel:hover {
-    border-color: var(--color-accent);
-    box-shadow: 0 30px 80px rgb(0 0 0 / 0.4);
-  }
-
-  .panel-head {
+  .identity {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 1rem;
   }
 
-  .panel-tag {
-    font-family: var(--font-mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.16em;
-    color: var(--color-link);
-  }
-
-  .panel-dots {
-    display: flex;
-    gap: 0.35rem;
-  }
-
-  .panel-dots i {
-    width: 0.45rem;
-    height: 0.45rem;
-    border-radius: 50%;
-    background: var(--color-border);
-  }
-
-  .panel-dots i:first-child {
-    background: var(--color-accent-2);
-  }
-
-  .portrait-wrap {
-    position: relative;
-    width: clamp(8rem, 15vw, 11rem);
+  .portrait {
+    width: clamp(4rem, 9vw, 5.5rem);
     aspect-ratio: 1;
-    margin: 1.6rem auto 1.4rem;
-  }
-
-  .portrait-ring {
-    position: absolute;
-    inset: -9px;
+    flex: none;
+    overflow: hidden;
+    border: 2px solid var(--color-accent);
     border-radius: 50%;
-    background: conic-gradient(from 0deg, var(--color-accent), var(--color-accent-2), var(--color-accent));
-    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
-    mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
-    animation: ring-spin 26s linear infinite;
+    box-shadow: 0 0 0 6px var(--color-accent-soft);
+    animation: portrait-glow 4.5s ease-in-out infinite;
   }
 
-  .portrait-wrap picture {
+  .portrait picture {
     display: contents;
   }
 
-  .portrait-wrap img {
-    position: relative;
+  .portrait img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
-    border: 3px solid var(--color-bg-deep);
-    border-radius: 50%;
-    box-shadow: 0 0 0 7px var(--color-accent-soft);
   }
 
-  .profile-copy {
-    position: relative;
+  .identity-copy {
     display: grid;
-    justify-items: center;
-    gap: 0.45rem;
-    text-align: center;
+    gap: 0.25rem;
   }
 
   .mini-label {
@@ -252,99 +143,35 @@ import { site } from '../data/site.js';
     color: var(--color-muted);
   }
 
-  .profile-copy strong {
+  .identity-copy strong {
     font-family: var(--font-display);
-    font-size: clamp(1.35rem, 3vw, 1.75rem);
-    letter-spacing: -0.04em;
+    font-size: 1.15rem;
+    letter-spacing: -0.03em;
   }
 
-  .role-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.4rem;
-    margin-top: 0.15rem;
-  }
-
-  .role-row span {
-    padding: 0.25rem 0.65rem;
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.06em;
-    color: var(--color-muted);
-    transition: border-color var(--transition), color var(--transition), background-color var(--transition);
-  }
-
-  .role-row span:hover {
-    border-color: var(--color-accent-line);
-    background: var(--color-accent-soft);
-    color: var(--color-link);
-  }
-
-  .live-status {
+  .status {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
-    margin-top: 0.35rem;
+    gap: 0.5rem;
+    margin-top: 0.2rem;
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    color: var(--color-link);
-  }
-
-  .signal {
-    display: flex;
-    align-items: flex-end;
-    gap: 3px;
-    height: 0.85rem;
-  }
-
-  .signal i {
-    width: 3px;
-    height: 100%;
-    border-radius: 2px;
-    background: var(--color-accent);
-    transform-origin: bottom;
-    animation: signal 2.8s ease-in-out infinite;
-  }
-
-  .signal i:nth-child(2) { animation-delay: -0.5s; }
-  .signal i:nth-child(3) { animation-delay: -1s; }
-  .signal i:nth-child(4) { animation-delay: -1.5s; }
-
-  .toolkit {
-    position: relative;
-    display: grid;
-    gap: 1rem;
-    margin-top: 1.6rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .tool-group .mini-label {
-    display: block;
-    margin-bottom: 0.6rem;
-  }
-
-  .tool-group :global(.chip) {
-    font-size: 0.65rem;
-    padding: 0.3rem 0.6rem;
+    color: var(--color-muted);
   }
 
   .visual-card {
     width: 100%;
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-xl);
-    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-raised);
     box-shadow: var(--shadow-card);
     transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
   }
 
   .visual-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px);
     border-color: var(--color-accent-line);
-    box-shadow: 0 26px 64px rgb(0 0 0 / 0.34);
+    box-shadow: 0 28px 70px rgb(0 0 0 / 0.36);
   }
 
   .code-card {
@@ -357,7 +184,7 @@ import { site } from '../data/site.js';
     gap: 0.4rem;
     padding: 0.75rem 0.95rem;
     border-bottom: 1px solid var(--color-border);
-    background: var(--color-bg-deep);
+    background: var(--color-surface);
   }
 
   .card-bar span {
@@ -382,7 +209,7 @@ import { site } from '../data/site.js';
   .code-lines {
     display: grid;
     gap: 0.6rem;
-    padding: 1.15rem;
+    padding: 1.25rem;
     font-family: var(--font-mono);
     font-size: clamp(0.6rem, 1.1vw, 0.78rem);
     line-height: 1.5;
@@ -402,47 +229,34 @@ import { site } from '../data/site.js';
     color: var(--color-accent-2);
   }
 
-  .cursor {
-    display: inline-block;
-    width: 0.45em;
-    height: 1em;
-    margin-left: 0.2em;
-    vertical-align: -0.15em;
-    background: var(--color-accent);
-    animation: blink 1.6s steps(1, end) infinite;
+  .tool-card {
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
   }
 
-  @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  .tool-group .mini-label {
+    display: block;
+    margin-bottom: 0.7rem;
   }
 
   @keyframes float-soft {
     0%, 100% { transform: translate3d(0, 0, 0); }
-    50% { transform: translate3d(0, -6px, 0); }
+    50% { transform: translate3d(0, -13px, 0); }
   }
 
   @keyframes float-alt {
-    0%, 100% { transform: translate3d(0, -3px, 0); }
-    50% { transform: translate3d(0, 4px, 0); }
+    0%, 100% { transform: translate3d(0, -7px, 0); }
+    50% { transform: translate3d(0, 9px, 0); }
   }
 
   @keyframes orbit-spin {
     to { transform: rotate(1turn); }
   }
 
-  @keyframes ring-spin {
-    to { transform: rotate(1turn); }
-  }
-
-  @keyframes signal {
-    0%, 100% { transform: scaleY(0.5); opacity: 0.55; }
-    50% { transform: scaleY(1); opacity: 1; }
-  }
-
-  @keyframes blink {
-    0%, 55% { opacity: 1; }
-    56%, 100% { opacity: 0; }
+  @keyframes portrait-glow {
+    0%, 100% { box-shadow: 0 0 0 6px var(--color-accent-soft); }
+    50% { box-shadow: 0 0 0 10px color-mix(in srgb, var(--color-accent) 7%, transparent); }
   }
 
   @media (max-width: 900px) {

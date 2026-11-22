@@ -10,7 +10,31 @@ const isActive = (href) => (href === '/' ? path === '/' : path === href.replace(
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="/" aria-label={`${site.name} — home`}>
-      <img class="brand-photo" src="/profile-photo.png" width="34" height="34" alt="" />
+      <svg
+        class="brand-mark"
+        viewBox="0 0 40 40"
+        width="34"
+        height="34"
+        fill="none"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <rect x="1.5" y="1.5" width="37" height="37" rx="9" stroke="var(--color-accent)" stroke-width="2" />
+        <path
+          d="M9 30V10l10 20V10"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M24 30V10h5a5 5 0 0 1 0 10h-5"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
       <span class="wordmark">{site.name}</span>
     </a>
 
@@ -72,15 +96,8 @@ const isActive = (href) => (href === '/' ? path === '/' : path === href.replace(
     color: var(--color-link);
   }
 
-  .brand-photo {
-    width: 34px;
-    height: 34px;
+  .brand-mark {
     flex: none;
-    border: 2px solid var(--color-accent);
-    border-radius: 10px;
-    object-fit: cover;
-    object-position: center;
-    background: var(--color-surface);
   }
 
   .header-right {

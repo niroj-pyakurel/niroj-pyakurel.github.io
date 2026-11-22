@@ -6,48 +6,76 @@ import { site } from '../data/site.js';
   <div class="orbit orbit-one"></div>
   <div class="orbit orbit-two"></div>
 
-  <div class="identity">
-    <div class="portrait">
-      <picture>
-        <source srcset="/niroj.webp?v=20261122c" type="image/webp" />
-        <img src="/niroj.png?v=20261122b" width="96" height="96" alt="" />
-      </picture>
-    </div>
-    <div class="identity-copy">
-      <span class="mini-label">Based in</span>
-      <strong>{site.location}</strong>
-      <span class="status"><span class="status-dot"></span>{site.availability}</span>
-    </div>
-  </div>
-
-  <div class="visual-card code-card">
-    <div class="card-bar">
-      <span></span><span></span><span></span>
-      <em>niroj.py</em>
-    </div>
-    <div class="code-lines">
-      <p><span class="key">name</span> = <span class="str">'Niroj Pyakurel'</span></p>
-      <p><span class="key">base</span> = <span class="str">'Kathmandu, NP'</span></p>
-      <p><span class="key">focus</span> = [<span class="str">'design'</span>, <span class="str">'web'</span>, <span class="str">'security'</span>]</p>
-      <p><span class="key">status</span> = <span class="str">'available'</span></p>
+  <div class="float float-identity">
+    <div class="identity">
+      <div class="portrait">
+        <picture>
+          <source srcset="/niroj.webp?v=20261122c" type="image/webp" />
+          <img src="/niroj.png?v=20261122b" width="96" height="96" alt="" />
+        </picture>
+      </div>
+      <div class="identity-copy">
+        <span class="mini-label">Based in</span>
+        <strong>{site.location}</strong>
+        <span class="status"><span class="status-dot"></span>{site.availability}</span>
+      </div>
     </div>
   </div>
 
-  <div class="visual-card tool-card">
-    <div class="tool-group">
-      <span class="mini-label">Security tools</span>
-      <ul class="chip-list">
-        {site.security.tools.map((tool) => <li class="chip chip-accent">{tool}</li>)}
-      </ul>
+  <div class="float float-code">
+    <div class="visual-card code-card">
+      <div class="card-bar">
+        <span></span><span></span><span></span>
+        <em>niroj.py</em>
+      </div>
+      <div class="code-lines">
+        <p><span class="key">name</span> = <span class="str">'Niroj Pyakurel'</span></p>
+        <p><span class="key">base</span> = <span class="str">'Kathmandu, NP'</span></p>
+        <p><span class="key">focus</span> = [<span class="str">'design'</span>, <span class="str">'web'</span>, <span class="str">'security'</span>]</p>
+        <p><span class="key">status</span> = <span class="str">'available'</span></p>
+      </div>
     </div>
-    <div class="tool-group">
-      <span class="mini-label">Creative tools</span>
-      <ul class="chip-list">
-        {site.designTools.map((tool) => <li class="chip chip-amber">{tool}</li>)}
-      </ul>
+  </div>
+
+  <div class="float float-tools">
+    <div class="visual-card tool-card">
+      <div class="tool-group">
+        <span class="mini-label">Security tools</span>
+        <ul class="chip-list">
+          {site.security.tools.map((tool) => <li class="chip chip-accent">{tool}</li>)}
+        </ul>
+      </div>
+      <div class="tool-group">
+        <span class="mini-label">Creative tools</span>
+        <ul class="chip-list">
+          {site.designTools.map((tool) => <li class="chip chip-amber">{tool}</li>)}
+        </ul>
+      </div>
     </div>
   </div>
 </div>
+
+<script>
+  const visual = document.querySelector('.hero-visual');
+  const hero = visual?.closest('.hero');
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (hero && visual && finePointer.matches && !reducedMotion.matches) {
+    hero.addEventListener('pointermove', (event) => {
+      const rect = visual.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      visual.style.setProperty('--tilt-x', `${(-y * 4).toFixed(2)}deg`);
+      visual.style.setProperty('--tilt-y', `${(x * 6).toFixed(2)}deg`);
+    });
+
+    hero.addEventListener('pointerleave', () => {
+      visual.style.setProperty('--tilt-x', '0deg');
+      visual.style.setProperty('--tilt-y', '0deg');
+    });
+  }
+</script>
 
 <style>
   .hero-visual {
@@ -55,6 +83,26 @@ import { site } from '../data/site.js';
     display: grid;
     gap: 1rem;
     isolation: isolate;
+    transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .float {
+    will-change: transform;
+  }
+
+  .float-identity {
+    animation: float-soft 7s ease-in-out infinite;
+  }
+
+  .float-code {
+    animation: float-alt 8.5s ease-in-out infinite;
+    animation-delay: -2s;
+  }
+
+  .float-tools {
+    animation: float-soft 9.5s ease-in-out infinite;
+    animation-delay: -5s;
   }
 
   .orbit {
@@ -68,12 +116,14 @@ import { site } from '../data/site.js';
   .orbit-one {
     inset: -6% -4% 24% 10%;
     opacity: 0.5;
+    animation: orbit-spin 38s linear infinite;
   }
 
   .orbit-two {
     inset: 28% 4% -8% -6%;
     border-color: var(--color-teal-line);
     opacity: 0.45;
+    animation: orbit-spin 52s linear infinite reverse;
   }
 
   .identity {
@@ -90,6 +140,7 @@ import { site } from '../data/site.js';
     border: 2px solid var(--color-accent);
     border-radius: 50%;
     box-shadow: 0 0 0 6px var(--color-accent-soft);
+    animation: portrait-glow 4.5s ease-in-out infinite;
   }
 
   .portrait picture {
@@ -204,6 +255,35 @@ import { site } from '../data/site.js';
   .tool-group .mini-label {
     display: block;
     margin-bottom: 0.7rem;
+  }
+
+  .visual-card {
+    transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+  }
+
+  .visual-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-accent-line);
+    box-shadow: 0 28px 70px rgb(0 0 0 / 0.36);
+  }
+
+  @keyframes float-soft {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(0, -13px, 0); }
+  }
+
+  @keyframes float-alt {
+    0%, 100% { transform: translate3d(0, -7px, 0); }
+    50% { transform: translate3d(0, 9px, 0); }
+  }
+
+  @keyframes orbit-spin {
+    to { transform: rotate(1turn); }
+  }
+
+  @keyframes portrait-glow {
+    0%, 100% { box-shadow: 0 0 0 6px var(--color-accent-soft); }
+    50% { box-shadow: 0 0 0 10px color-mix(in srgb, var(--color-accent) 7%, transparent); }
   }
 
   @media (max-width: 900px) {

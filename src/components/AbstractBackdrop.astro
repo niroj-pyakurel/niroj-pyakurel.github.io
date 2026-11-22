@@ -39,6 +39,7 @@
   .aurora {
     position: absolute;
     border-radius: 50%;
+    will-change: transform;
   }
 
   .aurora-mint {
@@ -47,6 +48,7 @@
     width: 56rem;
     height: 52rem;
     background: radial-gradient(circle, var(--color-accent-soft), transparent 68%);
+    animation: aurora-drift-one 26s ease-in-out infinite;
   }
 
   .aurora-amber {
@@ -55,6 +57,7 @@
     width: 46rem;
     height: 46rem;
     background: radial-gradient(circle, var(--color-teal-soft), transparent 68%);
+    animation: aurora-drift-two 32s ease-in-out infinite;
   }
 
   .aurora-center {
@@ -64,6 +67,7 @@
     height: 40rem;
     background: radial-gradient(circle, var(--color-accent-soft), transparent 72%);
     opacity: 0.6;
+    animation: aurora-drift-three 29s ease-in-out infinite;
   }
 
   .halo {
@@ -75,6 +79,7 @@
     border: 1px solid var(--color-accent-line);
     border-radius: 50%;
     opacity: 0.35;
+    animation: halo-turn 60s linear infinite;
   }
 
   .halo::after {
@@ -90,6 +95,31 @@
     width: 100%;
     height: 100%;
     opacity: 0.8;
+    animation: backdrop-breathe 12s ease-in-out infinite;
+  }
+
+  @keyframes aurora-drift-one {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(-2.5rem, 1.5rem, 0) scale(1.07); }
+  }
+
+  @keyframes aurora-drift-two {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(3rem, -2rem, 0) scale(1.1); }
+  }
+
+  @keyframes aurora-drift-three {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(2rem, 1.5rem, 0) scale(1.05); }
+  }
+
+  @keyframes halo-turn {
+    to { transform: rotate(1turn); }
+  }
+
+  @keyframes backdrop-breathe {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
   }
 
   @media (max-width: 700px) {

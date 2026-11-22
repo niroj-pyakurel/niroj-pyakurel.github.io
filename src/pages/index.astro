@@ -108,9 +108,12 @@ const formatNoteDate = (date) =>
 
         <p class="status-pill">
           <span class="live-dot" aria-hidden="true"></span>
-          {site.availability}
-          <span class="status-divider" aria-hidden="true">/</span>
-          {site.location}
+          <span class="status-full">
+            {site.availability}
+            <span class="status-divider" aria-hidden="true">/</span>
+            {site.location}
+          </span>
+          <span class="status-short">Available for freelance · Kathmandu</span>
         </p>
 
         <h1 id="hero-title" class="hero-title">
@@ -210,12 +213,80 @@ const formatNoteDate = (date) =>
             <h3>UI/UX &amp; Brand Design</h3>
             <p>{designService?.description}</p>
           </div>
-          <div class="figma-mini" aria-hidden="true">
+
+          <div class="artboard" data-design-artboard aria-hidden="true">
+            <div class="artboard-head">
+              <span data-artboard-label>Hero / cover</span>
+              <span>artboard preview</span>
+            </div>
+
+            <div class="artboard-stage">
+              <div class="artboard-panel is-active" data-artboard-panel="hero">
+                <div class="artboard-type"><span>Aa</span><small>display</small></div>
+                <div class="artboard-wire">
+                  <div class="wire-bar"></div>
+                  <div class="wire-bar short"></div>
+                  <div class="wire-block"></div>
+                  <div class="wire-grid"><i></i><i></i><i></i></div>
+                </div>
+                <div class="swatches">
+                  <i style="--swatch: #4ade80"></i>
+                  <i style="--swatch: #0f766e"></i>
+                  <i style="--swatch: #ffc078"></i>
+                  <i style="--swatch: #07151a"></i>
+                </div>
+              </div>
+
+              <div class="artboard-panel" data-artboard-panel="brand">
+                <div class="artboard-type"><span>NP</span><small>monogram</small></div>
+                <div class="artboard-wire">
+                  <div class="wire-lockup"><i></i><span></span></div>
+                  <div class="wire-scale"><i></i><i></i><i></i></div>
+                  <div class="wire-bar short"></div>
+                </div>
+                <div class="swatches">
+                  <i style="--swatch: #4ade80"></i>
+                  <i style="--swatch: #0d7a5f"></i>
+                  <i style="--swatch: #eaf6f3"></i>
+                  <i style="--swatch: #07151a"></i>
+                </div>
+              </div>
+
+              <div class="artboard-panel" data-artboard-panel="campaign">
+                <div class="artboard-type"><span>03</span><small>cards</small></div>
+                <div class="artboard-wire">
+                  <div class="wire-grid wire-grid--tall"><i></i><i></i><i></i></div>
+                  <div class="wire-bar"></div>
+                  <div class="wire-bar short"></div>
+                </div>
+                <div class="swatches">
+                  <i style="--swatch: #ffc078"></i>
+                  <i style="--swatch: #4ade80"></i>
+                  <i style="--swatch: #132c34"></i>
+                  <i style="--swatch: #eaf6f3"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="figma-mini">
             <div class="mini-head"><span>layers</span><span>03</span></div>
-            <ul>
-              <li class="is-selected"><i class="swatch swatch-mint"></i><span>Hero / cover</span></li>
-              <li><i class="swatch swatch-ink"></i><span>Brand kit</span></li>
-              <li><i class="swatch swatch-amber"></i><span>Campaign set</span></li>
+            <ul class="layer-list">
+              <li>
+                <button type="button" class="layer-row is-selected" data-layer="hero" aria-pressed="true">
+                  <i class="swatch swatch-mint"></i><span>Hero / cover</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="layer-row" data-layer="brand" aria-pressed="false">
+                  <i class="swatch swatch-ink"></i><span>Brand kit</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="layer-row" data-layer="campaign" aria-pressed="false">
+                  <i class="swatch swatch-amber"></i><span>Campaign set</span>
+                </button>
+              </li>
             </ul>
             <div class="mini-foot">{site.designTools.join(' · ')}</div>
           </div>
@@ -389,7 +460,7 @@ const formatNoteDate = (date) =>
         <p class="section-kicker">// 04 — let's talk</p>
         <h2 id="cta-title">Have an idea that needs clean design and solid security?</h2>
         <p class="cta-copy">
-          Have something in mind? Send a note and let's shape the first step together.
+          Available for freelance design, web builds, and security audits — send a note and let's map out the first step.
         </p>
 
         <div class="final-actions">
@@ -497,6 +568,7 @@ const formatNoteDate = (date) =>
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
+    max-width: 100%;
     margin-top: 1rem;
     padding: 0.4rem 0.85rem;
     border: 1px solid var(--color-accent-line);
@@ -505,6 +577,16 @@ const formatNoteDate = (date) =>
     font-family: var(--font-mono);
     font-size: 0.7rem;
     color: var(--color-text);
+    white-space: nowrap;
+  }
+
+  .status-full,
+  .status-short {
+    white-space: nowrap;
+  }
+
+  .status-short {
+    display: none;
   }
 
   .status-divider {
@@ -530,6 +612,8 @@ const formatNoteDate = (date) =>
   }
 
   .hero-word {
+    --word-hover: var(--color-accent);
+    --word-glow: color-mix(in srgb, var(--color-accent) 38%, transparent);
     display: inline-block;
     margin-right: 0.14em;
     animation: word-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -547,9 +631,24 @@ const formatNoteDate = (date) =>
 
   .hero-word:hover,
   .hero-word:focus-visible {
-    color: var(--color-accent);
-    text-shadow: 0 0 38px color-mix(in srgb, var(--color-accent) 38%, transparent);
+    color: var(--word-hover);
+    text-shadow: 0 0 38px var(--word-glow);
     transform: translateY(-3px);
+  }
+
+  :global([data-theme='light']) .hero-word[data-discipline='design'] {
+    --word-hover: #0d7a5f;
+    --word-glow: rgb(13 122 95 / 0.28);
+  }
+
+  :global([data-theme='light']) .hero-word[data-discipline='web'] {
+    --word-hover: #0f766e;
+    --word-glow: rgb(15 118 110 / 0.28);
+  }
+
+  :global([data-theme='light']) .hero-word[data-discipline='security'] {
+    --word-hover: #064e3b;
+    --word-glow: rgb(6 78 59 / 0.28);
   }
 
   .hero-hint {
@@ -971,6 +1070,166 @@ const formatNoteDate = (date) =>
     font-size: 0.92rem;
   }
 
+  .artboard {
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface-raised);
+    font-family: var(--font-mono);
+  }
+
+  .artboard-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-muted);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .artboard-head span:first-child {
+    color: var(--color-link);
+  }
+
+  .artboard-stage {
+    min-height: 10.5rem;
+    padding: 0.9rem;
+    background:
+      radial-gradient(circle at 90% 0%, var(--color-accent-soft), transparent 60%),
+      var(--color-bg-deep);
+  }
+
+  .artboard-panel {
+    display: none;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .artboard-panel.is-active {
+    display: grid;
+    animation: line-in 300ms ease both;
+  }
+
+  .artboard-type {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border: 1px solid var(--color-accent-line);
+    border-radius: 14px;
+    background: var(--color-accent-soft);
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-accent);
+  }
+
+  .artboard-type small {
+    margin-top: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.48rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .artboard-wire {
+    display: grid;
+    gap: 0.45rem;
+    min-width: 0;
+  }
+
+  .wire-bar {
+    height: 0.42rem;
+    border-radius: 999px;
+    background: var(--color-border);
+  }
+
+  .wire-bar.short {
+    width: 55%;
+  }
+
+  .wire-block {
+    height: 2.6rem;
+    border: 1px dashed var(--color-accent-line);
+    border-radius: 8px;
+    background: var(--color-accent-soft);
+  }
+
+  .wire-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .wire-grid i {
+    height: 1.35rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface-raised);
+  }
+
+  .wire-grid--tall i {
+    height: 2.6rem;
+  }
+
+  .wire-lockup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .wire-lockup i {
+    width: 1.9rem;
+    height: 1.9rem;
+    flex: none;
+    border-radius: 6px;
+    background: var(--color-accent);
+  }
+
+  .wire-lockup span {
+    width: 60%;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--color-border);
+  }
+
+  .wire-scale {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .wire-scale i {
+    height: 0.45rem;
+    border-radius: 999px;
+    background: var(--color-accent-line);
+  }
+
+  .wire-scale i:nth-child(2) { width: 70%; }
+  .wire-scale i:nth-child(3) { width: 45%; }
+
+  .swatches {
+    display: flex;
+    gap: 0.35rem;
+    grid-column: 1 / -1;
+  }
+
+  .swatches i {
+    width: 1.1rem;
+    height: 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--color-text) 22%, transparent);
+    border-radius: 50%;
+    background: var(--swatch);
+  }
+
   .figma-mini,
   .code-wrap,
   .scan-mini {
@@ -994,22 +1253,34 @@ const formatNoteDate = (date) =>
     text-transform: uppercase;
   }
 
-  .figma-mini ul,
+  .layer-list,
   .scan-mini ul {
     padding: 0.55rem;
     list-style: none;
   }
 
-  .figma-mini li {
+  .layer-row {
     display: flex;
     align-items: center;
     gap: 0.6rem;
+    width: 100%;
     padding: 0.5rem 0.65rem;
+    border: 1px solid transparent;
     border-radius: 7px;
+    background: transparent;
     color: var(--color-muted);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
   }
 
-  .figma-mini li.is-selected {
+  .layer-row:hover {
+    color: var(--color-text);
+  }
+
+  .layer-row.is-selected {
+    border-color: var(--color-accent-line);
     background: var(--color-accent-soft);
     color: var(--color-text);
   }
@@ -1568,6 +1839,51 @@ const formatNoteDate = (date) =>
 
     .spotlight-preview {
       min-height: 16rem;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .hero {
+      padding-top: 3.25rem;
+      gap: 2rem;
+    }
+
+    .hero-kicker {
+      margin-bottom: 0.25rem;
+    }
+
+    .status-pill {
+      margin-top: 1.25rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+    }
+
+    .status-full,
+    .hero-hint {
+      display: none;
+    }
+
+    .status-short {
+      display: inline;
+    }
+
+    .hero-title {
+      margin-top: 1.5rem;
+      line-height: 1.05;
+    }
+
+    .hero-word {
+      display: block;
+      margin-right: 0;
+    }
+
+    .lede {
+      margin-top: 1.35rem;
+    }
+
+    .hero-actions {
+      margin-top: 1.75rem;
     }
   }
 

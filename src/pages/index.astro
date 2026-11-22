@@ -480,17 +480,10 @@ const formatNoteDate = (date) =>
 
           <div class="cta-side">
             <div class="email-wrap">
-              <button
-                class="email-display"
-                type="button"
-                data-copy-email
-                data-email={site.email}
-                aria-label={`Copy email address ${site.email}`}
-              >
+              <div class="email-display">
                 <span class="email-icon" aria-hidden="true">@</span>
                 <span class="email-address">{site.email}</span>
-                <span class="email-copy-icon" aria-hidden="true">⧉</span>
-              </button>
+              </div>
               <div class="toast" data-toast role="status" aria-live="polite">Copied!</div>
             </div>
 
@@ -1748,7 +1741,7 @@ const formatNoteDate = (date) =>
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
     gap: clamp(1.5rem, 4vw, 3rem);
-    align-items: end;
+    align-items: center;
   }
 
   .final-cta h2 {
@@ -1768,7 +1761,9 @@ const formatNoteDate = (date) =>
 
   .cta-side {
     display: grid;
-    gap: 1rem;
+    justify-self: end;
+    width: 100%;
+    gap: 0.85rem;
   }
 
   .email-wrap {
@@ -1789,14 +1784,6 @@ const formatNoteDate = (date) =>
     font-family: var(--font-mono);
     font-size: clamp(0.78rem, 1.25vw, 0.92rem);
     text-align: left;
-    cursor: pointer;
-    transition: border-color 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
-  }
-
-  .email-display:hover {
-    border-color: var(--cta-accent);
-    background: rgb(74 222 128 / 0.07);
-    box-shadow: 0 0 0 3px rgb(74 222 128 / 0.1), 0 12px 28px rgb(0 0 0 / 0.25);
   }
 
   .email-icon {
@@ -1818,15 +1805,10 @@ const formatNoteDate = (date) =>
     white-space: nowrap;
   }
 
-  .email-copy-icon {
-    margin-left: auto;
-    color: var(--cta-accent);
-    font-size: 1rem;
-  }
-
   .final-actions {
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-end;
     gap: 0.7rem;
   }
 
@@ -1888,6 +1870,14 @@ const formatNoteDate = (date) =>
     .cta-grid {
       grid-template-columns: 1fr;
       align-items: start;
+    }
+
+    .cta-side {
+      justify-self: stretch;
+    }
+
+    .final-actions {
+      justify-content: flex-start;
     }
   }
 
